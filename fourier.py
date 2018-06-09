@@ -53,9 +53,7 @@ def test_data_fourier(data):
         x, y = fourier(time, data[x])
         fourierx.append(x)
         fouriery.append(y)
-        tenhzx.append(x[2])
-        tenhzy.append(y[2])
-    return tenhzx, tenhzy
+    return fourierx, fouriery
 
 
 def plot(y):
@@ -123,3 +121,20 @@ def fourier(time, amplitude):
     plt.xlabel('Hz')
     plt.show()
     return xf, amplitudes
+
+
+def find_ten(x, y):
+    closestindex = 0
+    closest = np.inf
+    index = 0
+    closestdistance = np.inf
+    for num in x:
+        distance = abs(num-10)
+        if distance < closestdistance:
+            closest = num
+            closestdistance = distance
+            closestindex = index
+        index += 1
+    print(closest)
+    print(closestdistance)
+    return x[closestindex], y[closestindex]
