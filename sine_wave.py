@@ -16,7 +16,6 @@ def get_values():
     dac2 = Adafruit_MCP4725.MCP4725(address=0x63, busnum=1)
     dac1.set_voltage(int(2048))
     dac2.set_voltage(int(2048))
-
     GAIN = 1                        # of 2/3, dependent on the desired range
     times = []                      # create some arrays
     adc_values = []
@@ -39,9 +38,6 @@ def get_values():
         dac1.set_voltage(cosine[int(10000*delta)])      # sample values from waves according to delta
         dac2.set_voltage(sine[int(10000*delta)])
         adc_values.append(adc.read_adc(3, gain=GAIN))   # read the adc and store values in array
-
     dac1.set_voltage(int(2048))
     dac2.set_voltage(int(2048))
-    print(times)
-    print(len(adc_values))
-    print(adc_values)
+    return times, adc_values
