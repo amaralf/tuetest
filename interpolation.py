@@ -2,8 +2,6 @@ import random  # used for simulation only.
 import scipy  # vital for the interpolation.
 import scipy.interpolate  # vital for the interpolation.
 import matplotlib.pyplot as plt
-import numpy
-# print(plt.get_backend())
 
 
 def simulate():
