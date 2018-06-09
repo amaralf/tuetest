@@ -113,21 +113,23 @@ def fourier(time, amplitude):
     N = len(time)  # size
     T = time[len(time)-1]/N  # step probably
     yf = fft(amplitude)  # fourier transform
-    xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
+    hzvals = np.linspace(0.0, 1.0/(2.0*T), N/2)
     amplitudes = 2.0/N * np.abs(yf[:N//2])
     fig, ax = plt.subplots()
-    ax.plot(xf, amplitudes)
+    ax.plot(hzvals, amplitudes)
     ax.grid(True)
     plt.xlabel('Hz')
     plt.show()
-    return xf, amplitudes
+    return hzvals, amplitudes
+
 
 def fourierten(time, amplitude):
     x, y = fourier(time, amplitude)
-    i = find_ten(x, y)
+    i = find_ten(x)
     return x[i], y[i]
 
-def find_ten(x, y):
+
+def find_ten(x):
     closestindex = 0
     closest = np.inf
     index = 0
