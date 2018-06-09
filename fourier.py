@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.fftpack import fft, fftfreq
+from scipy.fftpack import fft
 import matplotlib.pyplot as plt
 
 
@@ -43,7 +43,7 @@ def test_data_fourier(data):
     fouriery = []
     tenhzx = []
     tenhzy = []
-    for x in range (0, 20):
+    for x in range(0, 20):
         # plt.plot(time[x], data[x])
         # plt.title('Test Laserlab %d' % x+1)
         # plt.xlabel('Time')
