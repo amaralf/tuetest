@@ -20,14 +20,18 @@ def load_test_data():
     pulsesmagnet = []
     while step < len(time):
         nextstep = step + 1000
+        sub = ((nextstep - step)/20)
+        nextsubstep = step
         pulsetime = []
         pulsedata = []
         pulsemagnet = []
         while step < nextstep:
+            # if step == nextsubstep:
+            # nextsubstep += sub
             pulsetime.append(time[step])
             pulsedata.append(data[step])
             pulsemagnet.append(magnet[step])
-            step+=1
+            step += 1
         pulsetime = [float(i) for i in pulsetime]
         pulsedata = [float(i) for i in pulsedata]
         pulsestime.append(pulsetime)
@@ -50,7 +54,7 @@ def test_data_fourier(data):
         # plt.ylabel('Data')
         # plt.axhline(y=0, color='k')
         # plt.show()
-        x, y = fourier(time, data[x])
+        x, y = fourierten(time, data[x])
         fourierx.append(x)
         fouriery.append(y)
     return fourierx, fouriery
@@ -62,7 +66,7 @@ def plot(y):
     # Give a title for the sine wave plot
     plt.title('Fourier')
     # Give x axis label for the sine wave plot
-    plt.xlabel('Time')
+    plt.xlabel('Number of pulses')
     # Give y axis label for the sine wave plot
     plt.ylabel('Amplitude = sin(time)')
     plt.grid(True, which='both')
@@ -122,12 +126,14 @@ def fourier(time, amplitude):
     plt.show()
     return xf, amplitudes
 
+
 def fourierten(time, amplitude):
     x, y = fourier(time, amplitude)
-    i = find_ten(x, y)
+    i = find_ten(x)
     return x[i], y[i]
 
-def find_ten(x, y):
+
+def find_ten(x):
     closestindex = 0
     closest = np.inf
     index = 0
