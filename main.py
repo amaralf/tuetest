@@ -3,7 +3,7 @@ import fourier as f
 
 
 def getAmp():
-    """Input: nothing
+    """Input: none
        Output: single amplitude of +- 10Hz freq as measured."""
     time, adc_values = s.get_values()
     x, y = f.fourierten(time, adc_values)
@@ -20,6 +20,8 @@ def getResult(y):
 
 
 def run():
+    """Input: none
+       Output: none"""
     measurements = []
     for x in range(20):
         y = getAmp()

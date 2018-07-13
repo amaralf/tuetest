@@ -1,15 +1,17 @@
 import tkinter as t
 import sys
+# import main as m
 
 
-class App():
+class App:
     # define main properties
-    page = 1
+    page = 0
     height = 600
     width = 1024
 
     def __init__(self):
         self.root = t.Tk()
+        self.root.title("T.E.S.T.")
         self.root.pack_propagate(0)
         self.root.resizable(0, 0)
         self.root.geometry('%(a)d' % {'a': self.width} + 'x' + '%(b)d' % {'b': self.height})
@@ -20,6 +22,7 @@ class App():
 
     def generate_objects(self, *args):
         switcher = {
+            0: self.generate_login,
             1: self.generate_page_one,
             2: self.generate_page_two,
             3: self.generate_page_three,
@@ -33,6 +36,39 @@ class App():
             kid.destroy()
         self.generate_objects()
 
+    def login(self, username, password):
+        if username == 'Test' and password == '1234':
+            print('Username: ' + username)
+            print('Password: ' + password)
+            self.change_page(1)
+        else:
+            print('Username or password incorrect, access denied')
+
+    def generate_login(self):
+        # create upper frame with text
+        login_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 4))
+        login_frame.pack(side="top", fill="x", expand="false")
+        login_frame.update()
+        login_frame.propagate(0)
+        login_text = t.Label(login_frame, bg="grey", text="Login")
+        login_text.pack(side="bottom", fill="both", expand="true")
+        # create entry box
+        entry_frame = t.Frame(self.root, width=int(self.root.winfo_width() / 3),
+                              height=int(self.root.winfo_height() / 2), bg="red")
+        entry_frame.pack(side="top", expand="false")
+        entry_frame.update()
+        entry_frame.propagate(0)
+        # box for username
+        username_box = t.Entry(entry_frame)
+        username_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
+        # box for password
+        password_box = t.Entry(entry_frame, show="*")
+        password_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.5)
+        # create login button
+        login_button = t.Button(entry_frame, text="Login", command=lambda: self.login(username=username_box.get(),
+                                                                                      password=password_box.get()))
+        login_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
+
     def generate_page_one(self):
         description = "Here will be the description of the machine..."
         frame_height = int(self.root.winfo_height() / 2)
@@ -45,7 +81,7 @@ class App():
         top_text.update()
         bottom_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                  fg="white",
-                                 text="Measure", command=lambda: self.change_page(2))
+                                 text="Start", command=lambda: self.change_page(2))
         bottom_button.update()
         bottom_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.45)
 
@@ -164,7 +200,7 @@ class App():
 
         # exit button for testing purposes
         exit_button = t.Button(self.root, activebackground="dark grey", activeforeground='white', bg="black",
-                               fg="white", state="normal", text="Exit", command=lambda: sys.exit(0))
+                               fg="white", state="normal", text="Again", command=lambda: self.change_page(1))
         exit_button.update()
         exit_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # end exit button
