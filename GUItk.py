@@ -8,6 +8,8 @@ class App:
     page = 0
     height = 600
     width = 1024
+    usernames = ['admin']
+    passwords = ['admin']
 
     def __init__(self):
         self.root = t.Tk()
@@ -28,7 +30,8 @@ class App:
             1: self.generate_page_one,
             2: self.generate_page_two,
             3: self.generate_page_three,
-            4: self.generate_page_four
+            4: self.generate_page_four,
+            5: self.generate_new_account
         }
         switcher[self.page]()
 
@@ -41,11 +44,15 @@ class App:
 
     """Login function"""
     def login(self, username, password):
-        if username == 'Test' and password == '1234':
+        if username == 'admin' and password == 'admin':
             print('Username: ' + username)
             print('Password: ' + password)
             self.change_page(1)
         else:
+            error_frame = t.Frame(self.root, bg="light grey")
+            error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
+            error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
+            error_text.pack(side="bottom", fill="both", expand="true")
             print('Username or password incorrect, access denied')
 
     def generate_login(self):
@@ -76,6 +83,47 @@ class App:
         login_button = t.Button(entry_frame, text="Login", bg="dark grey",
                                 command=lambda: self.login(username=username_box.get(), password=password_box.get()))
         login_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
+
+        test_button = t.Button(self.root, text="Create new account", bg="dark grey",
+                               command=lambda: self.change_page(5))
+        test_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.9)
+
+        # testing purposes
+        array_button = t.Button(self.root, text="Print array", bg="dark grey",
+                                command=lambda: [print(self.usernames),
+                                                 print(self.passwords)])
+        array_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.8)
+
+    def generate_new_account(self):
+        # create upper frame with text
+        account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 4))
+        account_frame.pack(side="top", fill="x", expand="false")
+        account_frame.update()
+        account_frame.propagate(0)
+        login_text = t.Label(account_frame, bg="grey", text="Account creation")
+        login_text.pack(side="bottom", fill="both", expand="true")
+        # create entry box
+        input_frame = t.Frame(self.root, width=int(self.root.winfo_width() / 3),
+                              height=int(self.root.winfo_height() / 2), bg="light grey")
+        input_frame.pack(side="top", expand="false")
+        input_frame.update()
+        input_frame.propagate(0)
+        # label and box for username
+        user_label = t.Label(input_frame, bg="light grey", text="Enter new username:")
+        user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
+        username_box = t.Entry(input_frame)
+        username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
+        # label and box for password
+        pwd_label = t.Label(input_frame, bg="light grey", text="Enter new password:")
+        pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
+        password_box = t.Entry(input_frame, show="*")
+        password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
+        # create login button
+        create_button = t.Button(input_frame, text="Create", bg="dark grey",
+                                 command=lambda: [self.usernames.append(username_box.get()),
+                                                  self.passwords.append(password_box.get()),
+                                                  self.change_page(0)])
+        create_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
     def generate_page_one(self):
         description = "Here will be the description of the machine..."
