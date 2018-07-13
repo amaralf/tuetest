@@ -11,6 +11,7 @@ class App:
 
     def __init__(self):
         self.root = t.Tk()
+        self.root.config(bg="light grey")
         self.root.title("T.E.S.T.")
         self.root.pack_propagate(0)
         self.root.resizable(0, 0)
@@ -20,6 +21,7 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
+    """Function to generate pages"""
     def generate_objects(self, *args):
         switcher = {
             0: self.generate_login,
@@ -30,12 +32,14 @@ class App:
         }
         switcher[self.page]()
 
+    """Function to switch pages"""
     def change_page(self, number):
         self.page = number
         for kid in self.root.winfo_children():
             kid.destroy()
         self.generate_objects()
 
+    """Login function"""
     def login(self, username, password):
         if username == 'Test' and password == '1234':
             print('Username: ' + username)
@@ -54,19 +58,23 @@ class App:
         login_text.pack(side="bottom", fill="both", expand="true")
         # create entry box
         entry_frame = t.Frame(self.root, width=int(self.root.winfo_width() / 3),
-                              height=int(self.root.winfo_height() / 2), bg="red")
+                              height=int(self.root.winfo_height() / 2), bg="light grey")
         entry_frame.pack(side="top", expand="false")
         entry_frame.update()
         entry_frame.propagate(0)
-        # box for username
+        # label and box for username
+        user_label = t.Label(entry_frame, bg="light grey", text="Username:")
+        user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
-        username_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
-        # box for password
+        username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
+        # label and box for password
+        pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
+        pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
         password_box = t.Entry(entry_frame, show="*")
-        password_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.5)
+        password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
         # create login button
-        login_button = t.Button(entry_frame, text="Login", command=lambda: self.login(username=username_box.get(),
-                                                                                      password=password_box.get()))
+        login_button = t.Button(entry_frame, text="Login", bg="dark grey",
+                                command=lambda: self.login(username=username_box.get(), password=password_box.get()))
         login_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
     def generate_page_one(self):
