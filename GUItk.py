@@ -8,8 +8,8 @@ class App:
     page = 0
     height = 600
     width = 1024
-    usernames = ['admin']
-    passwords = ['admin']
+    usernames = list(open("accounts.txt", "r"))
+    passwords = list(open("passwords.txt", "r"))
 
     def __init__(self):
         self.root = t.Tk()
