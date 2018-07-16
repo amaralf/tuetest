@@ -38,7 +38,8 @@ class App:
             2: self.generate_page_two,
             3: self.generate_page_three,
             4: self.generate_page_four,
-            5: self.generate_new_account
+            5: self.generate_new_account,
+            6: self.generate_shutdown
         }
         switcher[self.page]()
 
@@ -132,6 +133,9 @@ class App:
                                  command=lambda: self.admin_login(username=username_box.get(),
                                                                   password=password_box.get()))
         create_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.9)
+        logout_button = t.Button(self.root, text="Shutdown", bg="dark grey",
+                                 command=lambda: self.change_page(6))
+        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
     def generate_new_account(self):
         # create upper frame with text
@@ -297,7 +301,18 @@ class App:
                                fg="white", state="normal", text="Again", command=lambda: self.change_page(1))
         exit_button.update()
         exit_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
-        # end exit button
+
+        logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey",
+                                 command=lambda: self.change_page(6))
+        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
+
+    def generate_shutdown(self):
+        top_text = t.Label(self.root, bg="grey", text="Shutdown complete")
+        top_text.pack(side="top", fill="both", expand="true")
+        top_text.update()
+        bottom_text = t.Label(self.root, bg="grey", text="Machine can be turned off")
+        bottom_text.pack(side="top", fill="both", expand="true")
+        bottom_text.update()
 
     def stop(self, *args):
         sys.exit(0)
