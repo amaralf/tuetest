@@ -8,8 +8,15 @@ class App:
     page = 0
     height = 600
     width = 1024
-    usernames = list(open("accounts.txt", "r"))
-    passwords = list(open("passwords.txt", "r"))
+
+    """Function to save newly added account data"""
+    def save_data(self, username, password):
+        with open("accounts.txt", "a") as usernames:
+            usernames.write(', ' + str(username))
+            usernames.close()
+        with open("passwords.txt", "a") as passwords:
+            passwords.write(', ' + str(password))
+            passwords.close()
 
     def __init__(self):
         self.root = t.Tk()
@@ -42,18 +49,55 @@ class App:
             kid.destroy()
         self.generate_objects()
 
-    """Login function"""
-    def login(self, username, password):
+    """Admin login function"""
+    def admin_login(self, username, password):
         if username == 'admin' and password == 'admin':
             print('Username: ' + username)
             print('Password: ' + password)
-            self.change_page(1)
+            self.change_page(5)
         else:
             error_frame = t.Frame(self.root, bg="light grey")
             error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
             error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
             error_text.pack(side="bottom", fill="both", expand="true")
+            print('Admin data incorrect, access denied')
+
+    """Login function"""
+    def login(self, username, password):
+        usernames = []
+        accounts = open("accounts.txt", "r")
+        for user in list(accounts):
+            user = user.split(', ')
+        usernames.extend(user)
+        accounts.close()
+        print(usernames)
+
+        passwords = []
+        code = open("passwords.txt", "r")
+        for word in list(code):
+            word = word.split(', ')
+        passwords.extend(word)
+        code.close()
+        print(passwords)
+
+        if str(username) not in usernames or str(password) not in passwords:
+            error_frame = t.Frame(self.root, bg="light grey")
+            error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
+            error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
+            error_text.pack(side="bottom", fill="both", expand="true")
             print('Username or password incorrect, access denied')
+        else:
+            i = usernames.index(username)
+            if password == passwords[i]:
+                print('Username: ' + username)
+                print('Password: ' + password)
+                self.change_page(1)
+            else:
+                error_frame = t.Frame(self.root, bg="light grey")
+                error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
+                error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
+                error_text.pack(side="bottom", fill="both", expand="true")
+                print('Username or password incorrect, access denied')
 
     def generate_login(self):
         # create upper frame with text
@@ -84,15 +128,10 @@ class App:
                                 command=lambda: self.login(username=username_box.get(), password=password_box.get()))
         login_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
-        test_button = t.Button(self.root, text="Create new account", bg="dark grey",
-                               command=lambda: self.change_page(5))
-        test_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.9)
-
-        # testing purposes
-        array_button = t.Button(self.root, text="Print array", bg="dark grey",
-                                command=lambda: [print(self.usernames),
-                                                 print(self.passwords)])
-        array_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.8)
+        create_button = t.Button(self.root, text="Create new account", bg="dark grey",
+                                 command=lambda: self.admin_login(username=username_box.get(),
+                                                                  password=password_box.get()))
+        create_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.9)
 
     def generate_new_account(self):
         # create upper frame with text
@@ -120,9 +159,8 @@ class App:
         password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
         # create login button
         create_button = t.Button(input_frame, text="Create", bg="dark grey",
-                                 command=lambda: [self.usernames.append(username_box.get()),
-                                                  self.passwords.append(password_box.get()),
-                                                  self.change_page(0)])
+                                 command=lambda: [self.save_data(username=username_box.get(),
+                                                                 password=password_box.get()), self.change_page(0)])
         create_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
     def generate_page_one(self):
