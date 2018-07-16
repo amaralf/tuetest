@@ -9,15 +9,6 @@ class App:
     height = 600
     width = 1024
 
-    """Function to save newly added account data"""
-    def save_data(self, username, password):
-        with open("accounts.txt", "a") as usernames:
-            usernames.write(', ' + str(username))
-            usernames.close()
-        with open("passwords.txt", "a") as passwords:
-            passwords.write(', ' + str(password))
-            passwords.close()
-
     def __init__(self):
         self.root = t.Tk()
         self.root.config(bg="light grey")
@@ -42,6 +33,15 @@ class App:
             6: self.generate_shutdown
         }
         switcher[self.page]()
+
+    """Function to save newly added account data"""
+    def save_data(self, username, password):
+        with open("accounts.txt", "a") as usernames:
+            usernames.write(', ' + str(username))
+            usernames.close()
+        with open("passwords.txt", "a") as passwords:
+            passwords.write(', ' + str(password))
+            passwords.close()
 
     """Function to switch pages"""
     def change_page(self, number):
