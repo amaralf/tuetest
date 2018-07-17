@@ -1,11 +1,12 @@
 import tkinter as t
 import sys
+from PIL import ImageTk, Image
 # import main as m
 
 
 class App:
     # define main properties
-    page = 0
+    page = 7
     height = 600
     width = 1024
 
@@ -30,18 +31,26 @@ class App:
             3: self.generate_page_three,
             4: self.generate_page_four,
             5: self.generate_new_account,
-            6: self.generate_shutdown
+            6: self.generate_shutdown,
+            7: self.generate_boot
         }
         switcher[self.page]()
 
     """Function to save newly added account data"""
     def save_data(self, username, password):
-        with open("accounts.txt", "a") as usernames:
-            usernames.write(', ' + str(username))
-            usernames.close()
-        with open("passwords.txt", "a") as passwords:
-            passwords.write(', ' + str(password))
-            passwords.close()
+        if username == '' or password == '':
+            error_frame = t.Frame(self.root, bg="light grey")
+            error_frame.place(relheight=0.05, relwidth=0.25, relx=0.375, rely=0.55)
+            error_text = t.Label(error_frame, fg="red", bg="light grey", text="Please enter a username and password")
+            error_text.pack(side="bottom", fill="both", expand="true")
+        else:
+            with open("accounts.txt", "a") as usernames:
+                usernames.write(', ' + str(username))
+                usernames.close()
+            with open("passwords.txt", "a") as passwords:
+                passwords.write(', ' + str(password))
+                passwords.close()
+            self.change_page(0)
 
     """Function to switch pages"""
     def change_page(self, number):
@@ -53,15 +62,12 @@ class App:
     """Admin login function"""
     def admin_login(self, username, password):
         if username == 'admin' and password == 'admin':
-            print('Username: ' + username)
-            print('Password: ' + password)
             self.change_page(5)
         else:
             error_frame = t.Frame(self.root, bg="light grey")
             error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
-            error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
+            error_text = t.Label(error_frame, fg="red", bg="light grey", text="Admin data incorrect, access denied")
             error_text.pack(side="bottom", fill="both", expand="true")
-            print('Admin data incorrect, access denied')
 
     """Login function"""
     def login(self, username, password):
@@ -71,7 +77,6 @@ class App:
             user = user.split(', ')
         usernames.extend(user)
         accounts.close()
-        print(usernames)
 
         passwords = []
         code = open("passwords.txt", "r")
@@ -79,26 +84,40 @@ class App:
             word = word.split(', ')
         passwords.extend(word)
         code.close()
-        print(passwords)
 
         if str(username) not in usernames or str(password) not in passwords:
             error_frame = t.Frame(self.root, bg="light grey")
             error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
             error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
             error_text.pack(side="bottom", fill="both", expand="true")
-            print('Username or password incorrect, access denied')
         else:
             i = usernames.index(username)
             if password == passwords[i]:
-                print('Username: ' + username)
-                print('Password: ' + password)
                 self.change_page(1)
             else:
                 error_frame = t.Frame(self.root, bg="light grey")
                 error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
                 error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
                 error_text.pack(side="bottom", fill="both", expand="true")
-                print('Username or password incorrect, access denied')
+
+    def fade_out(self):
+        alpha = self.root.attributes("-alpha")
+        if alpha > 0:
+            alpha -= 0.015
+            self.root.attributes("-alpha", alpha)
+            self.root.after(50, self.fade_out)
+        else:
+            self.change_page(0)
+            self.root.attributes("-alpha", 1)
+
+    def generate_boot(self):
+        back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
+        back_label.pack()
+        img = ImageTk.PhotoImage(Image.open("logo.jpg"))
+        main_label = t.Label(back_label, image=img)
+        main_label.image = img
+        main_label.pack()
+        self.fade_out()
 
     def generate_login(self):
         # create upper frame with text
@@ -164,13 +183,13 @@ class App:
         # create login button
         create_button = t.Button(input_frame, text="Create", bg="dark grey",
                                  command=lambda: [self.save_data(username=username_box.get(),
-                                                                 password=password_box.get()), self.change_page(0)])
+                                                                 password=password_box.get())])
         create_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
     def generate_page_one(self):
         description = "Here will be the description of the machine..."
-        frame_height = int(self.root.winfo_height() / 2)
-        bottom_frame = t.Frame(self.root, width=self.root.winfo_width(), height=frame_height, bg="white")
+        bottom_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 2),
+                               bg="white")
         bottom_frame.pack(side="bottom", fill="x", expand="false")
         bottom_frame.update()
         bottom_frame.pack_propagate(0)
