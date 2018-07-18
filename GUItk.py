@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import tkinter as t
 from PIL import ImageTk, Image
 # import main as m
@@ -146,7 +146,7 @@ class App:
                                                                   password=password_box.get()))
         create_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.9)
         logout_button = t.Button(self.root, text="Shutdown", bg="dark grey",
-                                 command=lambda: self.change_page(6))
+                                 command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
     def generate_new_account(self):
@@ -315,7 +315,7 @@ class App:
         exit_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
 
         logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey",
-                                 command=lambda: self.change_page(6))
+                                 command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
     def generate_shutdown(self):
