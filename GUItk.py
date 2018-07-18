@@ -1,5 +1,5 @@
-import tkinter as t
 import sys
+import tkinter as t
 from PIL import ImageTk, Image
 # import main as m
 
@@ -17,6 +17,7 @@ class App:
         self.root.pack_propagate(0)
         self.root.resizable(0, 0)
         self.root.geometry('%(a)d' % {'a': self.width} + 'x' + '%(b)d' % {'b': self.height})
+        self.root.attributes('-fullscreen', True)
         self.root.bind('<Escape>', self.stop)
         self.root.update()
         self.generate_objects()
@@ -100,16 +101,6 @@ class App:
                 error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
                 error_text.pack(side="bottom", fill="both", expand="true")
 
-    def fade_out(self):
-        alpha = self.root.attributes("-alpha")
-        if alpha > 0:
-            alpha -= 0.015
-            self.root.attributes("-alpha", alpha)
-            self.root.after(50, self.fade_out)
-        else:
-            self.change_page(0)
-            self.root.attributes("-alpha", 1)
-
     def generate_boot(self):
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
@@ -117,7 +108,9 @@ class App:
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
-        self.fade_out()
+        self.root.update()
+        self.root.after(5000)
+        self.change_page(0)
 
     def generate_login(self):
         # create upper frame with text
