@@ -43,11 +43,11 @@ class App:
 
     def checklist(self):
         """Check if sample and/or hood are inserted/closed"""
-        # GPIO 19 for hood, GPIO 21 for sample
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(19, GPIO.IN)
+        # GPIO 20 for hood, GPIO 21 for sample
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(20, GPIO.IN)
         GPIO.setup(21, GPIO.IN)
-        if GPIO.input(19) == 1:
+        if GPIO.input(20) == 1:
             print("Hood not closed. Please close the hood.")
         elif GPIO.input(21) == 1:
             print("Sample not inserted. Please insert sample.")
