@@ -24,8 +24,8 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
-    """Function to generate pages"""
     def generate_objects(self, *args):
+        """Function to generate pages"""
         switcher = {
             0: self.generate_login,
             1: self.generate_page_one,
@@ -63,17 +63,15 @@ class App:
             measurements.write("\n\n")
             measurements.write("Average = " + str(res))
 
-
-
-    """Function to switch pages"""
     def change_page(self, number):
+        """Function to switch pages"""
         self.page = number
         for kid in self.root.winfo_children():
             kid.destroy()
         self.generate_objects()
 
-    """Admin login function"""
     def admin_login(self, username, password):
+        """Admin login function"""
         if username == 'admin' and password == 'admin':
             self.change_page(5)
         else:
@@ -82,8 +80,8 @@ class App:
             error_text = t.Label(error_frame, fg="red", bg="light grey", text="Admin data incorrect, access denied")
             error_text.pack(side="bottom", fill="both", expand="true")
 
-    """Login function"""
     def login(self, username, password):
+        """Login function"""
         usernames = []
         accounts = open("accounts.txt", "r")
         for user in list(accounts):
