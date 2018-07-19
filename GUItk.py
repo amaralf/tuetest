@@ -5,6 +5,8 @@ from PIL import ImageTk, Image
 import main as m
 import datetime
 import time
+import RPi.GPIO as GPIO
+
 
 class App:
     # define main properties
@@ -38,6 +40,16 @@ class App:
             7: self.generate_boot
         }
         switcher[self.page]()
+
+    def checklist(self):
+        """Check if sample and/or hood are inserted/closed"""
+        # GPIO 20 for sample, GPIO 21 for hood
+        if GPIO.input(21) == 0:
+            print("Hood not closed. Please close the hood.")
+        elif GPIO.input(20) == 0:
+            print("Sample not inserted. Please insert sample.")
+        else:
+            self.change_page(3)
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -237,7 +249,7 @@ class App:
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
-                                  command=lambda: self.change_page(3))
+                                  command=lambda: self.checklist())
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # make precondition button update the properties of the measure button
