@@ -38,8 +38,8 @@ class App:
         }
         switcher[self.page]()
 
-    """Function to save newly added account data"""
     def save_data(self, username, password):
+        """Function to save newly added account data"""
         if username == '' or password == '':
             error_frame = t.Frame(self.root, bg="light grey")
             error_frame.place(relheight=0.05, relwidth=0.25, relx=0.375, rely=0.55)
@@ -53,6 +53,17 @@ class App:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
+
+    def save_measurements(self, measures, res):
+        """Function to save measurements of the last measuring"""
+        with open("measurement.txt", "w") as measurements:
+            measurements.write("Measurements: \n")
+            for measure in measures:
+                measurements.write(str(measure) + '\n')
+            measurements.write("\n\n")
+            measurements.write("Average = " + str(res))
+
+
 
     """Function to switch pages"""
     def change_page(self, number):
@@ -236,6 +247,8 @@ class App:
 
     def generate_page_three(self):
         title = "Measurement"
+        measurements, res = m.run_test()
+        self.save_measurements(measurements, res)
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -253,7 +266,9 @@ class App:
         # begin upper part of screen
         loading_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
         loading_bar.pack(fill="x")
-        loading_text = t.Label(loading_bar, bg="grey", text="Loading...")
+        loading_bar.update()
+        outputtext = "Average = " + str(res)
+        loading_text = t.Label(loading_bar, bg="grey", text=outputtext, wraplength=0.8*loading_bar.winfo_width())
         loading_text.place(relheight=1, relwidth=1)
         # begin lower part of screen
         bottom_frame = t.Frame(self.root, bg="white")
