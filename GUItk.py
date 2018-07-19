@@ -3,7 +3,8 @@ import sys
 import tkinter as t
 from PIL import ImageTk, Image
 import main as m
-
+import datetime
+import time
 
 class App:
     # define main properties
@@ -56,8 +57,11 @@ class App:
 
     def save_measurements(self, measures, res):
         """Function to save measurements of the last measuring"""
-        with open("measurement.txt", "w") as measurements:
-            measurements.write("Measurements: \n")
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H,%M,%S')
+        filename = "Measurements_" + str(st) + ".txt"
+        with open(filename, "w") as measurements:
+            measurements.write("Measurements " + st + ": \n")
             for measure in measures:
                 measurements.write(str(measure) + '\n')
             measurements.write("\n\n")
