@@ -1,4 +1,4 @@
-from numpy import linspace, pi, sin, abs, inf
+import numpy as np
 from scipy.fftpack import fft
 import matplotlib.pyplot as plt
 
@@ -42,7 +42,7 @@ def load_test_data():
 
 
 def test_data_fourier(data):
-    time = linspace(0, 0.2, len(data[0]))
+    time = np.linspace(0, 0.2, len(data[0]))
     fourierx = []
     fouriery = []
     tenhzx = []
@@ -61,7 +61,7 @@ def test_data_fourier(data):
 
 
 def plot(y):
-    x = linspace(0, 20, 20)
+    x = np.linspace(0, 20, 20)
     plt.plot(x, y)
     # Give a title for the sine wave plot
     plt.title('Fourier')
@@ -76,11 +76,11 @@ def plot(y):
 
 def make_sine():
     # Get x values of the sine wave
-    time = linspace(0, 0.2, 20)
+    time = np.linspace(0, 0.2, 20)
     frequency = 10  # hertz
-    w = frequency*(2*pi)
+    w = frequency*(2*np.pi)
     # Amplitude of the sine wave is sine of a variable like time
-    amplitude = sin(w*time)
+    amplitude = np.sin(w*time)
     # Plot a sine wave using time and amplitude obtained for the sine wave
     plt.plot(time, amplitude)
     # Give a title for the sine wave plot
@@ -117,8 +117,8 @@ def fourier(time, amplitude):
     N = len(time)  # size
     T = time[len(time)-1]/N  # step probably
     yf = fft(amplitude)  # fourier transform
-    hzvals = linspace(0.0, 1.0/(2.0*T), N/2)
-    amplitudes = 2.0/N * abs(yf[:N//2])
+    hzvals = np.linspace(0.0, 1.0/(2.0*T), N/2)
+    amplitudes = 2.0/N * np.abs(yf[:N//2])
     fig, ax = plt.subplots()
     ax.plot(hzvals, amplitudes)
     ax.grid(True)
@@ -136,9 +136,9 @@ def fourierten(time, amplitude):
 
 def find_ten(x):
     closestindex = 0
-    closest = inf
+    closest = np.inf
     index = 0
-    closestdistance = inf
+    closestdistance = np.inf
     for num in x:
         distance = abs(num-10)
         if distance < closestdistance:
