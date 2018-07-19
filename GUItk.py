@@ -45,11 +45,11 @@ class App:
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for sample, GPIO 21 for hood
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(20, GPIO.IN)
-        GPIO.setup(21, GPIO.IN)
-        if GPIO.input(21) == 0:
+        GPIO.setup(23, GPIO.IN)
+        GPIO.setup(24, GPIO.IN)
+        if GPIO.input(23) == 0:
             print("Hood not closed. Please close the hood.")
-        elif GPIO.input(20) == 0:
+        elif GPIO.input(24) == 0:
             print("Sample not inserted. Please insert sample.")
         else:
             self.change_page(3)
