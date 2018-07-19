@@ -26,6 +26,12 @@ def run():
     for x in range(20):
         y = getAmp()
         measurements.append(y)
-    print(measurements)
+    res = getResult(sum(measurements) / len(measurements))
+    return measurements, res
+
+def run_test():
+    t, d, m = f.load_test_data()
+    x, measurements = f.test_data_fourier(d)
     res = getResult(sum(measurements) / len(measurements))
     print(res)
+    return measurements, res
