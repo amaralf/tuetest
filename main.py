@@ -11,11 +11,11 @@ def getAmp():
     return y
 
 
-def getResult(y):
+def getResult(avg):
     """Input: single amplitude
        Output: single result value"""
-    print("hey")
-    return 8
+
+    return avg
     # TODO
 
 
@@ -25,5 +25,7 @@ def run():
     measurements = []
     for x in range(20):
         y = getAmp()
-        res = getResult(y)
-        measurements.append(res)
+        measurements.append(y)
+    print(measurements)
+    res = getResult(sum(measurements) / len(measurements))
+    print(res)

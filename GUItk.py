@@ -1,7 +1,8 @@
-import sys, os
+import os
+import sys
 import tkinter as t
 from PIL import ImageTk, Image
-# import main as m
+import main as m
 
 
 class App:
