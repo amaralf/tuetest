@@ -45,8 +45,8 @@ class App:
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(20, GPIO.IN)
-        GPIO.setup(21, GPIO.IN)
+        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         if GPIO.input(20) == 1:
             print("Hood not closed. Please close the hood.")
         elif GPIO.input(21) == 1:
