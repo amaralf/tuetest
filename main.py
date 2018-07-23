@@ -23,10 +23,12 @@ def run():
        Output: none"""
     measurements = []
     for x in range(20):
-        y = getAmp()
-        measurements.append(y)
-    res = getResult(sum(measurements) / len(measurements))
-    return measurements, res
+        s.actuation()
+        for z in range(10):
+            y = getAmp()
+            measurements.append(y)
+        res = getResult(sum(measurements) / len(measurements))
+        return measurements, res
 
 
 def run_test():
