@@ -5,7 +5,6 @@ from PIL import ImageTk, Image
 import main as m
 import datetime
 import time
-import subprocess
 # import RPi.GPIO as GPIO
 
 
@@ -54,18 +53,6 @@ class App:
     #         print("Sample not inserted. Please insert sample.")
     #     else:
     #         self.change_page(3)
-
-    def keyOn(self):
-        try:
-            subprocess.Popen(["matchbox-keyboard"])
-        except FileNotFoundError:
-            pass
-
-    def keyOff(self):
-        try:
-            subprocess.Popen(["killall", "matchbox-keyboard"])
-        except FileNotFoundError:
-            pass
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
