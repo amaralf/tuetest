@@ -29,6 +29,7 @@ def run():
     res = getResult(sum(measurements) / len(measurements))
     return measurements, res
 
+
 def run_test():
     t, d, m = f.load_test_data()
     x, measurements = f.test_data_fourier(d)
