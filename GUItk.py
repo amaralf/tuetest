@@ -18,6 +18,8 @@ class App:
     page = 7
     height = 600
     width = 1024
+    patient_id = -1
+
 
     def __init__(self):
         self.root = t.Tk()
@@ -78,16 +80,17 @@ class App:
     def save_measurements(self, measures, avg, res):
         """Function to save measurements of the last measuring"""
         ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H,%M,%S')
-        filename = "Measurements_" + str(st) + ".txt"
-        with open(filename, "w") as measurements:
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
+        filename = "Measurements_Patient_" + str(self.patient_id) + ".txt"
+        with open(filename, "a") as measurements:
             measurements.write("Measurements " + st + ": \n")
             for measure in measures:
                 measurements.write(str(measure) + '\n')
-            measurements.write("\n\n")
+            measurements.write("\n")
             measurements.write("Average = " + str(avg))
             measurements.write("\n\n")
             measurements.write("Result = " + str(res))
+            measurements.write("\n\n\n\n")
             measurements.close()
         self.send_to_mail(filename)
 
@@ -181,6 +184,7 @@ class App:
         self.root.after(5000)
         self.change_page(0)
 
+    # login screen
     def generate_login(self):
         # create upper frame with text
         login_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 4))
@@ -200,8 +204,8 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
-        username_box.bind('<FocusIn>', self.keyOn())
-        username_box.bind('<FocusOut>', self.keyOff())
+        # username_box.bind('<FocusIn>', self.keyOn())
+        # username_box.bind('<FocusOut>', self.keyOff())
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
@@ -250,22 +254,54 @@ class App:
                                                                  password=password_box.get())])
         create_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
+    # start page
     def generate_page_one(self):
         description = "Here will be the description of the machine..."
         bottom_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 2),
-                               bg="white")
+                               bg="light grey")
         bottom_frame.pack(side="bottom", fill="x", expand="false")
         bottom_frame.update()
         bottom_frame.pack_propagate(0)
         top_text = t.Label(self.root, bg="grey", text=description)
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
+        entry_frame = t.Frame(bottom_frame, width=int(self.root.winfo_width() / 3),
+                              height=int(self.root.winfo_height() / 2), bg="light grey")
+        entry_frame.pack(side="top", expand="false")
+        entry_frame.update()
+        entry_frame.propagate(0)
+        patient_label = t.Label(bottom_frame, bg="light grey", text="Enter Patient ID:")
+        patient_label.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.1)
+        patient_box = t.Entry(entry_frame)
+        patient_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.2)
         bottom_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                  fg="white",
-                                 text="Start", command=lambda: self.change_page(2))
+                                 text="Start", command=lambda: self.start_machine(patient_box, patient_label))
         bottom_button.update()
         bottom_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.45)
 
+    def start_machine(self, patient, label):
+        p = patient.get()
+        if p != "":
+            try:
+                int(p)
+                if int(p) < 0:
+                    label.config(text="Not a Patient ID")
+                    label.config(foreground="red")
+                    return
+                else:
+                    self.patient_id = int(p)
+                    self.change_page(2)
+            except ValueError:
+                label.config(text="Not an integer")
+                label.config(foreground="red")
+                return
+        else:
+            label.config(foreground="red")
+        return
+
+
+    # measure page
     def generate_page_two(self):
         title = "Pre-Measurement"
         # begin top bar of screen
