@@ -1,5 +1,6 @@
 import sine_wave as s
 import fourier as f
+import time as t
 
 
 def getAmp():
@@ -21,13 +22,14 @@ def getResult(avg):
 def run():
     """Input: none
        Output: none"""
-    measurements = []
     for x in range(20):
+        measurements = []
         s.actuation()
         for z in range(10):
             y = getAmp()
             measurements.append(y)
         res = getResult(sum(measurements) / len(measurements))
+        t.sleep(10)
         return measurements, res
 
 
