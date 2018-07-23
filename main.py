@@ -22,15 +22,14 @@ def getResult(avg):
 def run():
     """Input: none
        Output: none"""
-    for x in range(20):
-        measurements = []
-        s.actuation()
-        for z in range(10):
-            y = getAmp()
-            measurements.append(y)
-            t.sleep(10)
-        res = getResult(sum(measurements) / len(measurements))
-        return measurements, res
+    measurements = []
+    s.actuation()
+    for z in range(10):
+        y = getAmp()
+        measurements.append(y)
+        t.sleep(10)
+    res = getResult(sum(measurements) / len(measurements))
+    return measurements, res
 
 
 def run_test():
