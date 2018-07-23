@@ -5,6 +5,11 @@ from PIL import ImageTk, Image
 import main as m
 import datetime
 import time
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 # import RPi.GPIO as GPIO
 
 
@@ -70,7 +75,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_measurements(self, measures, res):
+    def save_measurements(self, measures, avg, res):
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H,%M,%S')
@@ -80,7 +85,42 @@ class App:
             for measure in measures:
                 measurements.write(str(measure) + '\n')
             measurements.write("\n\n")
-            measurements.write("Average = " + str(res))
+            measurements.write("Average = " + str(avg))
+            measurements.write("\n\n")
+            measurements.write("Result = " + str(res))
+            measurements.close()
+        self.send_to_mail(filename)
+
+    def send_to_mail(self, name):
+        fromaddr = "tuesensingteam@gmail.com"
+        toaddr = "tuesensingteam@gmail.com"
+        msg = MIMEMultipart()
+        msg['From'] = fromaddr
+        msg['To'] = toaddr
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
+        msg['Subject'] = "T.E.S.T " + str(st) + " results"
+        body = "Results are enclosed."
+        msg.attach(MIMEText(body, 'plain'))
+
+        filename = name
+        attachment = open(name, "rb")
+
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+
+        msg.attach(part)
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login("tuesensingteam@gmail.com", "rcr!6vkd=2u")
+        text = msg.as_string()
+        server.sendmail("tuesensingteam@gmail.com", "tuesensingteam@gmail.com", text)
+        server.quit()
+
+
 
     def change_page(self, number):
         """Function to switch pages"""
@@ -254,6 +294,7 @@ class App:
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
+                                  # command=lambda: self.checklist()
                                   command=lambda: self.change_page(3))
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
@@ -269,8 +310,8 @@ class App:
 
     def generate_page_three(self):
         title = "Measurement"
-        measurements, res = m.run_test()
-        self.save_measurements(measurements, res)
+        measurements, avg, res = m.run_test()
+        self.save_measurements(measurements, avg, res)
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -289,7 +330,7 @@ class App:
         loading_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
         loading_bar.pack(fill="x")
         loading_bar.update()
-        outputtext = "Average = " + str(res)
+        outputtext = "Average = " + str(avg) + "\n" + "Result = " + str(res)
         loading_text = t.Label(loading_bar, bg="grey", text=outputtext, wraplength=0.8*loading_bar.winfo_width())
         loading_text.place(relheight=1, relwidth=1)
         # begin lower part of screen

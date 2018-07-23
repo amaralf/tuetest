@@ -1,6 +1,7 @@
 import sine_wave as s
 import fourier as f
 import time as t
+import numpy as n
 
 
 def getAmp():
@@ -15,7 +16,7 @@ def getResult(avg):
     """Input: single amplitude
        Output: single result value"""
 
-    return avg
+    return n.abs(2*(avg*avg)-30*avg + 20)
     # TODO
 
 
@@ -29,7 +30,7 @@ def run():
         measurements.append(y)
         t.sleep(10)
     res = getResult(sum(measurements) / len(measurements))
-    return measurements, res
+    return measurements, (sum(measurements) / len(measurements)), res
 
 
 def run_test():
@@ -37,4 +38,4 @@ def run_test():
     x, measurements = f.test_data_fourier(d)
     res = getResult(sum(measurements) / len(measurements))
     print(res)
-    return measurements, res
+    return measurements, (sum(measurements) / len(measurements)), res
