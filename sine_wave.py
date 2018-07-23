@@ -54,7 +54,7 @@ def actuation():
     act_time = 0
     while act_time <= 10:
         act_time = time.time() - actuate
-        dac1.set_voltage(cosine[int(100000*act_time)])      # sample values from waves according to act_time
-        dac2.set_voltage(sine[int(100000*act_time)])
+        dac1.set_voltage(cosine[int(200*act_time)])      # sample values from waves according to act_time
+        dac2.set_voltage(sine[int(200*act_time)])
 
     time.sleep(20)
