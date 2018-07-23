@@ -7,7 +7,6 @@ def getAmp():
        Output: single amplitude of +- 10Hz freq as measured."""
     time, adc_values = s.get_values()
     x, y = f.fourierten(time, adc_values)
-    print(x, y)
     return y
 
 
