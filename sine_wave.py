@@ -4,20 +4,22 @@ import math
 import time
 
 
-dac1 = Adafruit_MCP4725.MCP4725()
-dac2 = Adafruit_MCP4725.MCP4725(address=0x63, busnum=1)
-dac1.set_voltage(int(2048))
-dac2.set_voltage(int(2048))
-sine = []
-cosine = []
+def init():
+    dac1 = Adafruit_MCP4725.MCP4725()
+    dac2 = Adafruit_MCP4725.MCP4725(address=0x63, busnum=1)
+    dac1.set_voltage(int(2048))
+    dac2.set_voltage(int(2048))
+    sine = []
+    cosine = []
 
-# create a sine and cosine wave for sampling
-for i in range(2000):
-    sine.append(int(2048 + 2048*math.sin(0.001*math.pi*i)))
-    cosine.append(int(2048 + 2048*math.cos(0.001*math.pi*i)))
-for i in range(100):
-    sine.append(int(2048))
-    cosine.append(int(2048))
+    # create a sine and cosine wave for sampling
+    for i in range(2000):
+        sine.append(int(2048 + 2048*math.sin(0.001*math.pi*i)))
+        cosine.append(int(2048 + 2048*math.cos(0.001*math.pi*i)))
+    for i in range(100):
+        sine.append(int(2048))
+        cosine.append(int(2048))
+    return sine, cosine, dac1, dac2
 
 
 def get_values():
@@ -32,6 +34,7 @@ def get_values():
     times = []                      # create some arrays
     adc_values = []
 
+    sine, cosine, dac1, dac2 = init()
     start_time = time.time()
     delta = 0
     while delta <= 0.2:
@@ -46,6 +49,7 @@ def get_values():
 
 
 def actuation():
+    sine, cosine, dac1, dac2 = init()
     actuate = time.time()
     act_time = 0
     while act_time <= 10:
