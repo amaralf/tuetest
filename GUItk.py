@@ -5,7 +5,8 @@ from PIL import ImageTk, Image
 import main as m
 import datetime
 import time
-import RPi.GPIO as GPIO
+import subprocess
+# import RPi.GPIO as GPIO
 
 
 class App:
@@ -41,18 +42,30 @@ class App:
         }
         switcher[self.page]()
 
-    def checklist(self):
-        """Check if sample and/or hood are inserted/closed"""
-        # GPIO 20 for hood, GPIO 21 for sample
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        if GPIO.input(20) == 1:
-            print("Hood not closed. Please close the hood.")
-        elif GPIO.input(21) == 1:
-            print("Sample not inserted. Please insert sample.")
-        else:
-            self.change_page(3)
+    # def checklist(self):
+    #     """Check if sample and/or hood are inserted/closed"""
+    #     # GPIO 20 for hood, GPIO 21 for sample
+    #     GPIO.setmode(GPIO.BCM)
+    #     GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    #     GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    #     if GPIO.input(20) == 1:
+    #         print("Hood not closed. Please close the hood.")
+    #     elif GPIO.input(21) == 1:
+    #         print("Sample not inserted. Please insert sample.")
+    #     else:
+    #         self.change_page(3)
+
+    def keyOn(self):
+        try:
+            subprocess.Popen(["matchbox-keyboard"])
+        except FileNotFoundError:
+            pass
+
+    def keyOff(self):
+        try:
+            subprocess.Popen(["killall", "matchbox-keyboard"])
+        except FileNotFoundError:
+            pass
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -160,6 +173,8 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
+        username_box.bind('<FocusIn>', self.keyOn())
+        username_box.bind('<FocusOut>', self.keyOff())
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
@@ -252,7 +267,7 @@ class App:
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
-                                  command=lambda: self.checklist())
+                                  command=lambda: self.change_page(3))
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # make precondition button update the properties of the measure button
