@@ -28,8 +28,8 @@ def run():
         for z in range(10):
             y = getAmp()
             measurements.append(y)
+            t.sleep(10)
         res = getResult(sum(measurements) / len(measurements))
-        t.sleep(10)
         return measurements, res
 
 
