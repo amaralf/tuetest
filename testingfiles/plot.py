@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def read_file():
     data = []
-    file = open("Measurements_Patient_1.txt", "r")
+    file = open("../textfiles/Measurements_Patient_1.txt", "r")
     for entry in list(file):
         entry = entry.replace('\n', '')
         data.append(float(entry))
