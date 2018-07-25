@@ -21,7 +21,6 @@ class App:
     width = 1024
     patient_id = -1
 
-
     def __init__(self):
         self.root = t.Tk()
         self.root.config(bg="light grey")
@@ -122,8 +121,6 @@ class App:
         text = msg.as_string()
         server.sendmail("tuesensingteam@gmail.com", "tuesensingteam@gmail.com", text)
         server.quit()
-
-
 
     def change_page(self, number):
         """Function to switch pages"""
