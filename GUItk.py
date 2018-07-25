@@ -9,6 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+import subprocess
 # import RPi.GPIO as GPIO
 
 import TESTmath as Test
@@ -21,6 +22,8 @@ class App:
     height = 600
     width = 1024
     patient_id = -1
+    os.system('florence')
+    os.system('florence hide')
 
     def __init__(self):
         self.root = t.Tk()
@@ -202,8 +205,7 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
-        # username_box.bind('<FocusIn>', self.keyOn())
-        # username_box.bind('<FocusOut>', self.keyOff())
+        username_box.bind('<FocusIn>', os.system('florence show'))
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
