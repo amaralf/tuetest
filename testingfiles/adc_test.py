@@ -1,6 +1,6 @@
 import Adafruit_ADS1x15
 import time
-import interpolation as il
+import TESTmath as il
 
 
 adc = Adafruit_ADS1x15.ADS1115()

@@ -2,7 +2,6 @@ import os
 import sys
 import tkinter as t
 from PIL import ImageTk, Image
-import main as m
 import datetime
 import time
 import smtplib
@@ -12,10 +11,12 @@ from email.mime.base import MIMEBase
 from email import encoders
 # import RPi.GPIO as GPIO
 
+import TESTmath as Test
+import numpy as n
 
 class App:
     # define main properties
-    page = 7
+    page = 4
     height = 600
     width = 1024
     patient_id = -1
@@ -41,10 +42,9 @@ class App:
             1: self.generate_page_one,
             2: self.generate_page_two,
             3: self.generate_page_three,
-            4: self.generate_page_four,
+            4: self.generate_boot,
             5: self.generate_new_account,
-            6: self.generate_shutdown,
-            7: self.generate_boot
+            6: self.generate_shutdown
         }
         switcher[self.page]()
 
@@ -69,10 +69,10 @@ class App:
             error_text = t.Label(error_frame, fg="red", bg="light grey", text="Please enter a username and password")
             error_text.pack(side="bottom", fill="both", expand="true")
         else:
-            with open("accounts.txt", "a") as usernames:
+            with open("./textfiles/accounts.txt", "a") as usernames:
                 usernames.write(', ' + str(username))
                 usernames.close()
-            with open("passwords.txt", "a") as passwords:
+            with open("./textfiles/passwords.txt", "a") as passwords:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
@@ -81,7 +81,7 @@ class App:
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         with open(filename, "a") as measurements:
             measurements.write("Measurements " + st + ": \n")
             for measure in measures:
@@ -145,14 +145,14 @@ class App:
     def login(self, username, password):
         """Login function"""
         usernames = []
-        accounts = open("accounts.txt", "r")
+        accounts = open("./textfiles/accounts.txt", "r")
         for user in list(accounts):
             user = user.split(', ')
         usernames.extend(user)
         accounts.close()
 
         passwords = []
-        code = open("passwords.txt", "r")
+        code = open("./textfiles/passwords.txt", "r")
         for word in list(code):
             word = word.split(', ')
         passwords.extend(word)
@@ -176,7 +176,7 @@ class App:
     def generate_boot(self):
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
-        img = ImageTk.PhotoImage(Image.open("logo.jpg"))
+        img = ImageTk.PhotoImage(Image.open("./textfiles/logo.jpg"))
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
@@ -303,7 +303,7 @@ class App:
 
     # measure page
     def generate_page_two(self):
-        title = "Pre-Measurement"
+        title = "Measurement"
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -319,10 +319,19 @@ class App:
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
         # begin upper part of screen
-        instruction_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
-        instruction_bar.pack(fill="x")
-        instruction_text = t.Label(instruction_bar, bg="grey", text="Instructions for use...")
-        instruction_text.place(relheight=1, relwidth=1)
+        output_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
+        output_bar.pack(fill="x")
+        output_bar.update()
+        output_text = t.Label(output_bar, bg="grey", text="Instructions for use...")
+        output_text.place(relheight=0.5, relwidth=1)
+        output_text.update()
+        loading_frame = t.Frame(output_bar, bg="grey")
+        loading_frame.place(relheight=0.2, relwidth=0.8, relx=0.1, rely=0.5)
+        loading_frame.update()
+        loading_bar = t.Frame(loading_frame, bg="grey")
+        loading_bar.place(relheight=0.8, relwidth=0, relx=0.01, rely=0.1)
+        loading_text = t.Label(output_bar, bg="grey", text="")
+        loading_text.place(relheight=0.3, relwidth=1, rely=0.7)
         # begin lower part of screen
         bottom_frame = t.Frame(self.root, bg="white")
         bottom_frame.pack(side="bottom", fill="both", expand="true")
@@ -331,7 +340,7 @@ class App:
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
                                   # command=lambda: self.checklist()
-                                  command=lambda: self.change_page(3))
+                                  command=lambda: self.run_test(output_text, loading_frame, loading_bar, loading_text))
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # make precondition button update the properties of the measure button
@@ -345,44 +354,6 @@ class App:
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
     def generate_page_three(self):
-        title = "Measurement"
-        measurements, avg, res = m.run_test()
-        self.save_measurements(measurements, avg, res)
-        # begin top bar of screen
-        top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
-        top_bar.pack(side="top", fill="x", expand="false")
-        top_bar.update()
-        top_bar.pack_propagate(0)
-        # begin text and button of top bar
-        top_text = t.Label(top_bar, bg="white", text=title)
-        top_text.pack(side="top", fill="both", expand="true")
-        top_text.update()
-        back_button = t.Button(top_bar, activebackground="dark grey", activeforeground="white", bg="black", fg="white",
-                               text="Back", command=lambda: self.change_page(2))
-        back_button.pack()
-        back_button.update()
-        back_button.place(relheight=1, relwidth=0.15)
-        # begin upper part of screen
-        loading_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
-        loading_bar.pack(fill="x")
-        loading_bar.update()
-        outputtext = "Average = " + str(avg) + "\n" + "Result = " + str(res)
-        loading_text = t.Label(loading_bar, bg="grey", text=outputtext, wraplength=0.8*loading_bar.winfo_width())
-        loading_text.place(relheight=1, relwidth=1)
-        # begin lower part of screen
-        bottom_frame = t.Frame(self.root, bg="white")
-        bottom_frame.pack(side="bottom", fill="both", expand="true")
-        bottom_frame.update()
-        bottom_frame.propagate(0)
-
-        # temporary button, testing purposes only
-        temp_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
-                               fg="white", state="normal", text="Next", command=lambda: self.change_page(4))
-        temp_button.update()
-        temp_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
-        # end temporary button
-
-    def generate_page_four(self):
         title = "Results"
         # begin top bar of screen with text
         top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
@@ -443,5 +414,98 @@ class App:
     def stop(self, *args):
         sys.exit(0)
 
+    # HERE FOLLOW THE MAIN FUNCTIONS:
+
+    def getAmp(self):
+        """Input: none
+           Output: single amplitude of +- 10Hz freq as measured."""
+        tt, adc_values = Test.get_values()
+        x, y = Test.fourierten(tt, adc_values)
+        return y
+
+    def getResult(self, avg):
+        """Input: single amplitude
+           Output: single result value"""
+
+        return n.abs(2 * (avg * avg) - 30 * avg + 20)
+        # TODO
+
+    def run(self, output_text, loading_frame, loading_bar, loading_text):
+        """Input: none
+           Output: none"""
+        loading_frame.config(bg="black")
+        loading_frame.update()
+        loading_bar.config(bg="light grey")
+        loading_bar.place(relwidth=0)
+        loading_bar.update()
+        loading_text.config(text="Do actuation...")
+        loading_text.update()
+
+        measurements = []
+        Test.actuation()
+
+        progress=0
+
+        for z in range(10):
+            progress = progress + 0.08
+
+            loading_bar.place(relwidth=0.8)
+            loading_bar.update()
+            loading_text.config(text="Get Measurement " + str(z))
+            loading_text.update()
+
+            y = self.getAmp()
+            measurements.append(y)
+            time.sleep(10)
+
+        loading_bar.place(relwidth=0.88)
+        loading_bar.update()
+        loading_text.config(text="Save Results...")
+        loading_text.update()
+
+        res = self.getResult(sum(measurements) / len(measurements))
+        avg = sum(measurements) / len(measurements)
+        output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
+        self.save_measurements(measurements, (avg), res)
+
+        loading_bar.place(relwidth=0.98)
+        loading_bar.update()
+        loading_text.config(text="Done")
+        loading_text.update()
+
+    def run_test(self, output_text,loading_frame, loading_bar, loading_text):
+        loading_frame.config(bg="black")
+        loading_frame.update()
+        loading_bar.config(bg="light grey")
+        loading_bar.place(relwidth=0)
+        loading_bar.update()
+        loading_text.config(text="Loading in Test Data...")
+        loading_text.update()
+
+        tt, d, m = Test.load_test_data()
+
+        loading_bar.place(relwidth=0.4)
+        loading_bar.update()
+        loading_text.config(text="Do measurements on Test Data...")
+        loading_text.update()
+
+        x, measurements = Test.test_data_fourier(d)
+
+        loading_bar.place(relwidth=0.8)
+        loading_bar.update()
+        loading_text.config(text="Save Results of Test Data...")
+        loading_text.update()
+
+        res = self.getResult(sum(measurements) / len(measurements))
+        avg = sum(measurements) / len(measurements)
+        output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
+        self.save_measurements(measurements, (avg), res)
+
+        loading_bar.place(relwidth=0.98)
+        loading_bar.update()
+        loading_text.config(text="Done")
+        loading_text.update()
+
 
 app = App()
+

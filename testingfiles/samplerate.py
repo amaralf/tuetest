@@ -10,9 +10,9 @@ second = []
 
 adc = Adafruit_ADS1x15.ADS1115()
 
-#print('Reading values, press Ctrl-C to quit')
-#print('| {0:>6} |'.format(*range(1)))
-#print('-' * 10)
+# print('Reading values, press Ctrl-C to quit')
+# print('| {0:>6} |'.format(*range(1)))
+# print('-' * 10)
 
 while time.time() < timestart + timeout:
     values = [0]

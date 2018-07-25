@@ -1,5 +1,4 @@
 import Adafruit_MCP4725
-import math
 
 def volt():
     delta = 0
