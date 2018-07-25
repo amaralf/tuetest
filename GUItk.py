@@ -14,6 +14,7 @@ from email import encoders
 import TESTmath as Test
 import numpy as n
 
+
 class App:
     # define main properties
     page = 4
@@ -297,7 +298,6 @@ class App:
             label.config(foreground="red")
         return
 
-
     # measure page
     def generate_page_two(self):
         title = "Measurement"
@@ -441,7 +441,7 @@ class App:
         measurements = []
         Test.actuation()
 
-        progress=0
+        progress = 0
 
         for z in range(10):
             progress = progress + 0.08
@@ -463,14 +463,14 @@ class App:
         res = self.getResult(sum(measurements) / len(measurements))
         avg = sum(measurements) / len(measurements)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, (avg), res)
+        self.save_measurements(measurements, avg, res)
 
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Done")
         loading_text.update()
 
-    def run_test(self, output_text,loading_frame, loading_bar, loading_text):
+    def run_test(self, output_text, loading_frame, loading_bar, loading_text):
         loading_frame.config(bg="black")
         loading_frame.update()
         loading_bar.config(bg="light grey")
@@ -496,7 +496,7 @@ class App:
         res = self.getResult(sum(measurements) / len(measurements))
         avg = sum(measurements) / len(measurements)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, (avg), res)
+        self.save_measurements(measurements, avg, res)
 
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
@@ -505,4 +505,3 @@ class App:
 
 
 app = App()
-
