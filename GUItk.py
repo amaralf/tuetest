@@ -33,8 +33,6 @@ class App:
         self.root.update()
         self.generate_objects()
         self.root.mainloop()
-        os.system('florence')
-        os.system('florence hide')
 
     def generate_objects(self, *args):
         """Function to generate pages"""
@@ -203,7 +201,6 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
-        username_box.bind('<FocusIn>', os.system('florence show'))
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
@@ -460,8 +457,8 @@ class App:
         loading_text.config(text="Save Results...")
         loading_text.update()
 
-        res = self.getResult(sum(measurements) / len(measurements))
         avg = sum(measurements) / len(measurements)
+        res = self.getResult(avg)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
         self.save_measurements(measurements, avg, res)
 
