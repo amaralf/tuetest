@@ -9,9 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import subprocess
 # import RPi.GPIO as GPIO
-
 import TESTmath as Test
 import numpy as n
 
@@ -22,8 +20,6 @@ class App:
     height = 600
     width = 1024
     patient_id = -1
-    os.system('florence')
-    os.system('florence hide')
 
     def __init__(self):
         self.root = t.Tk()
@@ -37,6 +33,8 @@ class App:
         self.root.update()
         self.generate_objects()
         self.root.mainloop()
+        os.system('florence')
+        os.system('florence hide')
 
     def generate_objects(self, *args):
         """Function to generate pages"""
