@@ -476,7 +476,7 @@ class App:
         loading_text.config(text="Loading in Test Data...")
         loading_text.update()
 
-        tt, d, m = Test.load_test_data()
+        tt, d, m = Test.load_test_data("1Q-base-Dennis")
 
         loading_bar.place(relwidth=0.4)
         loading_bar.update()
