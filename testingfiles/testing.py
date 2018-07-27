@@ -110,19 +110,6 @@
 
 # TODO: Write interpolation tests.
 
-# def plot(y):
-#     x = np.linspace(0, 20, 20)
-#     plt.plot(x, y)
-#     # Give a title for the sine wave plot
-#     plt.title('Fourier')
-#     # Give x axis label for the sine wave plot
-#     plt.xlabel('Number of pulses')
-#     # Give y axis label for the sine wave plot
-#     plt.ylabel('Amplitude = sin(time)')
-#     plt.grid(True, which='both')
-#     plt.axhline(y=0, color='k')
-#     plt.show()
-
 
 # def make_sine():
 #     # Get x values of the sine wave

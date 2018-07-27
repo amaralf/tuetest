@@ -5,7 +5,7 @@
 # fourier
 import numpy as np
 from scipy.fftpack import fft
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 # least squares
 import random as r
@@ -19,8 +19,10 @@ import time
 # ===================FOURIER=================
 
 
-def load_test_data():
-    f = open("./textfiles/testdata_laserlab.txt")
+def load_test_data(name):
+    namestring = "./textfiles/" + name + ".txt"
+    print(namestring)
+    f = open(namestring)
     lines = f.readlines()
     time = []
     data = []
@@ -30,12 +32,26 @@ def load_test_data():
         data.append(x.split('\t')[3])
         magnet.append(x.split('\t')[4])
     f.close()
-    step = 5011
+    step = -1
+    found = False
+    while not found:
+        laststep = step
+        step += 1
+        if abs(float(magnet[step]) - float(magnet[laststep])) > 0.15:
+            found = True
+    print(step)
     pulsestime = []
     pulsesdata = []
     pulsesmagnet = []
     while step < len(time):
-        nextstep = step + 1000
+        nextstep = step
+        found = False
+        while not found:
+            laststep = nextstep
+            nextstep += 1
+            if abs(float(magnet[nextstep]) - float(magnet[laststep])) > 0.15:
+                found = True
+        print("ends: ", nextstep)
         sub = ((nextstep - step)/20)
         nextsubstep = step
         pulsetime = []
@@ -53,23 +69,34 @@ def load_test_data():
         pulsestime.append(pulsetime)
         pulsesdata.append(pulsedata)
         pulsesmagnet.append(pulsemagnet)
-        step += 50000
+        found = False
+        while not found:
+            laststep = step
+            step += 1
+            if step < len(time):
+                if abs(float(magnet[step]) - float(magnet[laststep])) > 0.15:
+                    found = True
+            if step == len(time):
+                found = True
+        print(step)
     return pulsestime, pulsesdata, pulsesmagnet
 
 
 def test_data_fourier(data):
-    time = np.linspace(0, 0.2, len(data[0]))
     fourierx = []
     fouriery = []
     tenhzx = []
     tenhzy = []
-    for x in range(0, 20):
-        # plt.plot(time[x], data[x])
-        # plt.title('Test Laserlab %d' % x+1)
-        # plt.xlabel('Time')
-        # plt.ylabel('Data')
-        # plt.axhline(y=0, color='k')
-        # plt.show()
+    for x in range(0, len(data)):
+        time = np.linspace(0, (len(data[x]) * 0.0002), len(data[x]))
+        # if len(time)== 50000:
+        #     plt.plot(time, data[x])
+        #     plt.title('Pulse ' + str(x+1))
+        #     plt.xlabel('Time')
+        #     plt.ylabel('Data')
+        #     plt.axhline(y=0, color='k')
+        #     plt.show()
+        print(len(data[x]))
         x, y = fourierten(time, data[x])
         fourierx.append(x)
         fouriery.append(y)
@@ -82,8 +109,9 @@ def fourier(time, amplitude):
     yf = fft(amplitude)  # fourier transform
     hzvals = np.linspace(0.0, 1.0/(2.0*T), int(N/2))
     amplitudes = 2.0/N * np.abs(yf[:N//2])
+
     # fig, ax = plt.subplots()
-    # ax.plot(hzvals, amplitudes)
+    # ax.plot(hzvals[:200], amplitudes[:200])
     # ax.grid(True)
     # plt.xlabel('Hz')
     # plt.show()
@@ -111,6 +139,21 @@ def find_ten(x):
     print(closest)
     print(closestdistance)
     return closestindex
+
+
+# leave for testing
+def plot(xx, y):
+    x = np.linspace(0, len(xx), len(xx))
+    plt.plot(x, y, marker='o')
+    # Give a title for the sine wave plot
+    plt.title('Fourier')
+    # Give x axis label for the sine wave plot
+    plt.xlabel('Number of pulses')
+    # Give y axis label for the sine wave plot
+    plt.ylabel('Amplitude = sin(time)')
+    plt.grid(True, which='both')
+    plt.axhline(y=0, color='k')
+    plt.show()
 
 
 # ===================LEAST-SQUARES=================
