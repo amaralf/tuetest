@@ -15,7 +15,7 @@ def select(value):
     elif value == " Space ":
         entry.insert(tkinter.END, ' ')
     elif value == " Tab ":
-        entry.insert(tkinter.END, '  ')
+        entry.insert(tkinter.END, '    ')
     else:
         entry.insert(tkinter.END, value)
 
