@@ -194,7 +194,7 @@ def init():
     cosine = []
 
     # create a sine and cosine wave for sampling
-    for i in range(2000):
+    for i in range(100000):
         sine.append(int(2048 + 2048 * math.sin(0.001 * math.pi * i)))
         cosine.append(int(2048 + 2048 * math.cos(0.001 * math.pi * i)))
     for i in range(100):
@@ -235,7 +235,7 @@ def actuation():
     act_time = 0
     while act_time <= 10:
         act_time = time.time() - actuate
-        dac1.set_voltage(cosine[int(200*act_time)])      # sample values from waves according to act_time
-        dac2.set_voltage(sine[int(200*act_time)])
+        dac1.set_voltage(cosine[int(10000*act_time)])      # sample values from waves according to act_time
+        dac2.set_voltage(sine[int(10000*act_time)])
 
     time.sleep(20)
