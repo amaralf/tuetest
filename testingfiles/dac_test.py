@@ -21,7 +21,7 @@ def init():
     return sine, cosine, dac1, dac2
 
 
-def actuation():
+def start():
     sine, cosine, dac1, dac2 = init()
     actuate = time.time()
     act_time = 0
