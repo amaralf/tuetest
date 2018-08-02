@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import threading
@@ -39,7 +39,7 @@ class App:
         username_box.focus()
 
         def callback():
-            os.system('osk')
+            os.system('florence')
             username_box.bind('<Tab>', lambda e: password_box.focus())
         board = threading.Thread(target=callback)
         board.start()
@@ -48,7 +48,7 @@ class App:
         password_box.focus()
 
         def callback():
-            os.system('osk')
+            os.system('florence')
         board = threading.Thread(target=callback)
         board.start()
 
@@ -56,7 +56,7 @@ class App:
         patient_box.focus()
 
         def callback():
-            os.system('osk')
+            os.system('florence')
         board = threading.Thread(target=callback)
         board.start()
 
@@ -69,22 +69,22 @@ class App:
             3: self.generate_page_three,
             4: self.generate_boot,
             5: self.generate_new_account,
-            6: self.generate_shutdown
         }
         switcher[self.page]()
 
-    # def checklist(self):
-    #     """Check if sample and/or hood are inserted/closed"""
-    #     # GPIO 20 for hood, GPIO 21 for sample
-    #     GPIO.setmode(GPIO.BCM)
-    #     GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    #     GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    #     if GPIO.input(20) == 1:
-    #         print("Hood not closed. Please close the hood.")
-    #     elif GPIO.input(21) == 1:
-    #         print("Sample not inserted. Please insert sample.")
-    #     else:
-    #         self.change_page(3)
+    def checklist(self):
+        """Check if sample and/or hood are inserted/closed"""
+        # GPIO 20 for hood, GPIO 21 for sample
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        if GPIO.input(20) == 0:
+            if GPIO.input(21) == 0:
+                print("Cover not closed. Please close the cover.")
+            else:
+                print("Sample not inserted. Please insert sample.")
+        else:
+            self.change_page(3)
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -425,14 +425,6 @@ class App:
         logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey",
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
-
-    def generate_shutdown(self):
-        top_text = t.Label(self.root, bg="grey", text="Shutdown complete")
-        top_text.pack(side="top", fill="both", expand="true")
-        top_text.update()
-        bottom_text = t.Label(self.root, bg="grey", text="Machine can be turned off")
-        bottom_text.pack(side="top", fill="both", expand="true")
-        bottom_text.update()
 
     def stop(self, *args):
         sys.exit(0)
