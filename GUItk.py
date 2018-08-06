@@ -386,10 +386,14 @@ class App:
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
+        redo = t.Button(self.root, text="Measure again", bg="dark grey",
+                        command=lambda: self.change_page(1))
+        redo.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.9)
+
     def stop(self, *args):
         sys.exit(0)
 
-    # HERE FOLLOW THE MAIN FUNCTIONS:
+    # ========== HERE FOLLOW THE MAIN FUNCTIONS ==========
 
     def getAmp(self):
         """Input: none
@@ -449,40 +453,6 @@ class App:
         loading_bar.update()
         loading_text.config(text="Done")
         loading_text.update()
-
-    # test run function
-    # def run_test(self, output_text, loading_frame, loading_bar, loading_text):
-    #     loading_frame.config(bg="black")
-    #     loading_frame.update()
-    #     loading_bar.config(bg="light grey")
-    #     loading_bar.place(relwidth=0)
-    #     loading_bar.update()
-    #     loading_text.config(text="Loading in Test Data...")
-    #     loading_text.update()
-    #
-    #     tt, d, m = Test.load_test_data("1Q-base-Dennis")
-    #
-    #     loading_bar.place(relwidth=0.4)
-    #     loading_bar.update()
-    #     loading_text.config(text="Do measurements on Test Data...")
-    #     loading_text.update()
-    #
-    #     x, measurements = Test.test_data_fourier(d)
-    #
-    #     loading_bar.place(relwidth=0.8)
-    #     loading_bar.update()
-    #     loading_text.config(text="Save Results of Test Data...")
-    #     loading_text.update()
-    #
-    #     res = self.getResult(sum(measurements) / len(measurements))
-    #     avg = sum(measurements) / len(measurements)
-    #     output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-    #     self.save_measurements(measurements, avg, res)
-    #
-    #     loading_bar.place(relwidth=0.98)
-    #     loading_bar.update()
-    #     loading_text.config(text="Done")
-    #     loading_text.update()
 
 
 app = App()
