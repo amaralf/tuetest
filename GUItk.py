@@ -118,9 +118,9 @@ class App:
             measurements.write("\n\n")
             measurements.write("Result = " + str(res))
             measurements.write("\n\n\n\n")
-            measurements.write("Pre-Fourier:")
-            for fourier in pre_fourier:
-                measurements.write(str(fourier) + '\n')
+            # measurements.write("Pre-Fourier:")
+            # for fourier in pre_fourier:
+            #     measurements.write(str(fourier) + '\n')
             measurements.close()
         self.send_to_mail(filename)
 
@@ -423,9 +423,10 @@ class App:
             loading_text.config(text="Get Measurement " + str(z))
             loading_text.update()
 
-            y, adc_values = self.getAmp()
+            # y, adc_values = self.getAmp()
+            y = self.getAmp()
             measurements.append(y)
-            pre_fourier.append(adc_values)
+            # pre_fourier.append(adc_values)
             time.sleep(10)
             if z == 10:
                 Test.actuation()
