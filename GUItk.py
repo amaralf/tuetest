@@ -407,7 +407,14 @@ class App:
         return n.abs(2 * (avg * avg) - 30 * avg + 20)
         # TODO
 
-    def run(self, output_text, loading_frame, loading_bar, loading_text):
+    def convert(self, adc_values):
+        voltage = []
+        for entry in adc_values:
+            value = (5/32678) * entry
+            voltage.append(value)
+        return voltage
+
+    def run(self, output_text, loading_frame, loading_bar, loading_text, value):
         """Input: none
            Output: none"""
         loading_frame.config(bg="black")
@@ -432,8 +439,9 @@ class App:
             loading_text.update()
 
             y, adc_values = self.getAmp()
+            voltage = self.convert(adc_values)
             measurements.append(y)
-            pre_fourier.append(adc_values)
+            pre_fourier.append(voltage)
             time.sleep(10)
             if z == 10:
                 Test.actuation()
