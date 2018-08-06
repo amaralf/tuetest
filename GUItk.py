@@ -366,7 +366,7 @@ class App:
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
                                   # command=lambda: self.checklist()
-                                  command=lambda: self.run_test(output_text, loading_frame, loading_bar, loading_text))
+                                  command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # make precondition button update the properties of the measure button
@@ -465,7 +465,7 @@ class App:
         for z in range(20):
             progress = progress + 0.04
 
-            loading_bar.place(relwidth=0.4)
+            loading_bar.place(relwidth=progress)
             loading_bar.update()
             loading_text.config(text="Get Measurement " + str(z))
             loading_text.update()
@@ -492,38 +492,38 @@ class App:
         loading_text.update()
 
     # test run function
-    def run_test(self, output_text, loading_frame, loading_bar, loading_text):
-        loading_frame.config(bg="black")
-        loading_frame.update()
-        loading_bar.config(bg="light grey")
-        loading_bar.place(relwidth=0)
-        loading_bar.update()
-        loading_text.config(text="Loading in Test Data...")
-        loading_text.update()
-
-        tt, d, m = Test.load_test_data("1Q-base-Dennis")
-
-        loading_bar.place(relwidth=0.4)
-        loading_bar.update()
-        loading_text.config(text="Do measurements on Test Data...")
-        loading_text.update()
-
-        x, measurements = Test.test_data_fourier(d)
-
-        loading_bar.place(relwidth=0.8)
-        loading_bar.update()
-        loading_text.config(text="Save Results of Test Data...")
-        loading_text.update()
-
-        res = self.getResult(sum(measurements) / len(measurements))
-        avg = sum(measurements) / len(measurements)
-        output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, avg, res)
-
-        loading_bar.place(relwidth=0.98)
-        loading_bar.update()
-        loading_text.config(text="Done")
-        loading_text.update()
+    # def run_test(self, output_text, loading_frame, loading_bar, loading_text):
+    #     loading_frame.config(bg="black")
+    #     loading_frame.update()
+    #     loading_bar.config(bg="light grey")
+    #     loading_bar.place(relwidth=0)
+    #     loading_bar.update()
+    #     loading_text.config(text="Loading in Test Data...")
+    #     loading_text.update()
+    #
+    #     tt, d, m = Test.load_test_data("1Q-base-Dennis")
+    #
+    #     loading_bar.place(relwidth=0.4)
+    #     loading_bar.update()
+    #     loading_text.config(text="Do measurements on Test Data...")
+    #     loading_text.update()
+    #
+    #     x, measurements = Test.test_data_fourier(d)
+    #
+    #     loading_bar.place(relwidth=0.8)
+    #     loading_bar.update()
+    #     loading_text.config(text="Save Results of Test Data...")
+    #     loading_text.update()
+    #
+    #     res = self.getResult(sum(measurements) / len(measurements))
+    #     avg = sum(measurements) / len(measurements)
+    #     output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
+    #     self.save_measurements(measurements, avg, res)
+    #
+    #     loading_bar.place(relwidth=0.98)
+    #     loading_bar.update()
+    #     loading_text.config(text="Done")
+    #     loading_text.update()
 
 
 app = App()
