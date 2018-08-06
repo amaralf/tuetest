@@ -410,7 +410,7 @@ class App:
     def convert(self, adc_values):
         voltage = []
         for entry in adc_values:
-            value = (5/32678) * entry
+            value = (5/32678) * int(entry)
             voltage.append(value)
         return voltage
 
