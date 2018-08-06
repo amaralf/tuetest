@@ -414,7 +414,7 @@ class App:
             voltage.append(value)
         return voltage
 
-    def run(self, output_text, loading_frame, loading_bar, loading_text, value):
+    def run(self, output_text, loading_frame, loading_bar, loading_text):
         """Input: none
            Output: none"""
         loading_frame.config(bg="black")
