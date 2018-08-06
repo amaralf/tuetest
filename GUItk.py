@@ -121,11 +121,13 @@ class App:
             measurements.write("Pre-Fourier:")
             counter = 0
             for k in range(len(pre_fourier)):
+                measurements.write("Prefourier " + str(k) + ": \n")
                 measurements.write(str(pre_fourier[k]) + '\n')
+                measurements.write("times of prefourier "+str(k)+":\n")
                 measurements.write(str(times[k]) + '\n')
                 counter += 1
                 if counter == 20:
-                    measurements.write("\n")
+                    measurements.write("\n\n")
                     counter = 0
             measurements.close()
         self.send_to_mail(filename)
@@ -399,8 +401,9 @@ class App:
         """Input: none
            Output: single amplitude of +- 10Hz freq as measured."""
         tt, adc_values = Test.get_values()
-        x, y = Test.fourierten(tt, adc_values)
-        return y, adc_values, tt
+        voltage = self.convert(adc_values)
+        x, y = Test.fourierten(tt, voltage)
+        return y, voltage, tt
 
     def getResult(self, avg):
         """Input: single amplitude
@@ -440,11 +443,10 @@ class App:
             loading_text.config(text="Get Measurement " + str(z))
             loading_text.update()
 
-            y, adc_values, tt = self.getAmp()
-            voltage = self.convert(adc_values)
+            y, voltage, tt = self.getAmp()
             measurements.append(y)
             pre_fourier.append(voltage)
-            times.append(times)
+            times.append(tt)
             time.sleep(10)
             if z == 10:
                 Test.actuation()
