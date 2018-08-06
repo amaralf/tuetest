@@ -69,7 +69,6 @@ class App:
             0: self.generate_login,
             1: self.generate_page_one,
             2: self.generate_page_two,
-            3: self.generate_page_three,
             4: self.generate_boot,
             5: self.generate_new_account,
         }
@@ -105,7 +104,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_measurements(self, measures, avg, res):
+    def save_measurements(self, measures, pre_fourier, avg, res):
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -119,6 +118,9 @@ class App:
             measurements.write("\n\n")
             measurements.write("Result = " + str(res))
             measurements.write("\n\n\n\n")
+            measurements.write("Pre-Fourier:")
+            for fourier in pre_fourier:
+                measurements.write(str(fourier) + '\n')
             measurements.close()
         self.send_to_mail(filename)
 
@@ -379,56 +381,6 @@ class App:
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
-    def generate_page_three(self):
-        title = "Results"
-        # begin top bar of screen with text
-        top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
-        top_bar.pack(side="top", fill="x", expand="false")
-        top_bar.update()
-        top_bar.propagate(0)
-        top_text = t.Label(top_bar, bg="white", text=title)
-        top_text.pack(side="top", fill="both", expand="true")
-        top_text.update()
-
-        # begin left part of screen
-        left_col = t.Frame(self.root, bg="white", width=int(self.root.winfo_width() / 2))
-        left_col.pack(side="left", fill="y", expand="false")
-        left_col.update()
-        left_col.propagate(0)
-        left_bar = t.Frame(left_col, bg="white", height=int(self.root.winfo_height() / 10))
-        left_bar.pack(side="top", fill="x", expand="false")
-        left_bar.update()
-        left_bar.propagate(0)
-        left_text_bar = t.Label(left_bar, bg="dark grey", text="Measurement result")
-        left_text_bar.pack(side="top", fill="both", expand="true")
-        left_text_bar.update()
-        text_result = t.Label(left_col, bg="white", text="Show measurement results")
-        text_result.pack(side="top", fill="both", expand="true")
-
-        # begin right part of screen
-        right_col = t.Frame(self.root, bg="white", width=int(self.root.winfo_width() / 2))
-        right_col.pack(side="left", fill="y", expand="false")
-        right_col.update()
-        right_col.propagate(0)
-        right_bar = t.Frame(right_col, bg="white", height=int(self.root.winfo_height() / 10))
-        right_bar.pack(side="top", fill="x", expand="false")
-        right_bar.update()
-        right_bar.propagate(0)
-        right_text_bar = t.Label(right_bar, bg="dark grey", text="Patient history")
-        right_text_bar.pack(side="top", fill="both", expand="true")
-        right_text_bar.update()
-        text_history = t.Label(right_col, bg="white", text="Show patient result history")
-        text_history.pack(side="top", fill="both", expand="true")
-
-        # exit button for testing purposes
-        exit_button = t.Button(self.root, activebackground="dark grey", activeforeground='white', bg="black",
-                               fg="white", state="normal", text="Again", command=lambda: self.change_page(1))
-        exit_button.update()
-        exit_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
-        logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey",
-                                 command=lambda: os._exit(0))
-        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
-
     def stop(self, *args):
         sys.exit(0)
 
@@ -439,7 +391,7 @@ class App:
            Output: single amplitude of +- 10Hz freq as measured."""
         tt, adc_values = Test.get_values()
         x, y = Test.fourierten(tt, adc_values)
-        return y
+        return y, adc_values
 
     def getResult(self, avg):
         """Input: single amplitude
@@ -459,6 +411,7 @@ class App:
         loading_text.update()
 
         measurements = []
+        pre_fourier = []
         # Test.actuation()
         progress = 0
 
@@ -470,8 +423,9 @@ class App:
             loading_text.config(text="Get Measurement " + str(z))
             loading_text.update()
 
-            y = self.getAmp()
+            y, adc_values = self.getAmp()
             measurements.append(y)
+            pre_fourier.append(adc_values)
             time.sleep(10)
             if z == 10:
                 Test.actuation()
@@ -484,7 +438,7 @@ class App:
         avg = sum(measurements) / len(measurements)
         res = self.getResult(avg)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, avg, res)
+        self.save_measurements(measurements, pre_fourier, avg, res)
 
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
