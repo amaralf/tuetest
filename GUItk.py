@@ -104,7 +104,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_measurements(self, measures, pre_fourier, avg, res):
+    def save_measurements(self, measures, pre_fourier, times, avg, res):
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -120,8 +120,9 @@ class App:
             measurements.write("\n\n\n\n")
             measurements.write("Pre-Fourier:")
             counter = 0
-            for fourier in pre_fourier:
-                measurements.write(str(fourier) + '\n')
+            for k in range(len(pre_fourier)):
+                measurements.write(str(pre_fourier[k]) + '\n')
+                measurements.write(str(times[k]) + '\n')
                 counter += 1
                 if counter == 20:
                     measurements.write("\n")
@@ -399,7 +400,7 @@ class App:
            Output: single amplitude of +- 10Hz freq as measured."""
         tt, adc_values = Test.get_values()
         x, y = Test.fourierten(tt, adc_values)
-        return y, adc_values
+        return y, adc_values, tt
 
     def getResult(self, avg):
         """Input: single amplitude
@@ -427,6 +428,7 @@ class App:
 
         measurements = []
         pre_fourier = []
+        times = []
         # Test.actuation()
         progress = 0
 
@@ -438,10 +440,11 @@ class App:
             loading_text.config(text="Get Measurement " + str(z))
             loading_text.update()
 
-            y, adc_values = self.getAmp()
+            y, adc_values, tt = self.getAmp()
             voltage = self.convert(adc_values)
             measurements.append(y)
             pre_fourier.append(voltage)
+            times.append(times)
             time.sleep(10)
             if z == 10:
                 Test.actuation()
@@ -454,7 +457,7 @@ class App:
         avg = sum(measurements) / len(measurements)
         res = self.getResult(avg)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, pre_fourier, avg, res)
+        self.save_measurements(measurements, pre_fourier, times, avg, res)
 
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
