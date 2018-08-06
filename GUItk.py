@@ -74,7 +74,7 @@ class App:
         }
         switcher[self.page]()
 
-    def checklist(self):
+    def checklist(self, output_text, loading_frame, loading_bar, loading_text):
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
@@ -86,7 +86,7 @@ class App:
             else:
                 print("Sample not inserted. Please insert sample.")
         else:
-            self.change_page(3)
+            self.run(output_text, loading_frame, loading_bar, loading_text)
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -372,8 +372,7 @@ class App:
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
-                                  # command=lambda: self.checklist()
-                                  command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
+                                  command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text))
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # make precondition button update the properties of the measure button

@@ -165,7 +165,7 @@ def get_values():
         times.append(delta)
         dac1.set_voltage(cosine[int(10000*delta)])      # sample values from waves according to delta
         dac2.set_voltage(sine[int(10000*delta)])
-        adc_values.append(adc.read_adc(3, gain=GAIN))   # read the adc and store values in array
+        adc_values.append(adc.read_adc(0, gain=GAIN))   # read the adc and store values in array
     dac1.set_voltage(int(2048))
     dac2.set_voltage(int(2048))
     return times, adc_values
