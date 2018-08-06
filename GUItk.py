@@ -40,6 +40,7 @@ class App:
 
         def callback():
             os.system('florence')
+            os.system('florence show')
             username_box.bind('<Tab>', lambda e: password_box.focus())
         board = threading.Thread(target=callback)
         board.start()
@@ -49,6 +50,7 @@ class App:
 
         def callback():
             os.system('florence')
+            os.system('florence show')
         board = threading.Thread(target=callback)
         board.start()
 
@@ -57,6 +59,7 @@ class App:
 
         def callback():
             os.system('florence')
+            os.system('florence show')
         board = threading.Thread(target=callback)
         board.start()
 
