@@ -441,7 +441,6 @@ class App:
     def getResult(self, avg):
         """Input: single amplitude
            Output: single result value"""
-
         return n.abs(2 * (avg * avg) - 30 * avg + 20)
         # TODO
 
@@ -457,14 +456,13 @@ class App:
         loading_text.update()
 
         measurements = []
-        Test.actuation()
-
+        # Test.actuation()
         progress = 0
 
-        for z in range(10):
-            progress = progress + 0.08
+        for z in range(20):
+            progress = progress + 0.04
 
-            loading_bar.place(relwidth=0.8)
+            loading_bar.place(relwidth=0.4)
             loading_bar.update()
             loading_text.config(text="Get Measurement " + str(z))
             loading_text.update()
@@ -472,6 +470,8 @@ class App:
             y = self.getAmp()
             measurements.append(y)
             time.sleep(10)
+            if z == 10:
+                Test.actuation()
 
         loading_bar.place(relwidth=0.88)
         loading_bar.update()
@@ -488,6 +488,7 @@ class App:
         loading_text.config(text="Done")
         loading_text.update()
 
+    # test run function
     def run_test(self, output_text, loading_frame, loading_bar, loading_text):
         loading_frame.config(bg="black")
         loading_frame.update()

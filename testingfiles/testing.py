@@ -2,6 +2,11 @@
 # import random  # used for simulation only.
 # import scipy  # vital for the interpolation.
 # import scipy.interpolate  # vital for the interpolation.
+# import matplotlib.pyplot as plt
+
+# least squares
+# import random as r
+
 # # ===================INTERPOLATION=================
 #
 #
@@ -108,7 +113,17 @@
 #     plt.axis([0, 32767, 0.0, 5.0])
 #     plt.show()
 
-# TODO: Write interpolation tests.
+
+# def plot(points, truepoints):
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+#     axisx = [i for i in range(50)]
+#     plt.plot(axisx, points, linestyle="", marker='o')
+#     plt.plot(axisx, truepoints)
+#     res_1 = so.leastsq(f, axisx)
+#     #plt.plot(res_1)
+#     plt.show()
+#     return res_1
 
 
 # def make_sine():
@@ -162,3 +177,46 @@
 #     plt.plot(x, y, marker='o')
 #     plt.show()2
 #     return time2, wave2
+
+
+# ===================LEAST-SQUARES=================
+
+# def initialize_ls():
+#     points = []
+#     truepoints = []
+#     for i in range(50):
+#         points.append(f((i, 1, 2, 3)) + (1000*r.random()-500))
+#         truepoints.append(f((i, 1, 2, 3)))
+#     return points, truepoints
+#
+#
+# def f(k):
+#     return k[1]*k[0]*k[0]+k[2]*k[0]+k[3]
+
+# # leave for testing
+# def plot(xx, y):
+#     x = np.linspace(0, len(xx), len(xx))
+#     plt.plot(x, y, marker='o')
+#     # Give a title for the sine wave plot
+#     plt.title('Fourier')
+#     # Give x axis label for the sine wave plot
+#     plt.xlabel('Number of pulses')
+#     # Give y axis label for the sine wave plot
+#     plt.ylabel('Amplitude = sin(time)')
+#     plt.grid(True, which='both')
+#     plt.axhline(y=0, color='k')
+#     plt.show()
+
+# fig, ax = plt.subplots()
+# ax.plot(hzvals[:200], amplitudes[:200])
+# ax.grid(True)
+# plt.xlabel('Hz')
+# plt.show()
+
+# if len(time)== 50000:
+#     plt.plot(time, data[x])
+#     plt.title('Pulse ' + str(x+1))
+#     plt.xlabel('Time')
+#     plt.ylabel('Data')
+#     plt.axhline(y=0, color='k')
+#     plt.show()

@@ -5,10 +5,6 @@
 # fourier
 import numpy as np
 from scipy.fftpack import fft
-import matplotlib.pyplot as plt
-
-# least squares
-import random as r
 
 # sine_wave
 import Adafruit_ADS1x15
@@ -89,13 +85,6 @@ def test_data_fourier(data):
     tenhzy = []
     for x in range(0, len(data)):
         time = np.linspace(0, (len(data[x]) * 0.0002), len(data[x]))
-        # if len(time)== 50000:
-        #     plt.plot(time, data[x])
-        #     plt.title('Pulse ' + str(x+1))
-        #     plt.xlabel('Time')
-        #     plt.ylabel('Data')
-        #     plt.axhline(y=0, color='k')
-        #     plt.show()
         print(len(data[x]))
         x, y = fourierten(time, data[x])
         fourierx.append(x)
@@ -109,12 +98,6 @@ def fourier(time, amplitude):
     yf = fft(amplitude)  # fourier transform
     hzvals = np.linspace(0.0, 1.0/(2.0*T), int(N/2))
     amplitudes = 2.0/N * np.abs(yf[:N//2])
-
-    # fig, ax = plt.subplots()
-    # ax.plot(hzvals[:200], amplitudes[:200])
-    # ax.grid(True)
-    # plt.xlabel('Hz')
-    # plt.show()
     return hzvals, amplitudes
 
 
@@ -141,51 +124,10 @@ def find_ten(x):
     return closestindex
 
 
-# leave for testing
-def plot(xx, y):
-    x = np.linspace(0, len(xx), len(xx))
-    plt.plot(x, y, marker='o')
-    # Give a title for the sine wave plot
-    plt.title('Fourier')
-    # Give x axis label for the sine wave plot
-    plt.xlabel('Number of pulses')
-    # Give y axis label for the sine wave plot
-    plt.ylabel('Amplitude = sin(time)')
-    plt.grid(True, which='both')
-    plt.axhline(y=0, color='k')
-    plt.show()
-
-
-# ===================LEAST-SQUARES=================
-
-
-def initialize_ls():
-    points = []
-    truepoints = []
-    for i in range(50):
-        points.append(f((i, 1, 2, 3)) + (1000*r.random()-500))
-        truepoints.append(f((i, 1, 2, 3)))
-    return points, truepoints
-
-
-def f(k):
-    return k[1]*k[0]*k[0]+k[2]*k[0]+k[3]
-
-
-# def plot(points, truepoints):
-#     plt.xlabel('x')
-#     plt.ylabel('y')
-#     axisx = [i for i in range(50)]
-#     plt.plot(axisx, points, linestyle="", marker='o')
-#     plt.plot(axisx, truepoints)
-#     res_1 = so.leastsq(f, axisx)
-#     #plt.plot(res_1)
-#     plt.show()
-#     return res_1
-
 # ===================SINE-WAVE=================
 
 def init():
+    """Initialisation function for measurements"""
     dac1 = Adafruit_MCP4725.MCP4725()
     dac2 = Adafruit_MCP4725.MCP4725(address=0x63, busnum=1)
     dac1.set_voltage(int(2048))
@@ -230,6 +172,9 @@ def get_values():
 
 
 def actuation():
+    """Actuation function
+    Input: -
+    Output: - """
     sine, cosine, dac1, dac2 = init()
     actuate = time.time()
     act_time = 0
@@ -237,5 +182,4 @@ def actuation():
         act_time = time.time() - actuate
         dac1.set_voltage(cosine[int(10000*act_time)])      # sample values from waves according to act_time
         dac2.set_voltage(sine[int(10000*act_time)])
-
     time.sleep(20)
