@@ -17,7 +17,7 @@ import threading
 
 class App:
     # define main properties
-    page = 1  # 4 is boot
+    page = 4  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
@@ -35,31 +35,13 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
-    def keyboardcall0(self, username_box, password_box):
+    def keyboardcall(self, username_box, password_box):
         username_box.focus()
 
         def callback():
             os.system('florence')
             os.system('florence show')
             username_box.bind('<Tab>', lambda e: password_box.focus())
-        board = threading.Thread(target=callback)
-        board.start()
-
-    def keyboardcall1(self, password_box):
-        password_box.focus()
-
-        def callback():
-            os.system('florence')
-            os.system('florence show')
-        board = threading.Thread(target=callback)
-        board.start()
-
-    def keyboardcall2(self, patient_box):
-        patient_box.focus()
-
-        def callback():
-            os.system('florence')
-            os.system('florence show')
         board = threading.Thread(target=callback)
         board.start()
 
