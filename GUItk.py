@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import threading
@@ -35,13 +35,12 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
-    def keyboardcall(self, username_box, password_box):
-        username_box.focus()
+    def keyboardcall(self, box):
+        box.focus()
 
         def callback():
             os.system('florence')
             os.system('florence show')
-            username_box.bind('<Tab>', lambda e: password_box.focus())
         board = threading.Thread(target=callback)
         board.start()
 
@@ -211,7 +210,7 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
-        username_box.bind('<Button-1>', lambda e: self.keyboardcall(username_box, password_box))
+        username_box.bind('<Button-1>', lambda e: self.keyboardcall(username_box))
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
