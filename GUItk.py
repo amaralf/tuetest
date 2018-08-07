@@ -13,6 +13,7 @@ from email import encoders
 import TESTmath as Test
 import numpy as n
 import threading
+import keyboard as keyboard
 
 
 class App:
@@ -35,14 +36,14 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
-    def keyboardcall(self, box):
-        box.focus()
-
-        def callback():
-            os.system('florence')
-            os.system('florence show')
-        board = threading.Thread(target=callback)
-        board.start()
+    # def keyboardcall(self, box):
+    #     box.focus()
+    #
+    #     def callback():
+    #         os.system('florence')
+    #         os.system('florence show')
+    #     board = threading.Thread(target=callback)
+    #     board.start()
 
     def generate_objects(self, *args):
         """Function to generate pages"""
@@ -55,19 +56,19 @@ class App:
         }
         switcher[self.page]()
 
-    def checklist(self, measure_button):
-        """Check if sample and/or hood are inserted/closed"""
-        # GPIO 20 for hood, GPIO 21 for sample
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        if GPIO.input(20) == 0:
-            if GPIO.input(21) == 0:
-                print("Cover not closed. Please close the cover.")
-            else:
-                print("Sample not inserted. Please insert sample.")
-        else:
-            measure_button.config(state="normal")
+    # def checklist(self, measure_button):
+    #     """Check if sample and/or hood are inserted/closed"""
+    #     # GPIO 20 for hood, GPIO 21 for sample
+    #     GPIO.setmode(GPIO.BCM)
+    #     GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    #     GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    #     if GPIO.input(20) == 0:
+    #         if GPIO.input(21) == 0:
+    #             print("Cover not closed. Please close the cover.")
+    #         else:
+    #             print("Sample not inserted. Please insert sample.")
+    #     else:
+    #         measure_button.config(state="normal")
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -148,7 +149,7 @@ class App:
             error_text = t.Label(error_frame, fg="red", bg="light grey", text="Admin data incorrect, access denied")
             error_text.pack(side="bottom", fill="both", expand="true")
 
-    def login(self, username, password):
+    def login(self, username, password, entry_box):
         """Login function"""
         usernames = []
         accounts = open("./textfiles/accounts.txt", "r")
@@ -165,8 +166,8 @@ class App:
         code.close()
 
         if str(username) not in usernames or str(password) not in passwords:
-            error_frame = t.Frame(self.root, bg="light grey")
-            error_frame.place(relheight=0.05, relwidth=0.233, relx=0.4, rely=0.55)
+            error_frame = t.Frame(entry_box, bg="light grey")
+            error_frame.place(relheight=0.1, relwidth=0.5, relx=0.25, rely=0.6)
             error_text = t.Label(error_frame, fg="red", bg="light grey", text="Username or password incorrect")
             error_text.pack(side="bottom", fill="both", expand="true")
         else:
@@ -193,14 +194,18 @@ class App:
     # login screen
     def generate_login(self):
         # create upper frame with text
-        login_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 4))
+        title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height()/10))
+        title_bar.pack(side="top", fill="x", expand="false")
+        title_bar.update()
+        title_bar.propagate(0)
+        title_label = t.Label(title_bar, bg="dark grey", text="T.E.S.T. 2018", font=("Courier New", 32))
+        title_label.pack(side="top", fill="both", expand="true")
+        login_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3))
         login_frame.pack(side="top", fill="x", expand="false")
         login_frame.update()
         login_frame.propagate(0)
-        login_text = t.Label(login_frame, bg="grey", text="Login")
-        login_text.pack(side="bottom", fill="both", expand="true")
         # create entry box
-        entry_frame = t.Frame(self.root, width=int(self.root.winfo_width() / 3),
+        entry_frame = t.Frame(login_frame, width=int(self.root.winfo_width() / 3),
                               height=int(self.root.winfo_height() / 2), bg="light grey")
         entry_frame.pack(side="top", expand="false")
         entry_frame.update()
@@ -210,36 +215,45 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
-        username_box.bind('<Button-1>', lambda e: self.keyboardcall(username_box))
+        username_box.bind('<Button-1>', lambda e: username_box.focus())
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
         password_box = t.Entry(entry_frame, show="*")
         password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
-        password_box.bind('<Button-1>', lambda e: self.keyboardcall(password_box))
+        password_box.bind('<Button-1>', lambda e: password_box.focus())
         # create login button
         login_button = t.Button(entry_frame, text="Login", bg="dark grey",
-                                command=lambda: self.login(username=username_box.get(), password=password_box.get()))
+                                command=lambda: self.login(username=username_box.get(), password=password_box.get(),
+                                                           entry_box=entry_frame))
         login_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
 
         create_button = t.Button(self.root, text="Create new account", bg="dark grey",
                                  command=lambda: self.admin_login(username=username_box.get(),
                                                                   password=password_box.get()))
-        create_button.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.9)
+        create_button.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.4)
         logout_button = t.Button(self.root, text="Shutdown", bg="dark grey",
                                  command=lambda: os._exit(0))
-        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
+        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.6, rely=0.4)
+        credit_label = t.Label(self.root, bg="lightgrey", wraplengt=200,
+                               text="Credit to Suraj Singh and the S.S.B. group for the keyboard")
+        credit_label.place(relheight=0.1, relwidth=0.15, relx=0.825, rely=0.4)
+        keyboard.main(self.root)
 
     def generate_new_account(self):
+        title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.1))
+        title_bar.pack(side="top", fill="x", expand="false")
+        title_bar.update()
+        title_bar.propagate(0)
+        title_label = t.Label(title_bar, bg="dark grey", text="T.E.S.T. 2018", font=("Courier New", 32))
+        title_label.pack(side="top", fill="both", expand="true")
         # create upper frame with text
-        account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 4))
+        account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3))
         account_frame.pack(side="top", fill="x", expand="false")
         account_frame.update()
         account_frame.propagate(0)
-        login_text = t.Label(account_frame, bg="grey", text="Account creation")
-        login_text.pack(side="bottom", fill="both", expand="true")
         # create entry box
-        input_frame = t.Frame(self.root, width=int(self.root.winfo_width() / 3),
+        input_frame = t.Frame(account_frame, width=int(self.root.winfo_width() / 3),
                               height=int(self.root.winfo_height() / 2), bg="light grey")
         input_frame.pack(side="top", expand="false")
         input_frame.update()
@@ -259,33 +273,46 @@ class App:
                                  command=lambda: [self.save_data(username=username_box.get(),
                                                                  password=password_box.get())])
         create_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
+        keyboard.main(self.root)
 
     # start page
     def generate_page_one(self):
-        description = "Here will be the description of the machine..."
-        bottom_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 2),
-                               bg="light grey")
-        bottom_frame.pack(side="bottom", fill="x", expand="false")
-        bottom_frame.update()
-        bottom_frame.pack_propagate(0)
-        top_text = t.Label(self.root, bg="grey", text=description)
+        title="Patient ID"
+        top_bar = t.Frame(self.root, bg="white", height=int(self.root.winfo_height() / 10))
+        top_bar.pack(side="top", fill="x", expand="false")
+        top_bar.update()
+        top_bar.pack_propagate(0)
+        # begin text and button of top bar
+        top_text = t.Label(top_bar, bg="white", text=title)
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
-        entry_frame = t.Frame(bottom_frame, width=int(self.root.winfo_width() / 3),
-                              height=int(self.root.winfo_height() / 2), bg="light grey")
+        back_button = t.Button(top_bar, activebackground="dark grey", activeforeground="white", bg="black", fg="white",
+                               text="Back", command=lambda: self.change_page(0))
+        back_button.pack()
+        back_button.update()
+        back_button.place(relheight=1, relwidth=0.15)
+        top_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() *0.4),
+                               bg="dark grey")
+        top_frame.pack(side="top", fill="x", expand="false")
+        top_frame.update()
+        top_frame.pack_propagate(0)
+
+        entry_frame = t.Frame(top_frame, width=int(self.root.winfo_width() / 3),
+                              height=int(self.root.winfo_height() / 2), bg="dark grey")
         entry_frame.pack(side="top", expand="false")
         entry_frame.update()
         entry_frame.propagate(0)
-        patient_label = t.Label(bottom_frame, bg="light grey", text="Enter Patient ID:")
+        patient_label = t.Label(top_frame, bg="dark grey", text="Enter Patient ID:")
         patient_label.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.1)
         patient_box = t.Entry(entry_frame)
         patient_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.2)
-        patient_box.bind('<Button-1>', lambda e: self.keyboardcall(patient_box))
-        bottom_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
+        patient_box.bind('<Button-1>', lambda e: patient_box.focus())
+        bottom_button = t.Button(top_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                  fg="white",
                                  text="Start", command=lambda: self.start_machine(patient_box, patient_label))
         bottom_button.update()
         bottom_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.45)
+        keyboard.main(self.root)
 
     def start_machine(self, patient, label):
         p = patient.get()

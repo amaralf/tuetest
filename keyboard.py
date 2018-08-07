@@ -24,8 +24,8 @@ __author__ = '''
 
 # ========== Configurations ====================
 BUTTON_BACKGROUND = "black"
-MAIN_FRAME_BACKGROUND = "cornflowerblue"
-BUTTON_LOOK = "flat"  # flat, groove, raised, ridge, solid, or sunken
+MAIN_FRAME_BACKGROUND = "dark grey"
+BUTTON_LOOK = "ridge"  # flat, groove, raised, ridge, solid, or sunken
 TOP_BAR_TITLE = "Python Virtual KeyBoard."
 TOPBAR_BACKGROUND = "skyblue"
 TRANSPARENCY = 0.7
@@ -52,7 +52,7 @@ keys = [
 
 
 # Create key event
-def create_keyboard_event(numlock, capslock, controler, key):
+def create_keyboard_event(numlock, capslock, controller, key):
     return
 
 
@@ -117,24 +117,23 @@ class top_moving_mechanism:
 
 
 # Creating Main Window
-def main():
-    root = Tkinter.Tk(className=TOP_BAR_TITLE)
+def main(root):
     k = Keyboard(root, bg=MAIN_FRAME_BACKGROUND)
 
     # Configuration
-    root.overrideredirect(True)
-    root.wait_visibility(root)
-    root.wm_attributes('-alpha', TRANSPARENCY)
+    # root.overrideredirect(True)
+    # root.wait_visibility(root)
+    # root.wm_attributes('-alpha', TRANSPARENCY)
     # Custom
-    f = Tkinter.Frame(root)
-    t_bar = Tkinter.Label(f, text=TOP_BAR_TITLE, bg=TOPBAR_BACKGROUND)
-    t_bar.pack(side='left', expand="yes", fill="both")
-    mechanism = top_moving_mechanism(root, t_bar)
-    t_bar.bind("<B1-Motion>", mechanism.motion_activate)
-    Tkinter.Button(f, text="[X]", command=root.destroy).pack(side='right')
-    f.pack(side='top', expand='yes', fill='both')
-    k.pack(side='top')
-    root.mainloop()
+    # f = Tkinter.Frame(root)
+    # t_bar = Tkinter.Label(f, text=TOP_BAR_TITLE, bg=TOPBAR_BACKGROUND)
+    # t_bar.pack(side='left', expand="yes", fill="both")
+    # mechanism = top_moving_mechanism(root, t_bar)
+    # t_bar.bind("<B1-Motion>", mechanism.motion_activate)
+    # Tkinter.Button(f, text="[X]", command=root.destroy).pack(side='right')
+    # f.pack(side='top', expand='yes', fill='both')
+    k.place(relheight=0.5, relwidth=1.0, relx=0.0, rely=0.5)
+    # root.mainloop()
     return
 
 

@@ -1,1 +1,1 @@
-admin, test, bulba
+admin, test, bulba, char, squirtle
