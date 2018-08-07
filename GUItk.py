@@ -211,13 +211,13 @@ class App:
         user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
         username_box = t.Entry(entry_frame)
         username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
-        username_box.bind('<Button-1>', lambda e: self.keyboardcall0(username_box, password_box))
+        username_box.bind('<Button-1>', lambda e: self.keyboardcall(username_box, password_box))
         # label and box for password
         pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
         pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
         password_box = t.Entry(entry_frame, show="*")
         password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
-        password_box.bind('<Button-1>', lambda e: self.keyboardcall1(password_box))
+        password_box.bind('<Button-1>', lambda e: self.keyboardcall(password_box))
         # create login button
         login_button = t.Button(entry_frame, text="Login", bg="dark grey",
                                 command=lambda: self.login(username=username_box.get(), password=password_box.get()))
@@ -281,7 +281,7 @@ class App:
         patient_label.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.1)
         patient_box = t.Entry(entry_frame)
         patient_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.2)
-        patient_box.bind('<Button-1>', lambda e: self.keyboardcall2(patient_box))
+        patient_box.bind('<Button-1>', lambda e: self.keyboardcall(patient_box))
         bottom_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                  fg="white",
                                  text="Start", command=lambda: self.start_machine(patient_box, patient_label))
@@ -291,20 +291,11 @@ class App:
     def start_machine(self, patient, label):
         p = patient.get()
         if p != "":
-            try:
-                int(p)
-                if int(p) < 0:
-                    label.config(text="Not a Patient ID")
-                    label.config(foreground="red")
-                    return
-                else:
-                    self.patient_id = int(p)
-                    self.change_page(2)
-            except ValueError:
-                label.config(text="Not an integer")
-                label.config(foreground="red")
-                return
+            self.patient_id = p
+            self.change_page(2)
+            return
         else:
+            label.config(text="Please enter a Patient ID")
             label.config(foreground="red")
         return
 
