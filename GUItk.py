@@ -104,7 +104,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_measurements(self, measures, pre_fourier, times, avg, res):
+    def save_measurements(self, measures, avg1, avg2):
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -114,21 +114,10 @@ class App:
             for measure in measures:
                 measurements.write(str(measure) + '\n')
             measurements.write("\n")
-            measurements.write("Average = " + str(avg))
+            measurements.write("Average first 10 = " + str(avg1))
+            measurements.write("\n")
+            measurements.write("Average second 10 = " + str(avg2))
             measurements.write("\n\n")
-            measurements.write("Result = " + str(res))
-            measurements.write("\n\n\n\n")
-            measurements.write("Pre-Fourier:")
-            counter = 0
-            for k in range(len(pre_fourier)):
-                measurements.write("Prefourier " + str(k) + ": \n")
-                measurements.write(str(pre_fourier[k]) + '\n')
-                measurements.write("times of prefourier "+str(k)+":\n")
-                measurements.write(str(times[k]) + '\n')
-                counter += 1
-                if counter == 20:
-                    measurements.write("\n\n")
-                    counter = 0
             measurements.close()
         self.send_to_mail(filename)
 
@@ -457,9 +446,14 @@ class App:
         loading_text.update()
 
         avg = sum(measurements) / len(measurements)
+        if len(measurements) != 20:
+            print("more than 20 measurements")
+        halflength = len(measurements)/2
+        avg1 = sum(measurements[:halflength])/halflength
+        avg2 = sum(measurements[halflength+1:])/halflength
         res = self.getResult(avg)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, pre_fourier, times, avg, res)
+        self.save_measurements(measurements, avg1, avg2)
 
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
