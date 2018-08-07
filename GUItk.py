@@ -17,7 +17,7 @@ import threading
 
 class App:
     # define main properties
-    page = 4
+    page = 1  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
