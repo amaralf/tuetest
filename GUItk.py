@@ -457,7 +457,7 @@ class App:
         avg = sum(measurements) / len(measurements)
         if len(measurements) != 20:
             print("more than 20 measurements")
-        halflength = len(measurements)/2
+        halflength = int(len(measurements)/2)
         avg1 = sum(measurements[:halflength])/halflength
         avg2 = sum(measurements[halflength+1:])/halflength
         res = self.getResult(avg)
