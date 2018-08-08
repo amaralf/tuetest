@@ -383,9 +383,9 @@ class App:
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
-        redo = t.Button(self.root, text="Measure again", bg="dark grey",
-                        command=lambda: self.change_page(1))
-        redo.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.9)
+        # redo = t.Button(self.root, text="Measure again", bg="dark grey",
+        #                 command=lambda: self.change_page(1))
+        # redo.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.9)
 
     def stop(self, *args):
         sys.exit(0)
