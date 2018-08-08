@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import threading
@@ -18,7 +18,7 @@ import keyboard as keyboard
 
 class App:
     # define main properties
-    page = 4  # 4 is boot
+    page = 1  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
@@ -56,19 +56,26 @@ class App:
         }
         switcher[self.page]()
 
-    # def checklist(self, measure_button):
-    #     """Check if sample and/or hood are inserted/closed"""
-    #     # GPIO 20 for hood, GPIO 21 for sample
-    #     GPIO.setmode(GPIO.BCM)
-    #     GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    #     GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    #     if GPIO.input(20) == 0:
-    #         if GPIO.input(21) == 0:
-    #             print("Cover not closed. Please close the cover.")
-    #         else:
-    #             print("Sample not inserted. Please insert sample.")
-    #     else:
-    #         measure_button.config(state="normal")
+    def checklist(self, measure_button, output_text):
+        """Check if sample and/or hood are inserted/closed"""
+        # GPIO 20 for hood, GPIO 21 for sample
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        if GPIO.input(20) == 0:
+            if GPIO.input(21) == 0:
+                output_text.config(text="Please close the lid.")
+                output_text.config(fg="red")
+                output_text.update()
+            else:
+                output_text.config(text="Please insert sample.")
+                output_text.config(fg="red")
+                output_text.update()
+        else:
+            output_text.config(text="Preconditions satisfied. Press the measure button to begin.")
+            output_text.config(fg="black")
+            output_text.update()
+            measure_button.config(state="normal")
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -346,7 +353,7 @@ class App:
         output_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
         output_bar.pack(fill="x")
         output_bar.update()
-        output_text = t.Label(output_bar, bg="grey", text="Instructions for use...")
+        output_text = t.Label(output_bar, bg="grey", text="Click the Precondition Check Button")
         output_text.place(relheight=0.5, relwidth=1)
         output_text.update()
         loading_frame = t.Frame(output_bar, bg="grey")
@@ -369,7 +376,7 @@ class App:
         # make precondition button update the properties of the measure button
         precond_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="white", text="Pre-condition check",
-                                  command=lambda: self.checklist(measure_button))
+                                  command=lambda: self.checklist(measure_button, output_text))
         precond_button.update()
         precond_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey",
