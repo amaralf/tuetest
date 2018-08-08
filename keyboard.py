@@ -85,9 +85,9 @@ class Keyboard(Tkinter.Frame):
                     for k in key_bunch:
                         k = k.capitalize()
                         if len(k) <= 3:
-                            store_button = Tkinter.Button(store_key_frame, text=k, width=2, height=2, font=(FONT, 24))
+                            store_button = Tkinter.Button(store_key_frame, text=k, width=2, height=2, font=(FONT, 16))
                         else:
-                            store_button = Tkinter.Button(store_key_frame, text=k.center(5, ' '), height=2, font=(FONT, 24))
+                            store_button = Tkinter.Button(store_key_frame, text=k.center(5, ' '), height=2, font=(FONT, 16))
                         if " " in k:
                             store_button['state'] = 'disable'
 

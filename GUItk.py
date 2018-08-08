@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import threading
@@ -266,14 +266,11 @@ class App:
         logo_label = t.Label(parent_label)
         logo_label.place(relx=0.9, relwidth=0.1, relheight=1.0)
         logo_label.update()
-        print(logo_label.winfo_height())
-        print(logo_label.winfo_width())
         img = img.resize((logo_label.winfo_width(), logo_label.winfo_height()))
         picture = ImageTk.PhotoImage(img)
         logo_label.config(image=picture)
         logo_label.image = picture
         logo_label.update()
-
 
     def generate_new_account(self):
         title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.1))
@@ -407,16 +404,16 @@ class App:
                                   font=(self.font, 24),
                                   command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
         measure_button.update()
-        measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
+        measure_button.place(relheight=0.35, relwidth=0.6, relx=0.2, rely=0.45)
         # make precondition button update the properties of the measure button
         precond_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="white", text="Pre-condition check", font=(self.font, 24),
                                   command=lambda: self.checklist(measure_button, output_text))
         precond_button.update()
-        precond_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.3)
+        precond_button.place(relheight=0.35, relwidth=0.6, relx=0.2, rely=0.05)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey", font=(self.font, 24),
                                  command=lambda: os._exit(0))
-        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
+        logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
 
         # redo = t.Button(self.root, text="Measure again", bg="dark grey",
         #                 command=lambda: self.change_page(1))
@@ -493,14 +490,14 @@ class App:
         if len(measurements) != 20:
             print("more than 20 measurements")
         halflength = int(len(measurements)/2)
-        print(str(halflength) + " should be 10")
+        # print(str(halflength) + " should be 10")
         avg1 = sum(measurements[:halflength])/halflength
         avg2 = sum(measurements[halflength+1:])/halflength
         res = self.getResult(avg)
+        print("avg of first ten: " + str(avg1))
+        print("avg of second ten: "+ str(avg2))
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        # self.save_measurements(measurements, avg1, avg2)
-        output_text.config(text=str(measurements))
-        output_text.config(fg="black")
+        self.save_measurements(measurements, avg1, avg2)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Done")
