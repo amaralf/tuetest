@@ -416,6 +416,9 @@ class App:
     def run(self, output_text, loading_frame, loading_bar, loading_text):
         """Input: none
            Output: none"""
+        output_text.config(text="Measuring...")
+        output_text.config(fg="black")
+        output_text.update()
         loading_frame.config(bg="black")
         loading_frame.update()
         loading_bar.config(bg="light grey")
