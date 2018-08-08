@@ -30,6 +30,7 @@ TOP_BAR_TITLE = "Python Virtual KeyBoard."
 TOPBAR_BACKGROUND = "skyblue"
 TRANSPARENCY = 0.7
 FONT_COLOR = "white"
+FONT = "Calibri"
 
 # ==============================================
 keys = [
@@ -84,9 +85,9 @@ class Keyboard(Tkinter.Frame):
                     for k in key_bunch:
                         k = k.capitalize()
                         if len(k) <= 3:
-                            store_button = Tkinter.Button(store_key_frame, text=k, width=2, height=2)
+                            store_button = Tkinter.Button(store_key_frame, text=k, width=2, height=2, font=(FONT, 24))
                         else:
-                            store_button = Tkinter.Button(store_key_frame, text=k.center(5, ' '), height=2)
+                            store_button = Tkinter.Button(store_key_frame, text=k.center(5, ' '), height=2, font=(FONT, 24))
                         if " " in k:
                             store_button['state'] = 'disable'
 

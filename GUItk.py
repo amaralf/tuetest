@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import threading
@@ -22,10 +22,15 @@ class App:
     height = 600
     width = 1024
     patient_id = -1
+    font = "Calibri"
+    color1 = "medium aquamarine"
+    color2 = "cadet blue"
+    color3 = "floral white"
+    color4 = "steel blue"
 
     def __init__(self):
         self.root = t.Tk()
-        self.root.config(bg="light grey")
+        self.root.config(bg=self.color3)
         self.root.title("T.E.S.T.")
         self.root.pack_propagate(0)
         self.root.resizable(0, 0)
@@ -98,6 +103,10 @@ class App:
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        dirname = os.path.dirname(filename)
+        print(dirname)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
         with open(filename, "a") as measurements:
             measurements.write("Measurements " + st + ": \n")
             for measure in measures:
@@ -205,8 +214,13 @@ class App:
         title_bar.pack(side="top", fill="x", expand="false")
         title_bar.update()
         title_bar.propagate(0)
-        title_label = t.Label(title_bar, bg="dark grey", text="T.E.S.T. 2018", font=("Courier New", 32))
+        title_label = t.Label(title_bar, bg=self.color2, text="T.E.S.T. 2018", font=(self.font, 32))
         title_label.pack(side="top", fill="both", expand="true")
+        self.includelogo(title_label)
+        description_label = t.Label(title_bar, bg=self.color2, text="A Biosensor for measuring Vancomycin",
+                                    font=(self.font, 24), wraplength=400)
+        description_label.place(relwidth=0.2, relheight=1.0)
+        description_label.update()
         login_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3))
         login_frame.pack(side="top", fill="x", expand="false")
         login_frame.update()
@@ -218,42 +232,57 @@ class App:
         entry_frame.update()
         entry_frame.propagate(0)
         # label and box for username
-        user_label = t.Label(entry_frame, bg="light grey", text="Username:")
-        user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
-        username_box = t.Entry(entry_frame)
-        username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
+        user_label = t.Label(entry_frame, bg="light grey", text="Username:", font=(self.font, 24))
+        user_label.place(relheight=0.3, relwidth=0.3, relx=0.1, rely=0.05)
+        username_box = t.Entry(entry_frame, font=(self.font, 24))
+        username_box.place(relheight=0.3, relwidth=0.5, relx=0.4, rely=0.05)
         username_box.bind('<Button-1>', lambda e: username_box.focus())
         # label and box for password
-        pwd_label = t.Label(entry_frame, bg="light grey", text="Password:")
-        pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
-        password_box = t.Entry(entry_frame, show="*")
-        password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
+        pwd_label = t.Label(entry_frame, bg="light grey", text="Password:", font=(self.font, 24))
+        pwd_label.place(relheight=0.3, relwidth=0.3, relx=0.1, rely=0.35)
+        password_box = t.Entry(entry_frame, show="*", font=(self.font, 24))
+        password_box.place(relheight=0.3, relwidth=0.5, relx=0.4, rely=0.35)
         password_box.bind('<Button-1>', lambda e: password_box.focus())
         # create login button
-        login_button = t.Button(entry_frame, text="Login", bg="dark grey",
+        login_button = t.Button(entry_frame, text="Login", bg="dark grey", font=(self.font, 24),
                                 command=lambda: self.login(username=username_box.get(), password=password_box.get(),
                                                            entry_box=entry_frame))
-        login_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
+        login_button.place(relheight=0.3, relwidth=0.4, relx=0.3, rely=0.7)
 
-        create_button = t.Button(self.root, text="Create new account", bg="dark grey",
+        create_button = t.Button(self.root, text="Create new account", bg="dark grey", font=(self.font, 24),
                                  command=lambda: self.admin_login(username=username_box.get(),
                                                                   password=password_box.get()))
         create_button.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.4)
-        logout_button = t.Button(self.root, text="Shutdown", bg="dark grey",
+        logout_button = t.Button(self.root, text="Shutdown", bg="dark grey", font=(self.font, 24),
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.6, rely=0.4)
-        credit_label = t.Label(self.root, bg="lightgrey", wraplengt=200,
-                               text="Credit to Suraj Singh and the S.S.B. group for the keyboard")
-        credit_label.place(relheight=0.1, relwidth=0.15, relx=0.825, rely=0.4)
+        # credit_label = t.Label(self.root, bg="lightgrey", wraplengt=200,
+        #                        text="Credit to Suraj Singh and the S.S.B. group for the keyboard")
+        # credit_label.place(relheight=0.1, relwidth=0.15, relx=0.825, rely=0.4)
         keyboard.main(self.root)
+
+    def includelogo(self, parent_label):
+        img = Image.open("./textfiles/LogoSmall.png")
+        logo_label = t.Label(parent_label)
+        logo_label.place(relx=0.9, relwidth=0.1, relheight=1.0)
+        logo_label.update()
+        print(logo_label.winfo_height())
+        print(logo_label.winfo_width())
+        img = img.resize((logo_label.winfo_width(), logo_label.winfo_height()))
+        picture = ImageTk.PhotoImage(img)
+        logo_label.config(image=picture)
+        logo_label.image = picture
+        logo_label.update()
+
 
     def generate_new_account(self):
         title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.1))
         title_bar.pack(side="top", fill="x", expand="false")
         title_bar.update()
         title_bar.propagate(0)
-        title_label = t.Label(title_bar, bg="dark grey", text="T.E.S.T. 2018", font=("Courier New", 32))
+        title_label = t.Label(title_bar, bg="dark grey", text="T.E.S.T. 2018", font=(self.font, 36))
         title_label.pack(side="top", fill="both", expand="true")
+        self.includelogo(title_label)
         # create upper frame with text
         account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3))
         account_frame.pack(side="top", fill="x", expand="false")
@@ -266,20 +295,20 @@ class App:
         input_frame.update()
         input_frame.propagate(0)
         # label and box for username
-        user_label = t.Label(input_frame, bg="light grey", text="Enter new username:")
-        user_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.4)
-        username_box = t.Entry(input_frame)
-        username_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.4)
+        user_label = t.Label(input_frame, bg="light grey", text="Username:", font=(self.font, 24))
+        user_label.place(relheight=0.3, relwidth=0.3, relx=0.1, rely=0.05)
+        username_box = t.Entry(input_frame, font=(self.font, 24))
+        username_box.place(relheight=0.3, relwidth=0.5, relx=0.4, rely=0.05)
         # label and box for password
-        pwd_label = t.Label(input_frame, bg="light grey", text="Enter new password:")
-        pwd_label.place(relheight=0.1, relwidth=0.4, relx=0.1, rely=0.5)
-        password_box = t.Entry(input_frame, show="*")
-        password_box.place(relheight=0.1, relwidth=0.4, relx=0.5, rely=0.5)
+        pwd_label = t.Label(input_frame, bg="light grey", text="Password:", font=(self.font, 24))
+        pwd_label.place(relheight=0.3, relwidth=0.3, relx=0.1, rely=0.35)
+        password_box = t.Entry(input_frame, show="*", font=(self.font, 24))
+        password_box.place(relheight=0.3, relwidth=0.5, relx=0.4, rely=0.35)
         # create login button
-        create_button = t.Button(input_frame, text="Create", bg="dark grey",
+        create_button = t.Button(input_frame, text="Create", bg="dark grey", font=(self.font, 24),
                                  command=lambda: [self.save_data(username=username_box.get(),
                                                                  password=password_box.get())])
-        create_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.8)
+        create_button.place(relheight=0.3, relwidth=0.4, relx=0.3, rely=0.7)
         keyboard.main(self.root)
 
     # start page
@@ -290,14 +319,15 @@ class App:
         top_bar.update()
         top_bar.pack_propagate(0)
         # begin text and button of top bar
-        top_text = t.Label(top_bar, bg="white", text=title)
+        top_text = t.Label(top_bar, bg="white", text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
         back_button = t.Button(top_bar, activebackground="dark grey", activeforeground="white", bg="black", fg="white",
-                               text="Back", command=lambda: self.change_page(0))
+                               text="\u21A9" + " Back", font=(self.font, 24), command=lambda: self.change_page(0))
         back_button.pack()
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
+        self.includelogo(top_bar)
         top_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() *0.4),
                                bg="dark grey")
         top_frame.pack(side="top", fill="x", expand="false")
@@ -309,16 +339,16 @@ class App:
         entry_frame.pack(side="top", expand="false")
         entry_frame.update()
         entry_frame.propagate(0)
-        patient_label = t.Label(top_frame, bg="dark grey", text="Enter Patient ID:")
+        patient_label = t.Label(top_frame, bg="dark grey", text="Enter Patient ID:", font=(self.font, 24))
         patient_label.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.1)
-        patient_box = t.Entry(entry_frame)
-        patient_box.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.2)
+        patient_box = t.Entry(entry_frame, font=(self.font, 24))
+        patient_box.place(relheight=0.2, relwidth=0.5, relx=0.25, rely=0.3)
         patient_box.bind('<Button-1>', lambda e: patient_box.focus())
         bottom_button = t.Button(top_frame, activebackground="dark grey", activeforeground="white", bg="black",
-                                 fg="white",
+                                 fg="white", font=(self.font, 24),
                                  text="Start", command=lambda: self.start_machine(patient_box, patient_label))
         bottom_button.update()
-        bottom_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.45)
+        bottom_button.place(relheight=0.2, relwidth=0.3, relx=0.35, rely=0.6)
         keyboard.main(self.root)
 
     def start_machine(self, patient, label):
@@ -341,19 +371,23 @@ class App:
         top_bar.update()
         top_bar.pack_propagate(0)
         # begin text and button of top bar
-        top_text = t.Label(top_bar, bg="white", text=title)
+        top_text = t.Label(top_bar, bg="white", text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
         back_button = t.Button(top_bar, activebackground="dark grey", activeforeground="white", bg="black", fg="white",
-                               text="Back", command=lambda: self.change_page(1))
+                               text="\u21A9" + " Back", font=(self.font, 24), command=lambda: self.change_page(1))
         back_button.pack()
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
+        self.includelogo(top_bar)
         # begin upper part of screen
         output_bar = t.Frame(self.root, bg="grey", height=int(self.root.winfo_height() * 0.3))
         output_bar.pack(fill="x")
         output_bar.update()
-        output_text = t.Label(output_bar, bg="grey", text="Click the Precondition Check Button")
+        output_text = t.Label(output_bar, bg="grey",
+                              text="Click the Precondition Check Button.\n" +
+                                   "It will check whether the sensor is ready to measure.",
+                              font=(self.font, 24))
         output_text.place(relheight=0.5, relwidth=1)
         output_text.update()
         loading_frame = t.Frame(output_bar, bg="grey")
@@ -370,16 +404,17 @@ class App:
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
                                   fg="green", disabledforeground="red", state="disabled", text="Measure",
+                                  font=(self.font, 24),
                                   command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
         measure_button.update()
         measure_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.55)
         # make precondition button update the properties of the measure button
         precond_button = t.Button(bottom_frame, activebackground="dark grey", activeforeground="white", bg="black",
-                                  fg="white", text="Pre-condition check",
+                                  fg="white", text="Pre-condition check", font=(self.font, 24),
                                   command=lambda: self.checklist(measure_button, output_text))
         precond_button.update()
         precond_button.place(relheight=0.15, relwidth=0.2, relx=0.4, rely=0.3)
-        logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey",
+        logout_button = t.Button(self.root, text="Logout and shutdown", bg="dark grey", font=(self.font, 24),
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.9)
 
@@ -463,8 +498,9 @@ class App:
         avg2 = sum(measurements[halflength+1:])/halflength
         res = self.getResult(avg)
         output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, avg1, avg2)
-
+        # self.save_measurements(measurements, avg1, avg2)
+        output_text.config(text=str(measurements))
+        output_text.config(fg="black")
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Done")

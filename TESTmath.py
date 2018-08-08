@@ -104,6 +104,7 @@ def fourier(time, amplitude):
 def fourierten(time, amplitude):
     x, y = fourier(time, amplitude)
     i = find_ten(x)
+    print(y[i])
     return x[i], y[i]
 
 
@@ -119,8 +120,8 @@ def find_ten(x):
             closestdistance = distance
             closestindex = index
         index += 1
-    print(closest)
-    print(closestdistance)
+    # print(closest)
+    # print(closestdistance)
     return closestindex
 
 
