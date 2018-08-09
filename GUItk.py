@@ -499,7 +499,7 @@ class App:
             pre_fourier.append(voltage)
             times.append(tt)
             time.sleep(10)
-            if z == 10:
+            if z == 9:
                 loading_text.config(text="Do actuation")
                 loading_text.update()
                 Test.actuation()
