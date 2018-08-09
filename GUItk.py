@@ -48,15 +48,6 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
-    # def keyboardcall(self, box):
-    #     box.focus()
-    #
-    #     def callback():
-    #         os.system('florence')
-    #         os.system('florence show')
-    #     board = threading.Thread(target=callback)
-    #     board.start()
-
     def generate_objects(self, *args):
         """Function to generate pages"""
         switcher = {
@@ -396,7 +387,7 @@ class App:
         output_bar.pack(fill="x")
         output_bar.update()
         output_text = t.Label(output_bar, bg=self.color1,
-                              text="Click the 'Check and Measure' Button.\n" +
+                              text="Click the 'Measure' Button.\n" +
                                    "It will check whether the sensor is ready to measure.\n"
                                    "If so, it will initiate measuring.",
                               font=(self.font, self.normalfontsize))
@@ -415,7 +406,7 @@ class App:
         bottom_frame.update()
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
-                                  fg=self.color3, text="Check and Measure", font=(self.font, self.normalfontsize),
+                                  fg=self.color3, text="Measure", font=(self.font, self.normalfontsize),
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text))
         measure_button.update()
         measure_button.place(relheight=0.2, relwidth=0.4, relx=0.3, rely=0.3)
@@ -450,13 +441,13 @@ class App:
         for number in meas1:
             k = n.square(number - avg1)
             predev1 = predev1 + k
-        predev1 = predev1 / len(meas1)
+        predev1 = predev1 / len(meas1)-1
         dev1 = n.sqrt(predev1)
         predev2 = 0
         for number in meas2:
             k = n.square(number - avg2)
             predev2 = predev2 + k
-        predev2 = predev2 / len(meas2)
+        predev2 = predev2 / len(meas2)-1
         dev2 = n.sqrt(predev2)
         return dev1, dev2, avg1, avg2
         # TODO
@@ -503,6 +494,8 @@ class App:
             time.sleep(10)
             if z == 10:
                 Test.actuation()
+                loading_text.config(text="Do actuation")
+                loading_text.update()
 
         loading_bar.place(relwidth=0.88)
         loading_bar.update()
@@ -512,15 +505,21 @@ class App:
             print("more than 20 measurements")
         halflength = int(len(measurements)/2)
         meas1 = measurements[:halflength]
+        print(measurements)
+        print("\n")
+        print(meas1)
+        print("\n")
         print(len(meas1))
         meas2 = measurements[halflength:]
+        print("\n")
+        print(meas2)
+        print("\n")
         print(len(meas2))
         # print(str(halflength) + " should be 10")
         dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: "+ str(avg2))
-        output_text.config(text="Average first ten = " + str(avg1) + "\n" + "Standard Deviation first ten = " + str(dev1) + "\n" +
-                           "Average second ten = " + str(avg2) + "\n" + "Standard Deviation second ten = " + str(dev2) + "\n")
+        output_text.config(text="Measurement Finished. Press the Measure Button to measure again.")
         self.save_measurements(measurements, avg1, avg2, dev1, dev2)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
