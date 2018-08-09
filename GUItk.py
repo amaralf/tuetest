@@ -27,7 +27,7 @@ class App:
     # color2 = "#1e4faa" # light blue
     # color3 = "#d5c5cb" # light pink
     # color4 = "#1e2c75" # dark blue
-    color1 = "blue"
+    color1 = "steel blue"
     color2 = "light blue"
     color3 = "white"
     color4 = "dark blue"
@@ -95,10 +95,10 @@ class App:
             error_text = t.Label(self.root, fg="red", bg=self.color2, text="Please enter a username and password")
             error_text.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.4)
         else:
-            with open("./textfiles/accounts.txt", "a") as usernames:
+            with open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "a") as usernames:
                 usernames.write(', ' + str(username))
                 usernames.close()
-            with open("./textfiles/passwords.txt", "a") as passwords:
+            with open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "a") as passwords:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
@@ -107,7 +107,7 @@ class App:
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         print(dirname)
         if not os.path.exists(dirname):
@@ -271,7 +271,7 @@ class App:
         keyboard.main(self.root)
 
     def includelogo(self, parent_label):
-        img = Image.open("./textfiles/LogoSmall.png")
+        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
         logo_label = t.Label(parent_label)
         logo_label.place(relx=0.9, relwidth=0.1, relheight=1.0)
         logo_label.update()
