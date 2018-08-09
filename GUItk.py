@@ -115,7 +115,7 @@ class App:
         with open(filename, "a") as measurements:
             measurements.write("Measurements " + st + ": \n")
             for measure in measures:
-                measurements.write(str(measure) + '\n')
+                measurements.write(str(measure) + ' ')
             measurements.write("\n")
             measurements.write("Average first 10 = " + str(avg1))
             measurements.write("\n")
@@ -510,7 +510,9 @@ class App:
             print("more than 20 measurements")
         halflength = int(len(measurements)/2)
         meas1 = measurements[:halflength]
-        meas2 = measurements[halflength+1:]
+        print(len(meas1))
+        meas2 = measurements[halflength:]
+        print(len(meas2))
         # print(str(halflength) + " should be 10")
         avg1 = sum(meas1)/halflength
         avg2 = sum(meas2)/halflength
