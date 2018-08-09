@@ -15,6 +15,8 @@ import numpy as n
 import threading
 import keyboard as keyboard
 
+# Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
+# by T.T.P. Franken and R.P.W. Schmidt.
 
 class App:
     # define main properties
@@ -221,8 +223,8 @@ class App:
         title_label.pack(side="top", fill="both", expand="true")
         self.includelogo(title_label)
         description_label = t.Label(title_bar, bg=self.color2, text="A Biosensor for measuring Vancomycin",
-                                    font=(self.font, self.normalfontsize), wraplength=400, fg=self.color3)
-        description_label.place(relwidth=0.2, relheight=1.0)
+                                    font=(self.font, self.normalfontsize), wraplength=800, fg=self.color3)
+        description_label.place(relwidth=0.4, relheight=1.0)
         description_label.update()
         login_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3),
                               bg=self.color3)
