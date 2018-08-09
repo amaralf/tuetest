@@ -17,6 +17,7 @@ import keyboard as keyboard
 # Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
 # by T.T.P. Franken and R.P.W. Schmidt.
 
+
 class App:
     # define main properties
     page = 1  # 4 is boot
@@ -86,7 +87,6 @@ class App:
             logout_button.update()
             measure_button.update()
             self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button)
-
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -250,8 +250,7 @@ class App:
         login_button = t.Button(entry_frame, text="Login", bg=self.color4, fg=self.color3,
                                 font=(self.font, self.normalfontsize),
                                 activebackground=self.color2, activeforeground=self.color3,
-                                command=lambda: self.login(username=username_box.get(), password=password_box.get(),
-                                                           entry_box=entry_frame))
+                                command=lambda: self.login(username=username_box.get(), password=password_box.get()))
         login_button.place(relheight=0.3, relwidth=0.4, relx=0.3, rely=0.7)
 
         create_button = t.Button(self.root, text="Create new account", bg=self.color4, fg=self.color3,
@@ -290,7 +289,8 @@ class App:
         description_label.update()
         self.includelogo(title_label)
         # create upper frame with text
-        account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3), bg=self.color3)
+        account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3),
+                                bg=self.color3)
         account_frame.pack(side="top", fill="x", expand="false")
         account_frame.update()
         account_frame.propagate(0)
@@ -330,8 +330,9 @@ class App:
         top_text = t.Label(top_bar, bg=self.color3, text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
-        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4, fg=self.color3,
-                               text="\u21A9" + " Back", font=(self.font, self.normalfontsize), command=lambda: self.change_page(0))
+        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+                               fg=self.color3, text="\u21A9" + " Back", font=(self.font, self.normalfontsize),
+                               command=lambda: self.change_page(0))
         back_button.pack()
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
@@ -347,7 +348,8 @@ class App:
         entry_frame.pack(side="top", expand="false")
         entry_frame.update()
         entry_frame.propagate(0)
-        patient_label = t.Label(top_frame, bg=self.color2, fg=self.color3, text="Enter Patient ID:", font=(self.font, self.normalfontsize))
+        patient_label = t.Label(top_frame, bg=self.color2, fg=self.color3, text="Enter Patient ID:",
+                                font=(self.font, self.normalfontsize))
         patient_label.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.1)
         patient_box = t.Entry(entry_frame, bg=self.color3, font=(self.font, self.normalfontsize))
         patient_box.place(relheight=0.2, relwidth=0.5, relx=0.25, rely=0.3)
@@ -382,9 +384,9 @@ class App:
         top_text = t.Label(top_bar, bg=self.color3, text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
-        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4, fg=self.color3,
-                               text="\u21A9" + " Back", font=(self.font, self.normalfontsize), command=lambda: self.change_page(1),
-                               disabledforeground="red")
+        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+                               fg=self.color3, text="\u21A9" + " Back", font=(self.font, self.normalfontsize),
+                               command=lambda: self.change_page(1), disabledforeground="red")
         back_button.pack()
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
@@ -483,7 +485,6 @@ class App:
         measurements = []
         pre_fourier = []
         times = []
-        # Test.actuation()
         progress = 0
 
         for z in range(20):
@@ -502,9 +503,12 @@ class App:
             if z == 9:
                 loading_text.config(text="Do actuation")
                 loading_text.update()
+                progress += 0.05
+                loading_bar.place(relwidth=progress)
+                loading_bar.update()
                 Test.actuation()
 
-        loading_bar.place(relwidth=0.88)
+        loading_bar.place(relwidth=0.93)
         loading_bar.update()
         loading_text.config(text="Save Results...")
         loading_text.update()
