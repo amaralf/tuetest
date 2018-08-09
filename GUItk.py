@@ -458,7 +458,6 @@ class App:
         print(middev2)
         dev2 = n.sqrt(middev2)
         return dev1, dev2, avg1, avg2
-        # TODO
 
     def convert(self, adc_values):
         voltage = []
@@ -501,9 +500,9 @@ class App:
             times.append(tt)
             time.sleep(10)
             if z == 10:
-                Test.actuation()
                 loading_text.config(text="Do actuation")
                 loading_text.update()
+                Test.actuation()
 
         loading_bar.place(relwidth=0.88)
         loading_bar.update()
@@ -533,9 +532,9 @@ class App:
         loading_bar.update()
         loading_text.config(text="Done")
         loading_text.update()
-        back_button.config(state="enabled")
-        logout_button.config(state="enabled")
-        measure_button.config(state="enabled")
+        back_button.config(state="normal")
+        logout_button.config(state="normal")
+        measure_button.config(state="normal")
         back_button.update()
         logout_button.update()
         measure_button.update()
