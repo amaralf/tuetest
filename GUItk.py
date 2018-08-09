@@ -449,12 +449,24 @@ class App:
         x, y = Test.fourierten(tt, voltage)
         return y, voltage, tt
 
-    def getResult(self, meas1, meas2):
+    def getResult(self, meas1, meas2, halflength):
         """Input: single amplitude
            Output: single result value"""
-        dev1 = n.std(meas1)
-        dev2 = n.std(meas2)
-        return dev1, dev2
+        avg1 = sum(meas1) / halflength
+        avg2 = sum(meas2) / halflength
+        predev1= 0
+        for number in meas1:
+            k = n.square(number - avg1)
+            predev1 = predev1 + k
+        predev1 = predev1 / len(meas1)
+        dev1 = n.sqrt(predev1)
+        predev2 = 0
+        for number in meas2:
+            k = n.square(number - avg2)
+            predev2 = predev2 + k
+        predev2 = predev2 / len(meas2)
+        dev2 = n.sqrt(predev2)
+        return dev1, dev2, avg1, avg2
         # TODO
 
     def convert(self, adc_values):
@@ -504,8 +516,6 @@ class App:
         loading_bar.update()
         loading_text.config(text="Save Results...")
         loading_text.update()
-
-        avg = sum(measurements) / len(measurements)
         if len(measurements) != 20:
             print("more than 20 measurements")
         halflength = int(len(measurements)/2)
@@ -514,9 +524,7 @@ class App:
         meas2 = measurements[halflength:]
         print(len(meas2))
         # print(str(halflength) + " should be 10")
-        avg1 = sum(meas1)/halflength
-        avg2 = sum(meas2)/halflength
-        dev1, dev2 = self.getResult(meas1, meas2)
+        dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: "+ str(avg2))
         output_text.config(text="Average first ten = " + str(avg1) + "\n" + "Standard Deviation first ten = " + str(dev1) + "\n" +
