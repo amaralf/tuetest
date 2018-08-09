@@ -33,7 +33,7 @@ class App:
     color2 = "light blue"
     color3 = "white"
     color4 = "dark blue"
-    normalfontsize = 18
+    normalfontsize = 14
 
     def __init__(self):
         self.root = t.Tk()
