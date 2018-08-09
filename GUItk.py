@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import threading
@@ -23,14 +23,14 @@ class App:
     width = 1024
     patient_id = -1
     font = "Calibri"
-    color1 = "#d50471" # dark pink
-    color2 = "#1e4faa" #light blue
-    color3 = "#d5c5cb" #light pink
-    color4 = "#1e2c75" #dark blue
-    # color1 = "grey"
-    # color2 = "grey"
-    # color3 = "grey"
-    # color4 = "grey"
+    # color1 = "#d50471" # dark pink
+    # color2 = "#1e4faa" # light blue
+    # color3 = "#d5c5cb" # light pink
+    # color4 = "#1e2c75" # dark blue
+    color1 = "blue"
+    color2 = "light blue"
+    color3 = "white"
+    color4 = "dark blue"
     normalfontsize = 18
 
     def __init__(self):
@@ -66,7 +66,7 @@ class App:
         }
         switcher[self.page]()
 
-    def checklist(self, measure_button, output_text):
+    def checklist(self, output_text, loading_frame, loading_bar, loading_text):
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
@@ -81,11 +81,13 @@ class App:
                 output_text.config(text="Please insert sample.")
                 output_text.config(fg="red")
                 output_text.update()
+            return
         else:
-            output_text.config(text="Preconditions satisfied. Press the measure button to begin.")
+            output_text.config(text="Preconditions satisfied. Measuring...")
             output_text.config(fg="black")
             output_text.update()
-            measure_button.config(state="normal")
+            self.run(output_text, loading_frame, loading_bar, loading_text)
+
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -101,7 +103,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_measurements(self, measures, avg1, avg2):
+    def save_measurements(self, measures, avg1, avg2, dev1, dev2):
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -117,7 +119,11 @@ class App:
             measurements.write("\n")
             measurements.write("Average first 10 = " + str(avg1))
             measurements.write("\n")
+            measurements.write("Standard Deviation first 10 = " + str(dev1))
+            measurements.write("\n")
             measurements.write("Average second 10 = " + str(avg2))
+            measurements.write("\n")
+            measurements.write("Standard Deviation second 10 = " + str(dev2))
             measurements.write("\n\n")
             measurements.close()
         self.send_to_mail(filename)
@@ -391,8 +397,9 @@ class App:
         output_bar.pack(fill="x")
         output_bar.update()
         output_text = t.Label(output_bar, bg=self.color1,
-                              text="Click the Precondition Check Button.\n" +
-                                   "It will check whether the sensor is ready to measure.",
+                              text="Click the 'Check and Measure' Button.\n" +
+                                   "It will check whether the sensor is ready to measure.\n"
+                                   "If so, it will initiate measuring.",
                               font=(self.font, self.normalfontsize))
         output_text.place(relheight=0.5, relwidth=1)
         output_text.update()
@@ -408,18 +415,18 @@ class App:
         bottom_frame.pack(side="bottom", fill="both", expand="true")
         bottom_frame.update()
         bottom_frame.pack_propagate(0)
-        measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
-                                  fg="green", disabledforeground="red", state="disabled", text="Measure",
-                                  font=(self.font, self.normalfontsize),
-                                  command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
-        measure_button.update()
-        measure_button.place(relheight=0.35, relwidth=0.6, relx=0.2, rely=0.45)
+        # measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+        #                           fg="green", disabledforeground="red", state="disabled", text="Measure",
+        #                           font=(self.font, self.normalfontsize),
+        #                           command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
+        # measure_button.update()
+        # measure_button.place(relheight=0.35, relwidth=0.6, relx=0.2, rely=0.45)
         # make precondition button update the properties of the measure button
         precond_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
-                                  fg=self.color3, text="Pre-condition check", font=(self.font, self.normalfontsize),
-                                  command=lambda: self.checklist(measure_button, output_text))
+                                  fg=self.color3, text="Check and Measure", font=(self.font, self.normalfontsize),
+                                  command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text))
         precond_button.update()
-        precond_button.place(relheight=0.35, relwidth=0.6, relx=0.2, rely=0.05)
+        precond_button.place(relheight=0.2, relwidth=0.6, relx=0.2, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font, self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
                                  command=lambda: os._exit(0))
@@ -442,10 +449,12 @@ class App:
         x, y = Test.fourierten(tt, voltage)
         return y, voltage, tt
 
-    def getResult(self, avg):
+    def getResult(self, meas1, meas2):
         """Input: single amplitude
            Output: single result value"""
-        return n.abs(2 * (avg * avg) - 30 * avg + 20)
+        dev1 = n.std(meas1)
+        dev2 = n.std(meas2)
+        return dev1, dev2
         # TODO
 
     def convert(self, adc_values):
@@ -500,14 +509,17 @@ class App:
         if len(measurements) != 20:
             print("more than 20 measurements")
         halflength = int(len(measurements)/2)
+        meas1 = measurements[:halflength]
+        meas2 = measurements[halflength+1:]
         # print(str(halflength) + " should be 10")
-        avg1 = sum(measurements[:halflength])/halflength
-        avg2 = sum(measurements[halflength+1:])/halflength
-        res = self.getResult(avg)
+        avg1 = sum(meas1)/halflength
+        avg2 = sum(meas2)/halflength
+        dev1, dev2 = self.getResult(meas1, meas2)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: "+ str(avg2))
-        output_text.config(text="Average = " + str(avg) + "\n" + "Result = " + str(res))
-        self.save_measurements(measurements, avg1, avg2)
+        output_text.config(text="Average first ten = " + str(avg1) + "\n" + "Standard Deviation first ten = " + str(dev1) + "\n" +
+                           "Average second ten = " + str(avg2) + "\n" + "Standard Deviation second ten = " + str(dev2) + "\n")
+        self.save_measurements(measurements, avg1, avg2, dev1, dev2)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Done")
