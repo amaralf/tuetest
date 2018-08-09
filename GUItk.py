@@ -262,14 +262,11 @@ class App:
                                  activebackground=self.color2, activeforeground=self.color3,
                                  command=lambda: self.admin_login(username=username_box.get(),
                                                                   password=password_box.get()))
-        create_button.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.4)
+        create_button.place(relheight=0.1, relwidth=0.2, relx=0.0, rely=0.4)
         logout_button = t.Button(self.root, text="Shutdown", bg=self.color4, fg=self.color3,
                                  activebackground=self.color2, activeforeground=self.color3,
                                  font=(self.font, self.normalfontsize), command=lambda: os._exit(0))
-        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.6, rely=0.4)
-        # credit_label = t.Label(self.root, bg="lightgrey", wraplengt=200,
-        #                        text="Credit to Suraj Singh and the S.S.B. group for the keyboard")
-        # credit_label.place(relheight=0.1, relwidth=0.15, relx=0.825, rely=0.4)
+        logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.4)
         keyboard.main(self.root)
 
     def includelogo(self, parent_label):
@@ -417,18 +414,11 @@ class App:
         bottom_frame.pack(side="bottom", fill="both", expand="true")
         bottom_frame.update()
         bottom_frame.pack_propagate(0)
-        # measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
-        #                           fg="green", disabledforeground="red", state="disabled", text="Measure",
-        #                           font=(self.font, self.normalfontsize),
-        #                           command=lambda: self.run(output_text, loading_frame, loading_bar, loading_text))
-        # measure_button.update()
-        # measure_button.place(relheight=0.35, relwidth=0.6, relx=0.2, rely=0.45)
-        # make precondition button update the properties of the measure button
-        precond_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+        measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
                                   fg=self.color3, text="Check and Measure", font=(self.font, self.normalfontsize),
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text))
-        precond_button.update()
-        precond_button.place(relheight=0.2, relwidth=0.6, relx=0.2, rely=0.3)
+        measure_button.update()
+        measure_button.place(relheight=0.2, relwidth=0.4, relx=0.3, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font, self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
                                  command=lambda: os._exit(0))
@@ -503,7 +493,7 @@ class App:
 
             loading_bar.place(relwidth=progress)
             loading_bar.update()
-            loading_text.config(text="Get Measurement " + str(z))
+            loading_text.config(text="Get Measurement " + str(z+1))
             loading_text.update()
 
             y, voltage, tt = self.getAmp()
