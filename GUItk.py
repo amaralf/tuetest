@@ -12,7 +12,6 @@ from email import encoders
 import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
-import threading
 import keyboard as keyboard
 
 # Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
@@ -59,7 +58,8 @@ class App:
         }
         switcher[self.page]()
 
-    def checklist(self, output_text, loading_frame, loading_bar, loading_text):
+    def checklist(self, output_text, loading_frame, loading_bar, loading_text,
+                  back_button, logout_button, measure_button):
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
@@ -79,6 +79,12 @@ class App:
             output_text.config(text="Preconditions satisfied. Measuring...")
             output_text.config(fg="black")
             output_text.update()
+            back_button.config(state="disabled")
+            logout_button.config(state="disabled")
+            measure_button.config(state="disabled")
+            back_button.update()
+            logout_button.update()
+            measure_button.update()
             self.run(output_text, loading_frame, loading_bar, loading_text)
 
 
@@ -165,7 +171,7 @@ class App:
             error_text = t.Label(self.root, fg="red", bg=self.color2, text="Admin data incorrect, access denied")
             error_text.place(relheight=0.1, relwidth=0.2, relx=0.4, rely=0.4)
 
-    def login(self, username, password, entry_box):
+    def login(self, username, password):
         """Login function"""
         usernames = []
         accounts = open("./textfiles/accounts.txt", "r")
@@ -377,7 +383,8 @@ class App:
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
         back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4, fg=self.color3,
-                               text="\u21A9" + " Back", font=(self.font, self.normalfontsize), command=lambda: self.change_page(1))
+                               text="\u21A9" + " Back", font=(self.font, self.normalfontsize), command=lambda: self.change_page(1),
+                               disabledforeground="red")
         back_button.pack()
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
@@ -407,17 +414,16 @@ class App:
         bottom_frame.pack_propagate(0)
         measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
                                   fg=self.color3, text="Measure", font=(self.font, self.normalfontsize),
-                                  command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text))
+                                  disabledforeground="red",
+                                  command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text,
+                                                                 back_button, logout_button, measure_button))
         measure_button.update()
         measure_button.place(relheight=0.2, relwidth=0.4, relx=0.3, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font, self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
+                                 disabledforeground="red",
                                  command=lambda: os._exit(0))
         logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
-
-        # redo = t.Button(self.root, text="Measure again", bg="dark grey",
-        #                 command=lambda: self.change_page(1))
-        # redo.place(relheight=0.1, relwidth=0.2, relx=0.2, rely=0.9)
 
     def stop(self, *args):
         sys.exit(0)
@@ -441,14 +447,16 @@ class App:
         for number in meas1:
             k = n.square(number - avg1)
             predev1 = predev1 + k
-        predev1 = predev1 / len(meas1)-1
-        dev1 = n.sqrt(predev1)
+        middev1 = predev1 / (len(meas1)-1)
+        print(middev1)
+        dev1 = n.sqrt(middev1)
         predev2 = 0
         for number in meas2:
             k = n.square(number - avg2)
             predev2 = predev2 + k
-        predev2 = predev2 / len(meas2)-1
-        dev2 = n.sqrt(predev2)
+        middev2 = predev2 / (len(meas2)-1)
+        print(middev2)
+        dev2 = n.sqrt(middev2)
         return dev1, dev2, avg1, avg2
         # TODO
 
@@ -459,7 +467,7 @@ class App:
             voltage.append(value)
         return voltage
 
-    def run(self, output_text, loading_frame, loading_bar, loading_text):
+    def run(self, output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button):
         """Input: none
            Output: none"""
         output_text.config(text="Measuring...")
@@ -525,6 +533,12 @@ class App:
         loading_bar.update()
         loading_text.config(text="Done")
         loading_text.update()
+        back_button.config(state="enabled")
+        logout_button.config(state="enabled")
+        measure_button.config(state="enabled")
+        back_button.update()
+        logout_button.update()
+        measure_button.update()
 
 
 app = App()
