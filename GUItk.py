@@ -85,7 +85,7 @@ class App:
             back_button.update()
             logout_button.update()
             measure_button.update()
-            self.run(output_text, loading_frame, loading_bar, loading_text)
+            self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button)
 
 
     def save_data(self, username, password):
