@@ -262,9 +262,18 @@ class App:
         create_button.place(relheight=0.1, relwidth=0.2, relx=0.0, rely=0.4)
         logout_button = t.Button(self.root, text="Shutdown", bg=self.color4, fg=self.color3,
                                  activebackground=self.color2, activeforeground=self.color3,
-                                 font=(self.font, self.normalfontsize), command=lambda: os._exit(0))
+                                 font=(self.font, self.normalfontsize), command=lambda: self.logout(username_box.get(),
+                                                                                                    password_box.get()))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.4)
         keyboard.main(self.root)
+
+    def logout(self, usr, pwd):
+        if usr == "admin" and pwd == "admin":
+            os._exit(0)
+        else:
+            os.system("sudo poweroff")
+        return
+
 
     def includelogo(self, parent_label):
         img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
