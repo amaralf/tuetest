@@ -397,9 +397,9 @@ class App:
         output_bar.pack(fill="x")
         output_bar.update()
         output_text = t.Label(output_bar, bg=self.color1,
-                              text="Click the 'Measure' Button.\n" +
+                              text="Click the 'Measure' button.\n" +
                                    "It will check whether the sensor is ready to measure.\n"
-                                   "If so, it will initiate measuring.",
+                                   "If so, it will initiate the measurement.",
                               font=(self.font, self.normalfontsize))
         output_text.place(relheight=0.5, relwidth=1)
         output_text.update()
