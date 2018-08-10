@@ -34,6 +34,7 @@ class App:
     color3 = "white"
     color4 = "dark blue"
     normalfontsize = 14
+    biggerfontsize = 18
 
     def __init__(self):
         self.root = t.Tk()
@@ -501,16 +502,16 @@ class App:
             times.append(tt)
             time.sleep(10)
             if z == 9:
-                loading_text.config(text="Do actuation")
+                loading_text.config(text="Actuating...")
                 loading_text.update()
-                progress += 0.05
+                progress += 0.08
                 loading_bar.place(relwidth=progress)
                 loading_bar.update()
                 Test.actuation()
 
         loading_bar.place(relwidth=0.93)
         loading_bar.update()
-        loading_text.config(text="Save Results...")
+        loading_text.config(text="Saving Results...")
         loading_text.update()
         if len(measurements) != 20:
             print("more than 20 measurements")
@@ -529,12 +530,12 @@ class App:
         # print(str(halflength) + " should be 10")
         dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
         print("avg of first ten: " + str(avg1))
-        print("avg of second ten: "+ str(avg2))
-        output_text.config(text="Measurement Finished. Press the Measure Button to measure again.")
+        print("avg of second ten: " + str(avg2))
+        output_text.config(text="Measurement finished. Press the Measure Button to measure again.")
         self.save_measurements(measurements, avg1, avg2, dev1, dev2)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
-        loading_text.config(text="Done")
+        loading_text.config(text="Finished")
         loading_text.update()
         back_button.config(state="normal")
         logout_button.config(state="normal")
