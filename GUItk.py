@@ -434,7 +434,7 @@ class App:
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font, self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
                                  disabledforeground="red",
-                                 command=lambda: os._exit(0))
+                                 command=lambda: os.system("sudo poweroff"))
         logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
 
     def stop(self, *args):
