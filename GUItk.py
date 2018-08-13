@@ -484,6 +484,7 @@ class App:
         else:
             filetext = filename.read()
         filelabel = t.Label(fileframe, bg = self.color3, text=filetext, font=(self.font, self.normalfontsize))
+        filelabel.place()
 
     def stop(self, *args):
         sys.exit(0)
