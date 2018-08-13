@@ -101,7 +101,11 @@ class Keyboard(Tkinter.Frame):
 
     # Function For Detecting Pressed Keyword.
     def button_command(self, event):
-        pyautogui.press(event)
+        if event != "shift":
+            pyautogui.press(event)
+            pyautogui.keyUp("shift")
+        else:
+            pyautogui.keyDown("shift")
         return
 
 
