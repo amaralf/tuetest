@@ -53,8 +53,9 @@ class App:
         """Function to generate pages"""
         switcher = {
             0: self.generate_login,
-            1: self.generate_page_one,
-            2: self.generate_page_two,
+            1: self.generate_page_patientID(),
+            2: self.generate_page_measure,
+            3: self.generate_page_results,
             4: self.generate_boot,
             5: self.generate_new_account,
         }
@@ -102,6 +103,18 @@ class App:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
+
+    def save_results(self, res):
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
+        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        dirname = os.path.dirname(filename)
+        print(dirname)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+        with open(filename, "a") as rez:
+            rez.write("TimeStamp: " + str(st) + "\n")
+            rez.write("Concentration: " + str(res) + "\n\n")
 
     def save_measurements(self, measures, avg1, avg2, dev1, dev2):
         """Function to save measurements of the last measuring"""
@@ -274,7 +287,6 @@ class App:
             os.system("sudo poweroff")
         return
 
-
     def includelogo(self, parent_label):
         img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
         logo_label = t.Label(parent_label)
@@ -330,7 +342,7 @@ class App:
         keyboard.main(self.root)
 
     # start page
-    def generate_page_one(self):
+    def generate_page_patientID(self):
         title="Patient ID"
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -383,7 +395,7 @@ class App:
         return
 
     # measure page
-    def generate_page_two(self):
+    def generate_page_measure(self):
         title = "Measurement"
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
@@ -437,6 +449,28 @@ class App:
                                  command=lambda: os.system("sudo poweroff"))
         logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
 
+    def generate_page_results(self):
+        title = "Results"
+        # begin top bar of screen
+        top_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() / 10))
+        top_bar.pack(side="top", fill="x", expand="false")
+        top_bar.update()
+        top_bar.pack_propagate(0)
+        # begin text and button of top bar
+        top_text = t.Label(top_bar, bg=self.color3, text=title, font=(self.font, 36))
+        top_text.pack(side="top", fill="both", expand="true")
+        top_text.update()
+        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+                               fg=self.color3, text="\u21A9" + " Back", font=(self.font, self.normalfontsize),
+                               command=lambda: self.change_page(2), disabledforeground="red")
+        back_button.pack()
+        back_button.update()
+        back_button.place(relheight=1, relwidth=0.15)
+        self.includelogo(top_bar)
+        # begin upper part of screen
+        fileframe = t.Frame(self.root, bg=self.color4)
+        fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
+
     def stop(self, *args):
         sys.exit(0)
 
@@ -449,6 +483,9 @@ class App:
         voltage = self.convert(adc_values)
         x, y = Test.fourierten(tt, voltage)
         return y, voltage, tt
+
+    def calibration_curve(self, avg):
+        return avg
 
     def getResult(self, meas1, meas2, halflength):
         """Input: single amplitude
@@ -469,7 +506,8 @@ class App:
         middev2 = predev2 / (len(meas2)-1)
         print(middev2)
         dev2 = n.sqrt(middev2)
-        return dev1, dev2, avg1, avg2
+        res = self.calibration_curve(avg2)
+        return res, dev1, dev2, avg1, avg2
 
     def convert(self, adc_values):
         voltage = []
@@ -537,11 +575,12 @@ class App:
         print("\n")
         print(len(meas2))
         # print(str(halflength) + " should be 10")
-        dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
+        res, dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: " + str(avg2))
         output_text.config(text="Measurement finished. Press the Measure Button to measure again.")
         self.save_measurements(measurements, avg1, avg2, dev1, dev2)
+        self.save_results(res)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Finished")
