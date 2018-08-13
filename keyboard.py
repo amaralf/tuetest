@@ -31,6 +31,7 @@ TOPBAR_BACKGROUND = "skyblue"
 TRANSPARENCY = 0.7
 FONT_COLOR = "white"
 FONT = "Calibri"
+SHIFT = 0
 
 # ==============================================
 keys = [
@@ -101,7 +102,15 @@ class Keyboard(Tkinter.Frame):
 
     # Function For Detecting Pressed Keyword.
     def button_command(self, event):
-        pyautogui.press(event)
+        print(event)
+        if event != "shift":
+            pyautogui.press(event)
+            if SHIFT == 1:
+                pyautogui.keyUp("shift")
+                SHIFT = 0
+        else:
+            pyautogui.keyDown("shift")
+            SHIFT = 1
         return
 
 
