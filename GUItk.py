@@ -1,3 +1,6 @@
+# Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
+# by T.T.P. Franken and R.P.W. Schmidt.
+
 import os
 import sys
 import tkinter as t
@@ -13,9 +16,6 @@ import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import keyboard as keyboard
-
-# Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
-# by T.T.P. Franken and R.P.W. Schmidt.
 
 
 class App:
