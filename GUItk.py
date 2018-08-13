@@ -448,6 +448,12 @@ class App:
                                  disabledforeground="red",
                                  command=lambda: os.system("sudo poweroff"))
         logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
+        results_button = t.Button(self.root, text="Results", bg=self.color4,
+                                 font=(self.font, self.normalfontsize),
+                                 activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
+                                 disabledforeground="red",
+                                 command=lambda: self.change_page(3))
+        results_button.place(relheight=0.1, relwidth=0.4, relx=0.0, rely=0.9)
 
     def generate_page_results(self):
         title = "Results"
