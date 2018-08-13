@@ -229,7 +229,7 @@ class App:
     # login screen
     def generate_login(self):
         # create upper frame with text
-        title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height()/10))
+        title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 10))
         title_bar.pack(side="top", fill="x", expand="false")
         title_bar.update()
         title_bar.propagate(0)
@@ -346,7 +346,7 @@ class App:
 
     # start page
     def generate_page_patientID(self):
-        title="Patient ID"
+        title = "Patient ID"
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
         top_bar.update()
@@ -362,8 +362,8 @@ class App:
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
         self.includelogo(top_bar)
-        top_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() *0.4),
-                               bg=self.color2)
+        top_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.4),
+                            bg=self.color2)
         top_frame.pack(side="top", fill="x", expand="false")
         top_frame.update()
         top_frame.pack_propagate(0)
@@ -439,7 +439,8 @@ class App:
         bottom_frame.pack(side="bottom", fill="both", expand="true")
         bottom_frame.update()
         bottom_frame.pack_propagate(0)
-        measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+        measure_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3,
+                                  bg=self.color4,
                                   fg=self.color3, text="Measure", font=(self.font, self.normalfontsize),
                                   disabledforeground="red",
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text,
@@ -447,20 +448,21 @@ class App:
                                                                  results_button))
         measure_button.update()
         measure_button.place(relheight=0.2, relwidth=0.4, relx=0.3, rely=0.3)
-        logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font, self.normalfontsize),
+        logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4,
+                                 font=(self.font, self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
                                  disabledforeground="red",
                                  command=lambda: os.system("sudo poweroff"))
         logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
         results_button = t.Button(self.root, text="Results", bg=self.color4,
-                                 font=(self.font, self.normalfontsize),
-                                 activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
-                                 disabledforeground="red",
-                                 command=lambda: self.change_page(3))
+                                  font=(self.font, self.normalfontsize),
+                                  activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
+                                  disabledforeground="red",
+                                  command=lambda: self.change_page(3))
         results_button.place(relheight=0.1, relwidth=0.4, relx=0.0, rely=0.9)
 
     def generate_page_results(self):
-        title = "Results of Patient "+ str(self.patient_id)
+        title = "Results of Patient " + str(self.patient_id)
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -484,15 +486,16 @@ class App:
         try:
             file = open(filename, "r")
         except FileNotFoundError:
-            filetext="There are no results yet for patient " + str(self.patient_id) + "."
+            filetext = "There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = file.read()
-        filelabel = t.Entry(fileframe, bg = self.color3, textvariable=filetext, state="readonly",
-                            font=(self.font, self.normalfontsize))
-        filelabel.place(relheight=1, relwidth=0.7, relx=0, rely=0)
-        filescroll = t.Scrollbar(fileframe, orient='vertical', command=filelabel.yview)
+        filelabel = t.Canvas(fileframe, bg=self.color3, text=filetext,
+                             font=(self.font, self.normalfontsize))
+        filelabel.place(relheight=1, relwidth=0.8, relx=0, rely=0)
+        filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
         filelabel.config(yscrollcommand=filescroll.set)
-        filescroll.place(relheight=1, relwidth=0.3, relx=0.7, rely=0)
+        filescroll.place(relheight=1, relwidth=0.2, relx=0.7, rely=0)
+        fileframe.update()
 
     def stop(self, *args):
         sys.exit(0)
@@ -515,18 +518,18 @@ class App:
            Output: single result value"""
         avg1 = sum(meas1) / halflength
         avg2 = sum(meas2) / halflength
-        predev1= 0
+        predev1 = 0
         for number in meas1:
             k = n.square(number - avg1)
             predev1 = predev1 + k
-        middev1 = predev1 / (len(meas1)-1)
+        middev1 = predev1 / (len(meas1) - 1)
         print(middev1)
         dev1 = n.sqrt(middev1)
         predev2 = 0
         for number in meas2:
             k = n.square(number - avg2)
             predev2 = predev2 + k
-        middev2 = predev2 / (len(meas2)-1)
+        middev2 = predev2 / (len(meas2) - 1)
         print(middev2)
         dev2 = n.sqrt(middev2)
         res = self.calibration_curve(avg2)
@@ -535,7 +538,7 @@ class App:
     def convert(self, adc_values):
         voltage = []
         for entry in adc_values:
-            value = (5/32678) * int(entry)
+            value = (5 / 32678) * int(entry)
             voltage.append(value)
         return voltage
 
@@ -564,7 +567,7 @@ class App:
 
             loading_bar.place(relwidth=progress)
             loading_bar.update()
-            loading_text.config(text="Get Measurement " + str(z+1))
+            loading_text.config(text="Get Measurement " + str(z + 1))
             loading_text.update()
 
             y, voltage, tt = self.getAmp()
@@ -586,7 +589,7 @@ class App:
         loading_text.update()
         if len(measurements) != 20:
             print("more than 20 measurements")
-        halflength = int(len(measurements)/2)
+        halflength = int(len(measurements) / 2)
         meas1 = measurements[:halflength]
         print(measurements)
         print("\n")
