@@ -102,11 +102,9 @@ class App:
             error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
         else:
             with open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "a") as usernames:
-            # with open("./textfiles/accounts.txt", "a") as usernames:
                 usernames.write(', ' + str(username))
                 usernames.close()
             with open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "a") as passwords:
-            # with open("./textfiles/passwords.txt", "a") as passwords:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
@@ -128,7 +126,6 @@ class App:
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
-        # filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         print(dirname)
         if not os.path.exists(dirname):
@@ -225,7 +222,7 @@ class App:
     def generate_boot(self):
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
-        img = ImageTk.PhotoImage(Image.open("./textfiles/logo.jpg"))
+        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.jpg"))
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
