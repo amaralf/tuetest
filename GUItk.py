@@ -483,8 +483,9 @@ class App:
             filetext="There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = filename.read()
-        filelabel = t.Label(fileframe, bg = self.color3, text=filetext, font=(self.font, self.normalfontsize))
-        filelabel.place()
+        filelabel = t.Label(fileframe, bg = self.color4, text=filetext, font=(self.font, self.normalfontsize))
+        filelabel.place(relheight=1, relwidth=1, relx=0, rely=0)
+        fileframe.update()
 
     def stop(self, *args):
         sys.exit(0)
