@@ -487,10 +487,12 @@ class App:
             filetext="There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = file.read()
-        filelabel = t.Label(fileframe, bg = self.color3, text=filetext, font=(self.font, self.normalfontsize))
-        filelabel.place(relheight=1, relwidth=1, relx=0, rely=0)
-        fileframe.update()
-        filelabel.update()
+        filelabel = t.Entry(fileframe, bg = self.color3, textvariable=filetext, state="readonly",
+                            font=(self.font, self.normalfontsize))
+        filelabel.place(relheight=1, relwidth=0.7, relx=0, rely=0)
+        filescroll = t.Scrollbar(fileframe, orient='vertical', command=filelabel.yview)
+        filelabel.config(yscrollcommand=filescroll.set)
+        filescroll.place(relheight=1, relwidth=0.3, relx=0.7, rely=0)
 
     def stop(self, *args):
         sys.exit(0)
