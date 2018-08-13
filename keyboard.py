@@ -31,7 +31,6 @@ TOPBAR_BACKGROUND = "skyblue"
 TRANSPARENCY = 0.7
 FONT_COLOR = "white"
 FONT = "Calibri"
-SHIFT = 0
 
 # ==============================================
 keys = [
@@ -105,12 +104,9 @@ class Keyboard(Tkinter.Frame):
         print(event)
         if event != "shift":
             pyautogui.press(event)
-            if SHIFT == 1:
-                pyautogui.keyUp("shift")
-                SHIFT = 0
+            pyautogui.keyUp("shift")
         else:
             pyautogui.keyDown("shift")
-            SHIFT = 1
         return
 
 
