@@ -175,14 +175,14 @@ class App:
     def login(self, username, password):
         """Login function"""
         usernames = []
-        accounts = open("home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
+        accounts = open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
         for user in list(accounts):
             user = user.split(', ')
         usernames.extend(user)
         accounts.close()
 
         passwords = []
-        code = open("home/pi/Desktop/tuetest/textfiles/passwords.txt", "r")
+        code = open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "r")
         for word in list(code):
             word = word.split(', ')
         passwords.extend(word)
