@@ -490,7 +490,7 @@ class App:
         else:
             filetext = file.read()
         filelabel = t.Canvas(fileframe, bg=self.color3)
-        filelabel.create_text(anchor="nw", font=(self.font, self.normalfontsize),
+        filelabel.create_text(0, 0, anchor="nw", font=(self.font, self.normalfontsize),
                               text=filetext)
         filelabel.place(relheight=1, relwidth=0.9, relx=0, rely=0)
         filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
