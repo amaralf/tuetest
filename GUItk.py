@@ -53,7 +53,7 @@ class App:
         """Function to generate pages"""
         switcher = {
             0: self.generate_login,
-            1: self.generate_page_patientID(),
+            1: self.generate_page_patientID,
             2: self.generate_page_measure,
             3: self.generate_page_results,
             4: self.generate_boot,
