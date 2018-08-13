@@ -20,7 +20,7 @@ import keyboard as keyboard
 
 class App:
     # define main properties
-    page = 4  # 4 is boot
+    page = 1  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
@@ -465,15 +465,15 @@ class App:
     def generate_page_results(self):
         title = "Results of Patient " + str(self.patient_id)
         # begin top bar of screen
-        top_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() / 10))
+        top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
         top_bar.update()
         top_bar.pack_propagate(0)
         # begin text and button of top bar
-        top_text = t.Label(top_bar, bg=self.color2, text=title, font=(self.font, 36))
+        top_text = t.Label(top_bar, bg=self.color3, fg=self.color2, text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
-        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+        back_button = t.Button(top_bar, activebackground=self.color4, activeforeground=self.color3, bg=self.color4,
                                fg=self.color3, text="\u21A9" + " Back", font=(self.font, self.normalfontsize),
                                command=lambda: self.change_page(2), disabledforeground="red")
         back_button.pack()
