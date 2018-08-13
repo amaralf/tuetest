@@ -62,7 +62,7 @@ class App:
         switcher[self.page]()
 
     def checklist(self, output_text, loading_frame, loading_bar, loading_text,
-                  back_button, logout_button, measure_button):
+                  back_button, logout_button, measure_button, results_button):
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
@@ -85,10 +85,13 @@ class App:
             back_button.config(state="disabled")
             logout_button.config(state="disabled")
             measure_button.config(state="disabled")
+            results_button.config(state="disabled")
             back_button.update()
             logout_button.update()
             measure_button.update()
-            self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button)
+            results_button.update()
+            self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
+                     results_button)
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -440,7 +443,8 @@ class App:
                                   fg=self.color3, text="Measure", font=(self.font, self.normalfontsize),
                                   disabledforeground="red",
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text,
-                                                                 back_button, logout_button, measure_button))
+                                                                 back_button, logout_button, measure_button,
+                                                                 results_button))
         measure_button.update()
         measure_button.place(relheight=0.2, relwidth=0.4, relx=0.3, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font, self.normalfontsize),
@@ -482,7 +486,7 @@ class App:
         except FileNotFoundError:
             filetext="There are no results yet for patient " + str(self.patient_id) + "."
         else:
-            filetext = filename.read()
+            filetext = file.read()
         filelabel = t.Label(fileframe, bg = self.color3, text=filetext, font=(self.font, self.normalfontsize))
         filelabel.place(relheight=1, relwidth=1, relx=0, rely=0)
         fileframe.update()
@@ -533,7 +537,8 @@ class App:
             voltage.append(value)
         return voltage
 
-    def run(self, output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button):
+    def run(self, output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
+            results_button):
         """Input: none
            Output: none"""
         output_text.config(text="Measuring...")
@@ -605,9 +610,11 @@ class App:
         back_button.config(state="normal")
         logout_button.config(state="normal")
         measure_button.config(state="normal")
+        results_button.config(state="normal")
         back_button.update()
         logout_button.update()
         measure_button.update()
+        results_button.update()
 
 
 app = App()
