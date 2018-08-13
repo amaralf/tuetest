@@ -64,7 +64,7 @@ class App:
         switcher[self.page]()
 
     def checklist(self, output_text, loading_frame, loading_bar, loading_text,
-                  back_button, logout_button, measure_button, results_button):
+                  back_button, logout_button, measure_button, results_button, mail_button):
         """Check if sample and/or hood are inserted/closed"""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
@@ -88,12 +88,14 @@ class App:
             logout_button.config(state="disabled")
             measure_button.config(state="disabled")
             results_button.config(state="disabled")
+            mail_button.config(state="disabled")
             back_button.update()
             logout_button.update()
             measure_button.update()
             results_button.update()
+            mail_button.update()
             self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
-                     results_button)
+                     results_button, mail_button)
 
     def save_data(self, username, password):
         """Function to save newly added account data"""
@@ -144,7 +146,6 @@ class App:
             measurements.write("Standard Deviation second 10 = " + str(dev2))
             measurements.write("\n\n")
             measurements.close()
-        self.send_to_mail(filename)
 
     def send_to_mail(self, name):
         fromaddr = "tuesensingteam@gmail.com"
@@ -402,6 +403,7 @@ class App:
 
     # measure page
     def generate_page_measure(self):
+        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
@@ -448,19 +450,29 @@ class App:
                                   disabledforeground="red",
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text,
                                                                  back_button, logout_button, measure_button,
-                                                                 results_button))
+                                                                 results_button, mail_button))
         measure_button.update()
-        measure_button.place(relheight=0.2, relwidth=0.4, relx=0.3, rely=0.3)
+        measure_button.place(relheight=0.2, relwidth=0.2, relx=0.4, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font,
                                  self.normalfontsize), activeforeground=self.color3, activebackground=self.color2,
                                  fg=self.color3, disabledforeground="red", command=lambda: os.system("sudo poweroff"))
-        logout_button.place(relheight=0.1, relwidth=0.4, relx=0.6, rely=0.9)
+        logout_button.place(relheight=0.1, relwidth=0.3, relx=0.7, rely=0.9)
+        mail_button = t.Button(self.root, text="Mail", bg=self.color4, font=(self.font,
+                                 self.normalfontsize), activeforeground=self.color3, activebackground=self.color2,
+                                 fg=self.color3, disabledforeground="red", command=lambda: self.send_to_mail(filename))
+        mail_button.place(relheight=0.1, relwidth=0.3, relx=0.35, rely=0.9)
+        try:
+            open(filename, "r")
+        except FileNotFoundError:
+            mail_button.config(state="disabled")
+        else:
+            mail_button.config(state="normal")
         results_button = t.Button(self.root, text="Results", bg=self.color4,
                                   font=(self.font, self.normalfontsize),
                                   activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
                                   disabledforeground="red",
                                   command=lambda: self.change_page(3))
-        results_button.place(relheight=0.1, relwidth=0.4, relx=0.0, rely=0.9)
+        results_button.place(relheight=0.1, relwidth=0.3, relx=0.0, rely=0.9)
 
     def generate_page_results(self):
         title = "Results of Patient " + str(self.patient_id)
@@ -514,7 +526,8 @@ class App:
         return y, voltage, tt
 
     def calibration_curve(self, avg):
-        return avg
+        ans = 1740.9*avg*avg + 142.35*avg + 1.8865
+        return ans
 
     def getResult(self, meas1, meas2, halflength):
         """Input: single amplitude
@@ -546,9 +559,10 @@ class App:
         return voltage
 
     def run(self, output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
-            results_button):
+            results_button, mail_button):
         """Input: none
            Output: none"""
+        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         output_text.config(text="Measuring...")
         output_text.config(fg="black")
         output_text.update()
@@ -623,6 +637,12 @@ class App:
         logout_button.update()
         measure_button.update()
         results_button.update()
+        try:
+            open(filename, "r")
+        except FileNotFoundError:
+            mail_button.config(state="disabled")
+        else:
+            mail_button.config(state="normal")
 
 
 app = App()
