@@ -456,7 +456,7 @@ class App:
         results_button.place(relheight=0.1, relwidth=0.4, relx=0.0, rely=0.9)
 
     def generate_page_results(self):
-        title = "Results"
+        title = "Results of Patient "+ str(self.patient_id)
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -474,8 +474,12 @@ class App:
         back_button.place(relheight=1, relwidth=0.15)
         self.includelogo(top_bar)
         # begin upper part of screen
-        fileframe = t.Frame(self.root, bg=self.color4)
+        fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
+        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        file = open(filename, "r")
+        filetext = filename.read()
+        filelabel = t.Label(fileframe, bg = self.color3, text=filetext, font=(self.font, self.normalfontsize))
 
     def stop(self, *args):
         sys.exit(0)
