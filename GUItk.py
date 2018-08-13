@@ -147,7 +147,7 @@ class App:
             measurements.write("\n\n")
             measurements.close()
 
-    def send_to_mail(self, name):
+    def send_to_mail(self, name, prettyname):
         fromaddr = "tuesensingteam@gmail.com"
         toaddr = "tuesensingteam@gmail.com"
         msg = MIMEMultipart()
@@ -158,14 +158,12 @@ class App:
         msg['Subject'] = "T.E.S.T " + str(st) + " results"
         body = "Results are enclosed."
         msg.attach(MIMEText(body, 'plain'))
-
-        filename = name
         attachment = open(name, "rb")
 
         part = MIMEBase('application', 'octet-stream')
         part.set_payload(attachment.read())
         encoders.encode_base64(part)
-        part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+        part.add_header('Content-Disposition', "attachment; filename= %s" % prettyname)
 
         msg.attach(part)
 
@@ -234,7 +232,7 @@ class App:
     # login screen
     def generate_login(self):
         # create upper frame with text
-        title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height()/10),
+        title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 10),
                             bg=self.color3)
         title_bar.pack(side="top", fill="x", expand="false")
         title_bar.update()
@@ -404,6 +402,7 @@ class App:
     # measure page
     def generate_page_measure(self):
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        prettyname = "Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
@@ -454,12 +453,15 @@ class App:
         measure_button.update()
         measure_button.place(relheight=0.2, relwidth=0.2, relx=0.4, rely=0.3)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font,
-                                 self.normalfontsize), activeforeground=self.color3, activebackground=self.color2,
+                                                                                              self.normalfontsize),
+                                 activeforeground=self.color3, activebackground=self.color2,
                                  fg=self.color3, disabledforeground="red", command=lambda: os.system("sudo poweroff"))
         logout_button.place(relheight=0.1, relwidth=0.3, relx=0.7, rely=0.9)
         mail_button = t.Button(self.root, text="Mail", bg=self.color4, font=(self.font,
-                                 self.normalfontsize), activeforeground=self.color3, activebackground=self.color2,
-                                 fg=self.color3, disabledforeground="red", command=lambda: self.send_to_mail(filename))
+                                                                             self.normalfontsize),
+                               activeforeground=self.color3, activebackground=self.color2,
+                               fg=self.color3, disabledforeground="red",
+                               command=lambda: self.send_to_mail(filename, prettyname))
         mail_button.place(relheight=0.1, relwidth=0.3, relx=0.35, rely=0.9)
         try:
             open(filename, "r")
@@ -526,7 +528,7 @@ class App:
         return y, voltage, tt
 
     def calibration_curve(self, avg):
-        ans = 1740.9*avg*avg + 142.35*avg + 1.8865
+        ans = 1740.9 * avg * avg + 142.35 * avg + 1.8865
         return ans
 
     def getResult(self, meas1, meas2, halflength):
