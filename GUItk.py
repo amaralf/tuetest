@@ -497,7 +497,6 @@ class App:
         filescroll.place(relheight=1, relwidth=0.1, relx=0.9, rely=0)
         fileframe.update()
         filelabel.update()
-        filescroll.config(scrollregion=(0, 0, filelabel.winfo_width(), filelabel.winfo_height()))
         filescroll.update()
 
     def stop(self, *args):
