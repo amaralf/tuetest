@@ -489,9 +489,8 @@ class App:
             filetext = "There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = file.read()
-        filelabel = t.Canvas(fileframe, bg=self.color3)
-        filelabel.create_text(0, 0, anchor="nw", font=(self.font, self.normalfontsize),
-                              text=filetext)
+        filelabel = t.Text(fileframe, bg=self.color3)
+        filelabel.insert("end", filetext)
         filelabel.place(relheight=1, relwidth=0.9, relx=0, rely=0)
         filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
         filelabel.config(yscrollcommand=filescroll.set)
