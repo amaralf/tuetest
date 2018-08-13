@@ -477,8 +477,12 @@ class App:
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
-        file = open(filename, "r")
-        filetext = filename.read()
+        try:
+            file = open(filename, "r")
+        except FileNotFoundError:
+            filetext="There are no results yet for patient " + str(self.patient_id) + "."
+        else:
+            filetext = filename.read()
         filelabel = t.Label(fileframe, bg = self.color3, text=filetext, font=(self.font, self.normalfontsize))
 
     def stop(self, *args):
