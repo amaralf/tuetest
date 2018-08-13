@@ -482,6 +482,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
+        fileframe.update()
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
             file = open(filename, "r")
@@ -496,8 +497,11 @@ class App:
         filelabel.place()
         filescroll = t.Scrollbar(fileframe, command=filecanvas.yview)
         filecanvas.config(yscrollcommand=filescroll.set)
+        filecanvas.update()
+        filelabel.update()
         filescroll.place(relheight=1, relwidth=0.1, relx=0.9, rely=0)
-        fileframe.update()
+        filescroll.update()
+
 
     def stop(self, *args):
         sys.exit(0)
