@@ -482,7 +482,6 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
-        fileframe.update()
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
             file = open(filename, "r")
@@ -490,18 +489,17 @@ class App:
             filetext = "There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = file.read()
-        filecanvas = t.Canvas(fileframe, bg=self.color3)
-        filecanvas.place(relheight=1, relwidth=0.9, relx=0, rely=0)
-        filelabel=t.Label(filecanvas, anchor="nw", font=(self.font, self.normalfontsize),
+        filelabel = t.Canvas(fileframe, bg=self.color3)
+        filelabel.create_text(0, 0, anchor="nw", font=(self.font, self.normalfontsize),
                               text=filetext)
-        filelabel.place()
-        filescroll = t.Scrollbar(fileframe, command=filecanvas.yview)
-        filecanvas.config(yscrollcommand=filescroll.set)
-        filecanvas.update()
-        filelabel.update()
+        filelabel.place(relheight=1, relwidth=0.9, relx=0, rely=0)
+        filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
+        filelabel.config(yscrollcommand=filescroll.set)
         filescroll.place(relheight=1, relwidth=0.1, relx=0.9, rely=0)
+        fileframe.update()
+        filelabel.update()
+        filescroll.config(scrollregion=(0, 0, filelabel.winfo_width(), filelabel.winfo_height()))
         filescroll.update()
-
 
     def stop(self, *args):
         sys.exit(0)
