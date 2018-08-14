@@ -121,7 +121,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_results(self, res):
+    def save_results(self, res1, res2, res3):
         """Function to save the new results with a timestamp."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -132,7 +132,9 @@ class App:
             os.makedirs(dirname)
         with open(filename, "a") as rez:
             rez.write("TimeStamp: " + str(st) + "\n")
-            rez.write("Concentration: " + str(res) + "\n\n")
+            rez.write("Concentration 1: " + str(res1) + "\n")
+            rez.write("Concentration 2: " + str(res2) + "\n")
+            rez.write("Concentration 3: " + str(res3) + "\n")
 
     def save_measurements(self, measures, avg1, avg2, avg3, dev1, dev2, dev3):
         """Function to save measurements of the last measuring"""
@@ -607,8 +609,10 @@ class App:
         middev3 = predev3 / (len(meas3) - 1)
         print(middev3)
         dev3 = n.sqrt(middev3)
-        res = self.calibration_curve(avg3)
-        return res, dev1, dev2, dev3, avg1, avg2, avg3
+        res1 = self.calibration_curve(avg1)
+        res2 = self.calibration_curve(avg2)
+        res3 = self.calibration_curve(avg3)
+        return res1, res2, res3, dev1, dev2, dev3, avg1, avg2, avg3
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
@@ -683,11 +687,16 @@ class App:
         print(len(meas2))
         print(len(meas3))
         # print(str(halflength) + " should be 10")
-        res, dev1, dev2, dev3, avg1, avg2, avg3 = self.getResult(meas1, meas2, meas3, 10)
+        res1, res2, res3, dev1, dev2, dev3, avg1, avg2, avg3 = self.getResult(meas1, meas2, meas3, 10)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: " + str(avg2))
         print("avg of third ten: " + str(avg3))
-        self.save_results(res)
+        output_text.config(text="Measurement finished.\n"+
+                                "Results are: \n"+
+                                str(res1) + "\n" + str(res2) + "\n" + str(res3) + "\n"
+                                "Press the Measure Button to measure again.")
+        self.save_measurements(measurements, avg1, avg2, avg3, dev1, dev2, dev3)
+        self.save_results(res1, res2, res3)
         # loading_bar.place(relwidth=0.98)
         # loading_bar.update()
         # loading_text.config(text="Finished")
