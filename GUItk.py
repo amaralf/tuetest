@@ -658,7 +658,7 @@ class App:
             times.append(tt)
             time.sleep(10)
             if z == 9:
-                loading_text.config(text="Actuating...")
+                loading_text.config(text="Actuating 1st Round, 2x...")
                 loading_text.update()
                 progress += 0.08
                 # loading_bar.place(relwidth=progress)
@@ -666,7 +666,7 @@ class App:
                 Test.actuation()
                 Test.actuation()
             if z == 19:
-                loading_text.config(text="Actuating...")
+                loading_text.config(text="Actuating 2nd Round, 3x...")
                 loading_text.update()
                 progress += 0.08
                 # loading_bar.place(relwidth=progress)
