@@ -664,7 +664,9 @@ class App:
                 # loading_bar.place(relwidth=progress)
                 # loading_bar.update()
                 Test.actuation()
+                time.sleep(5)
                 Test.actuation()
+                time.sleep(20)
             if z == 19:
                 loading_text.config(text="Actuating 2nd Round, 3x...")
                 loading_text.update()
@@ -672,8 +674,11 @@ class App:
                 # loading_bar.place(relwidth=progress)
                 # loading_bar.update()
                 Test.actuation()
+                time.sleep(5)
                 Test.actuation()
+                time.sleep(5)
                 Test.actuation()
+                time.sleep(20)
 
 
         # loading_bar.place(relwidth=0.93)
