@@ -134,8 +134,8 @@ class App:
             rez.write("TimeStamp: " + str(st) + "\n")
             rez.write("Concentration: " + str(res) + "\n\n")
 
-    def save_measurements(self, measures, avg1, avg2, dev1, dev2):
-        """Function to save measurements of the last measuring attempt."""
+    def save_measurements(self, measures, avg1, avg2, avg3, dev1, dev2, dev3):
+        """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
@@ -155,6 +155,10 @@ class App:
             measurements.write("Average second 10 = " + str(avg2))
             measurements.write("\n")
             measurements.write("Standard Deviation second 10 = " + str(dev2))
+            measurements.write("\n")
+            measurements.write("Average third 10 = " + str(avg3))
+            measurements.write("\n")
+            measurements.write("Standard Deviation third 10 = " + str(dev3))
             measurements.write("\n\n")
             measurements.close()
 
@@ -576,11 +580,12 @@ class App:
         ans = 1740.9 * avg * avg + 142.35 * avg + 1.8865
         return ans
 
-    def getResult(self, meas1, meas2, halflength):
+    def getResult(self, meas1, meas2, meas3, measlength):
         """Input: single amplitude
            Output: single result value"""
-        avg1 = sum(meas1) / halflength
-        avg2 = sum(meas2) / halflength
+        avg1 = sum(meas1) / measlength
+        avg2 = sum(meas2) / measlength
+        avg3 = sum(meas3) / measlength
         predev1 = 0
         for number in meas1:
             k = n.square(number - avg1)
@@ -595,8 +600,15 @@ class App:
         middev2 = predev2 / (len(meas2) - 1)
         print(middev2)
         dev2 = n.sqrt(middev2)
-        res = self.calibration_curve(avg2)
-        return res, dev1, dev2, avg1, avg2
+        predev3 = 0
+        for number in meas3:
+            k = n.square(number - avg3)
+            predev3 = predev3 + k
+        middev3 = predev3 / (len(meas3) - 1)
+        print(middev3)
+        dev3 = n.sqrt(middev3)
+        res = self.calibration_curve(avg3)
+        return res, dev1, dev2, dev3, avg1, avg2, avg3
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
@@ -628,11 +640,11 @@ class App:
         times = []
         progress = 0
 
-        for z in range(20):
+        for z in range(30):
             progress = progress + 0.04
 
-            loading_bar.place(relwidth=progress)
-            loading_bar.update()
+            # loading_bar.place(relwidth=progress)
+            # loading_bar.update()
             loading_text.config(text="Get Measurement " + str(z + 1))
             loading_text.update()
 
@@ -645,41 +657,41 @@ class App:
                 loading_text.config(text="Actuating...")
                 loading_text.update()
                 progress += 0.08
-                loading_bar.place(relwidth=progress)
-                loading_bar.update()
+                # loading_bar.place(relwidth=progress)
+                # loading_bar.update()
+                Test.actuation()
+                Test.actuation()
+            if z == 19:
+                loading_text.config(text="Actuating...")
+                loading_text.update()
+                progress += 0.08
+                # loading_bar.place(relwidth=progress)
+                # loading_bar.update()
+                Test.actuation()
+                Test.actuation()
                 Test.actuation()
 
-        loading_bar.place(relwidth=0.93)
-        loading_bar.update()
-        loading_text.config(text="Saving Results...")
-        loading_text.update()
-        if len(measurements) != 20:
-            print("more than 20 measurements")
-        halflength = int(len(measurements) / 2)
-        meas1 = measurements[:halflength]
-        print(measurements)
-        print("\n")
-        print(meas1)
-        print("\n")
+
+        # loading_bar.place(relwidth=0.93)
+        # loading_bar.update()
+        # loading_text.config(text="Saving Results...")
+        # loading_text.update()
+        meas1 = measurements[:10]
+        meas2 = measurements[10:20]
+        meas3 = measurements[20:]
         print(len(meas1))
-        meas2 = measurements[halflength:]
-        print("\n")
-        print(meas2)
-        print("\n")
         print(len(meas2))
+        print(len(meas3))
         # print(str(halflength) + " should be 10")
-        res, dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
+        res, dev1, dev2, dev3, avg1, avg2, avg3 = self.getResult(meas1, meas2, meas3, 10)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: " + str(avg2))
-        output_text.config(text="Measurement finished. \n"+
-                                "The result is " + str(res) + "\n" +
-                                "Press the Measure Button to measure again.")
-        self.save_measurements(measurements, avg1, avg2, dev1, dev2)
+        print("avg of third ten: " + str(avg3))
         self.save_results(res)
-        loading_bar.place(relwidth=0.98)
-        loading_bar.update()
-        loading_text.config(text="Finished")
-        loading_text.update()
+        # loading_bar.place(relwidth=0.98)
+        # loading_bar.update()
+        # loading_text.config(text="Finished")
+        # loading_text.update()
         back_button.config(state="normal")
         logout_button.config(state="normal")
         measure_button.config(state="normal")
