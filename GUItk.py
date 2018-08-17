@@ -1,6 +1,9 @@
 # Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
-# by T.T.P. Franken and R.P.W. Schmidt.
+# By T.T.P. Franken and R.P.W. Schmidt.
 
+"""These are all the packages/imports that we use to run our software
+   Note that TESTmath is the other Python file. We imported that one here, so that we can call
+   the functions from that file here as well"""
 import os
 import sys
 import tkinter as t
@@ -19,26 +22,23 @@ import keyboard as keyboard
 
 
 class App:
-    # define main properties
+    """Here we declare the entire app/GUI. Everything our program does is written inside the App class.
+       We also declare the main properties of our program here, like the colors and font type/size."""
     page = 1  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
     font = "Calibri"
-    # color1 = "#d50471" # dark pink
-    # color2 = "#1e4faa" # light blue
-    # color3 = "#d5c5cb" # light pink
-    # color4 = "#1e2c75" # dark blue
-    color2 = "#add8e6"  # baby blue
     color1 = "#71b5cc"  # sea blue
-    # color1 = "steel blue"
-    # color2 = "light blue"
+    color2 = "#add8e6"  # baby blue
     color3 = "white"
     color4 = "dark blue"
     normalfontsize = 14
     biggerfontsize = 18
 
     def __init__(self):
+        """Here we declare all attributes that are initialized at startup. Think about the background color, the program
+           title or a specific keybind to shut down the program."""
         self.root = t.Tk()
         self.root.config(bg=self.color2)
         self.root.title("T.E.S.T.")
@@ -46,13 +46,14 @@ class App:
         self.root.resizable(0, 0)
         self.root.geometry('%(a)d' % {'a': self.width} + 'x' + '%(b)d' % {'b': self.height})
         self.root.attributes('-fullscreen', True)
+        self.root.config(cursor="none")
         self.root.bind('<Escape>', self.stop)
         self.root.update()
         self.generate_objects()
         self.root.mainloop()
 
     def generate_objects(self, *args):
-        """Function to generate pages"""
+        """Function to generate pages."""
         switcher = {
             0: self.generate_login,
             1: self.generate_page_patientID,
@@ -63,11 +64,20 @@ class App:
         }
         switcher[self.page]()
 
+    def change_page(self, number):
+        """Function to switch pages"""
+        self.page = number
+        for kid in self.root.winfo_children():
+            kid.destroy()
+        self.generate_objects()
+
     def checklist(self, output_text, loading_frame, loading_bar, loading_text,
                   back_button, logout_button, measure_button, results_button, mail_button):
-        """Check if sample and/or hood are inserted/closed"""
+        """Check if sample and/or hood are inserted/closed and display an error message when appropriate."""
         # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
+        # GPIO.PUD_DOWN is an attribute that declares the pin == 0 even if nothing is connected, so it would normally be
+        # 'floating' between 0 and 1. This is fixed by that attribute.
         GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         if GPIO.input(20) == 0:
@@ -98,7 +108,7 @@ class App:
                      results_button, mail_button)
 
     def save_data(self, username, password):
-        """Function to save newly added account data"""
+        """Function to save newly added account data."""
         if username == '' or password == '':
             error_text = t.Label(self.root, fg="red", bg=self.color2, text="Please enter a username and password")
             error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
@@ -112,6 +122,7 @@ class App:
             self.change_page(0)
 
     def save_results(self, res):
+        """Function to save the new results with a timestamp."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
@@ -124,7 +135,7 @@ class App:
             rez.write("Concentration: " + str(res) + "\n\n")
 
     def save_measurements(self, measures, avg1, avg2, dev1, dev2):
-        """Function to save measurements of the last measuring"""
+        """Function to save measurements of the last measuring attempt."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
@@ -148,6 +159,7 @@ class App:
             measurements.close()
 
     def send_to_mail(self, name, prettyname):
+        """Function to email the results of the current patient to ourselves."""
         fromaddr = "tuesensingteam@gmail.com"
         toaddr = "tuesensingteam@gmail.com"
         msg = MIMEMultipart()
@@ -174,15 +186,8 @@ class App:
         server.sendmail("tuesensingteam@gmail.com", "tuesensingteam@gmail.com", text)
         server.quit()
 
-    def change_page(self, number):
-        """Function to switch pages"""
-        self.page = number
-        for kid in self.root.winfo_children():
-            kid.destroy()
-        self.generate_objects()
-
     def admin_login(self, username, password):
-        """Admin login function"""
+        """Admin login function to create a new account. Displays an error message if not correct."""
         if username == 'admin' and password == 'admin':
             self.change_page(5)
         else:
@@ -190,7 +195,7 @@ class App:
             error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
 
     def login(self, username, password):
-        """Login function"""
+        """Login function. Displays an error message if the user and/or password do not match or do not (yet) exist."""
         usernames = []
         accounts = open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
         # accounts = open("./textfiles/accounts.txt", "r")
@@ -219,6 +224,8 @@ class App:
                 error_text.pack(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
 
     def generate_boot(self):
+        """This is the splash screen you will see when you run our program. This will be visible for 5 seconds
+           before continuing to the next page."""
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
         img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.jpg"))
@@ -229,8 +236,8 @@ class App:
         self.root.after(5000)
         self.change_page(0)
 
-    # login screen
     def generate_login(self):
+        """This is the login page. Here, the user can login with any existing and matching credentials."""
         # create upper frame with text
         title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() / 10),
                             bg=self.color3)
@@ -247,24 +254,28 @@ class App:
         login_frame.pack(side="top", fill="x", expand="false")
         login_frame.update()
         login_frame.propagate(0)
+
         # create entry box
         entry_frame = t.Frame(login_frame, width=int(self.root.winfo_width()),
                               height=int(self.root.winfo_height() / 2), bg=self.color2)
         entry_frame.pack(side="top", expand="false")
         entry_frame.update()
         entry_frame.propagate(0)
+
         # label and box for username
         user_label = t.Label(entry_frame, bg=self.color2, text="Username:", font=(self.font, self.normalfontsize))
         user_label.place(relheight=0.3, relwidth=0.1, relx=0.3, rely=0.05)
         username_box = t.Entry(entry_frame, font=(self.font, self.normalfontsize), bg=self.color3)
         username_box.place(relheight=0.3, relwidth=0.2, relx=0.4, rely=0.05)
         username_box.bind('<Button-1>', lambda e: username_box.focus())
+
         # label and box for password
         pwd_label = t.Label(entry_frame, bg=self.color2, text="Password:", font=(self.font, self.normalfontsize))
         pwd_label.place(relheight=0.3, relwidth=0.1, relx=0.3, rely=0.35)
         password_box = t.Entry(entry_frame, show="*", font=(self.font, self.normalfontsize), bg=self.color3)
         password_box.place(relheight=0.3, relwidth=0.2, relx=0.4, rely=0.35)
         password_box.bind('<Button-1>', lambda e: password_box.focus())
+
         # create login button
         login_button = t.Button(entry_frame, text="Login", bg=self.color4, fg=self.color3,
                                 font=(self.font, self.normalfontsize),
@@ -272,20 +283,26 @@ class App:
                                 command=lambda: self.login(username=username_box.get(), password=password_box.get()))
         login_button.place(relheight=0.3, relwidth=0.2, relx=0.40, rely=0.7)
 
+        # button to create a new account
         create_button = t.Button(self.root, text="Create new account", bg=self.color4, fg=self.color3,
                                  font=(self.font, self.normalfontsize),
                                  activebackground=self.color2, activeforeground=self.color3,
                                  command=lambda: self.admin_login(username=username_box.get(),
                                                                   password=password_box.get()))
+
+        # button to shutdown the sensor or shutdown the program if admin credentials and entered first
         create_button.place(relheight=0.1, relwidth=0.2, relx=0.0, rely=0.4)
         logout_button = t.Button(self.root, text="Shutdown", bg=self.color4, fg=self.color3,
                                  activebackground=self.color2, activeforeground=self.color3,
                                  font=(self.font, self.normalfontsize), command=lambda: self.logout(username_box.get(),
                                                                                                     password_box.get()))
         logout_button.place(relheight=0.1, relwidth=0.2, relx=0.8, rely=0.4)
+
+        # add keyboard to the screen
         keyboard.main(self.root)
 
     def logout(self, usr, pwd):
+        """This function determines to shutdown the sensor or just close the program depending on the credentials."""
         if usr == "admin" and pwd == "admin":
             os._exit(0)
         else:
@@ -293,6 +310,7 @@ class App:
         return
 
     def includelogo(self, parent_label):
+        """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
         img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
         # img = Image.open("./textfiles/LogoSmall.png")
         logo_label = t.Label(parent_label)
@@ -305,6 +323,8 @@ class App:
         logo_label.update()
 
     def generate_new_account(self):
+        """Function to generate a new account. This page can only be accessed by logging in as admin. The newly created
+           account will then immediately be added and can be used from that moment on."""
         title_bar = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.1),
                             bg=self.color3)
         title_bar.pack(side="top", fill="x", expand="false")
@@ -315,28 +335,33 @@ class App:
         description_label.place(relwidth=0.4, relheight=1.0, relx=0.3)
         description_label.update()
         self.includelogo(title_bar)
+
         # create upper frame with text
         account_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.3),
                                 bg=self.color3)
         account_frame.pack(side="top", fill="x", expand="false")
         account_frame.update()
         account_frame.propagate(0)
+
         # create entry box
         input_frame = t.Frame(account_frame, width=int(self.root.winfo_width()),
                               height=int(self.root.winfo_height() / 2), bg=self.color2)
         input_frame.pack(side="top", expand="false")
         input_frame.update()
         input_frame.propagate(0)
+
         # label and box for username
         user_label = t.Label(input_frame, bg=self.color2, text="Username:", font=(self.font, self.normalfontsize))
         user_label.place(relheight=0.3, relwidth=0.1, relx=0.3, rely=0.05)
         username_box = t.Entry(input_frame, font=(self.font, self.normalfontsize), bg=self.color3)
         username_box.place(relheight=0.3, relwidth=0.2, relx=0.4, rely=0.05)
+
         # label and box for password
         pwd_label = t.Label(input_frame, bg=self.color2, text="Password:", font=(self.font, self.normalfontsize))
         pwd_label.place(relheight=0.3, relwidth=0.1, relx=0.3, rely=0.35)
         password_box = t.Entry(input_frame, show="*", font=(self.font, 24), bg=self.color3)
         password_box.place(relheight=0.3, relwidth=0.2, relx=0.4, rely=0.35)
+
         # create login button
         create_button = t.Button(input_frame, text="Create", bg=self.color4, font=(self.font, self.normalfontsize),
                                  activebackground=self.color2, activeforeground=self.color3,
@@ -346,13 +371,15 @@ class App:
         create_button.place(relheight=0.3, relwidth=0.2, relx=0.4, rely=0.7)
         keyboard.main(self.root)
 
-    # start page
     def generate_page_patientID(self):
+        """This function created the page where the user fills in the ID of the patient. This can be anything, from
+           just a string of text to numbers, or a combination of both."""
         title = "Patient ID"
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
         top_bar.update()
         top_bar.pack_propagate(0)
+
         # begin text and button of top bar
         top_text = t.Label(top_bar, bg=self.color3, text=title, fg=self.color4, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
@@ -364,12 +391,15 @@ class App:
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
         self.includelogo(top_bar)
+
+        # create top frame
         top_frame = t.Frame(self.root, width=self.root.winfo_width(), height=int(self.root.winfo_height() * 0.4),
                             bg=self.color2)
         top_frame.pack(side="top", fill="x", expand="false")
         top_frame.update()
         top_frame.pack_propagate(0)
 
+        # create entry frame for the patientID with a label
         entry_frame = t.Frame(top_frame, width=int(self.root.winfo_width() / 3),
                               height=int(self.root.winfo_height() / 2), bg=self.color2)
         entry_frame.pack(side="top", expand="false")
@@ -386,9 +416,12 @@ class App:
                                  text="Start", command=lambda: self.start_machine(patient_box, patient_label))
         bottom_button.update()
         bottom_button.place(relheight=0.2, relwidth=0.3, relx=0.35, rely=0.6)
+
+        # add keyboard
         keyboard.main(self.root)
 
     def start_machine(self, patient, label):
+        """This function checks if the user actually entered a PatientID."""
         p = patient.get()
         if p != "":
             self.patient_id = p
@@ -399,16 +432,18 @@ class App:
             label.config(foreground="red")
         return
 
-    # measure page
     def generate_page_measure(self):
+        """Function to generate the measure page. Here, you can start a measurement."""
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         prettyname = "Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
+
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
         top_bar.update()
         top_bar.pack_propagate(0)
+
         # begin text and button of top bar
         top_text = t.Label(top_bar, bg=self.color3, fg=self.color4, text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
@@ -420,6 +455,7 @@ class App:
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
         self.includelogo(top_bar)
+
         # begin upper part of screen
         output_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() * 0.3))
         output_bar.pack(fill="x")
@@ -438,6 +474,7 @@ class App:
         loading_bar.place(relheight=0.8, relwidth=0, relx=0.01, rely=0.1)
         loading_text = t.Label(output_bar, bg=self.color2, text="")
         loading_text.place(relheight=0.3, relwidth=1, rely=0.7)
+
         # begin lower part of screen
         bottom_frame = t.Frame(self.root, bg=self.color2)
         bottom_frame.pack(side="bottom", fill="both", expand="true")
@@ -477,12 +514,15 @@ class App:
         results_button.place(relheight=0.1, relwidth=0.3, relx=0.0, rely=0.9)
 
     def generate_page_results(self):
+        """Function to generate a page that shows all measurement results for the current patient."""
         title = "Results of Patient " + str(self.patient_id)
+
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
         top_bar.update()
         top_bar.pack_propagate(0)
+
         # begin text and button of top bar
         top_text = t.Label(top_bar, bg=self.color3, fg=self.color2, text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
@@ -494,6 +534,7 @@ class App:
         back_button.update()
         back_button.place(relheight=1, relwidth=0.15)
         self.includelogo(top_bar)
+
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
@@ -515,6 +556,7 @@ class App:
         filescroll.update()
 
     def stop(self, *args):
+        """"Function that shuts down the program when <Escape> is pressed."""
         sys.exit(0)
 
     # ========== HERE FOLLOW THE MAIN FUNCTIONS ==========
@@ -528,6 +570,8 @@ class App:
         return y, voltage, tt
 
     def calibration_curve(self, avg):
+        """Input: avg
+           Output: Concentration"""
         ans = 1740.9 * avg * avg + 142.35 * avg + 1.8865
         return ans
 
@@ -554,6 +598,7 @@ class App:
         return res, dev1, dev2, avg1, avg2
 
     def convert(self, adc_values):
+        """Function to convert the bitstring readout to Volts."""
         voltage = []
         for entry in adc_values:
             value = (5 / 32678) * int(entry)
@@ -562,7 +607,8 @@ class App:
 
     def run(self, output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
             results_button, mail_button):
-        """Input: none
+        """Main function for the actual measurement. This function controls the DAC's and the ADC.
+           Input: none
            Output: none"""
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         output_text.config(text="Measuring...")
