@@ -228,7 +228,7 @@ class App:
            before continuing to the next page."""
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
-        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.ai"))
+        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.svg"))
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
@@ -311,7 +311,7 @@ class App:
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/tuetest/textfiles/logo.ai")
+        img = Image.open("/home/pi/Desktop/tuetest/textfiles/logo.svg")
         # img = Image.open("./textfiles/LogoSmall.png")
         logo_label = t.Label(parent_label)
         logo_label.place(relx=0.9, relwidth=0.1, relheight=1.0)
