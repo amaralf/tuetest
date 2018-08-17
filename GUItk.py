@@ -528,7 +528,7 @@ class App:
         top_text = t.Label(top_bar, bg=self.color3, fg=self.color4, text=title, font=(self.font, 36))
         top_text.pack(side="top", fill="both", expand="true")
         top_text.update()
-        back_button = t.Button(top_bar, activebackground=self.color4, activeforeground=self.color3, bg=self.color4,
+        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
                                fg=self.color3, text="\u21A9" + " Back", font=(self.font, self.normalfontsize),
                                command=lambda: self.change_page(2), disabledforeground="red")
         back_button.pack()
