@@ -537,7 +537,7 @@ class App:
         self.includelogo(top_bar)
 
         # begin upper part of screen
-        fileframe = t.Frame(self.root, bg=self.color3)
+        fileframe = t.Frame(self.root, bg=self.color2)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
