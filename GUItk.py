@@ -311,7 +311,7 @@ class App:
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/tuetest/textfiles/logo.jpg")
+        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
         # img = Image.open("./textfiles/LogoSmall.png")
 
         logo_label = t.Label(parent_label)
