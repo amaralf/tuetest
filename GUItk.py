@@ -24,7 +24,7 @@ import keyboard as keyboard
 class App:
     """Here we declare the entire app/GUI. Everything our program does is written inside the App class.
        We also declare the main properties of our program here, like the colors and font type/size."""
-    page = 1  # 4 is boot
+    page = 4  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
