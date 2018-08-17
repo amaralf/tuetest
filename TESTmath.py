@@ -128,7 +128,8 @@ def find_ten(x):
 # ===================SINE-WAVE=================
 
 def init():
-    """Initialisation function for measurements"""
+    """Initialisation function for measurements. Here we initialize both DAC's and create a Sine and Cosine for
+       sampling."""
     dac1 = Adafruit_MCP4725.MCP4725()
     dac2 = Adafruit_MCP4725.MCP4725(address=0x63, busnum=1)
     dac1.set_voltage(int(2048))
@@ -147,35 +148,34 @@ def init():
 
 
 def get_values():
-    """Make a sine and cosine wave and store the relevant values in arrays.
-    Input: -
-    Output: array adc_values, with the readout values from the detector.
-            array times, with the measurement times.
-            new set values for dac1 and dac2"""
-    # initialization of all peripherals
+    """This function reads the values from the ADC. Here we also initialize the ADC, set the GAIN and perform
+       the measurement."""
     adc = Adafruit_ADS1x15.ADS1115()
-    GAIN = 1                        # of 2/3, dependent on the desired range
-    times = []                      # create some arrays
+    # of 2/3, dependent on the desired range
+    GAIN = 1
+    # create some arrays
+    times = []
     adc_values = []
 
+    # call the init function here for ease of use
     sine, cosine, dac1, dac2 = init()
     start_time = time.time()
     delta = 0
     while delta <= 0.2:
         delta = time.time() - start_time
         times.append(delta)
-        dac1.set_voltage(cosine[int(10000*delta)])      # sample values from waves according to delta
+        # sample values from waves according to delta
+        dac1.set_voltage(cosine[int(10000*delta)])
         dac2.set_voltage(sine[int(10000*delta)])
-        adc_values.append(adc.read_adc(0, gain=GAIN))   # read the adc and store values in array
+        # read the adc and store bitstring values in an array
+        adc_values.append(adc.read_adc(0, gain=GAIN))
     dac1.set_voltage(int(2048))
     dac2.set_voltage(int(2048))
     return times, adc_values
 
 
 def actuation():
-    """Actuation function
-    Input: -
-    Output: - """
+    """Actuation function"""
     sine, cosine, dac1, dac2 = init()
     actuate = time.time()
     act_time = 0
