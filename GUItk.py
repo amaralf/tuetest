@@ -537,7 +537,7 @@ class App:
         self.includelogo(top_bar)
 
         # begin upper part of screen
-        fileframe = t.Frame(self.root, bg=self.color2)
+        fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
@@ -546,7 +546,7 @@ class App:
             filetext = "There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = file.read()
-        filelabel = t.Text(fileframe, bg=self.color3, font=(self.font, self.normalfontsize))
+        filelabel = t.Text(fileframe, bg=self.color2, font=(self.font, self.normalfontsize))
         filelabel.insert("end", filetext)
         filelabel.place(relheight=1, relwidth=0.9, relx=0, rely=0)
         filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
