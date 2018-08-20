@@ -15,7 +15,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
 import keyboard as keyboard
@@ -46,7 +46,7 @@ class App:
         self.root.resizable(0, 0)
         self.root.geometry('%(a)d' % {'a': self.width} + 'x' + '%(b)d' % {'b': self.height})
         self.root.attributes('-fullscreen', True)
-        self.root.config(cursor="none")
+        # self.root.config(cursor="none")
         self.root.bind('<Escape>', self.stop)
         self.root.update()
         self.generate_objects()
@@ -75,37 +75,37 @@ class App:
                   back_button, logout_button, measure_button, results_button, mail_button):
         """Check if sample and/or hood are inserted/closed and display an error message when appropriate."""
         # GPIO 20 for hood, GPIO 21 for sample
-        GPIO.setmode(GPIO.BCM)
-        # GPIO.PUD_DOWN is an attribute that declares the pin == 0 even if nothing is connected, so it would normally be
-        # 'floating' between 0 and 1. This is fixed by that attribute.
-        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        if GPIO.input(20) == 0:
-            if GPIO.input(21) == 0:
-                output_text.config(text="Please close the lid.")
-                output_text.config(fg="red")
-                output_text.update()
-            else:
-                output_text.config(text="Please insert sample.")
-                output_text.config(fg="red")
-                output_text.update()
-            return
-        else:
-            output_text.config(text="Preconditions satisfied. Measuring...")
-            output_text.config(fg="black")
-            output_text.update()
-            back_button.config(state="disabled")
-            logout_button.config(state="disabled")
-            measure_button.config(state="disabled")
-            results_button.config(state="disabled")
-            mail_button.config(state="disabled")
-            back_button.update()
-            logout_button.update()
-            measure_button.update()
-            results_button.update()
-            mail_button.update()
-            self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
-                     results_button, mail_button)
+        # GPIO.setmode(GPIO.BCM)
+        # # GPIO.PUD_DOWN is an attribute that declares the pin == 0 even if nothing is connected, so it would normally be
+        # # 'floating' between 0 and 1. This is fixed by that attribute.
+        # GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # if GPIO.input(20) == 0:
+        #     if GPIO.input(21) == 0:
+        #         output_text.config(text="Please close the lid.")
+        #         output_text.config(fg="red")
+        #         output_text.update()
+        #     else:
+        #         output_text.config(text="Please insert sample.")
+        #         output_text.config(fg="red")
+        #         output_text.update()
+        #     return
+        #else:
+        output_text.config(text="Preconditions satisfied. Measuring...")
+        output_text.config(fg="black")
+        output_text.update()
+        back_button.config(state="disabled")
+        logout_button.config(state="disabled")
+        measure_button.config(state="disabled")
+        results_button.config(state="disabled")
+        mail_button.config(state="disabled")
+        back_button.update()
+        logout_button.update()
+        measure_button.update()
+        results_button.update()
+        mail_button.update()
+        self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
+                 results_button, mail_button)
 
     def save_data(self, username, password):
         """Function to save newly added account data."""
@@ -113,10 +113,10 @@ class App:
             error_text = t.Label(self.root, fg="red", bg=self.color2, text="Please enter a username and password")
             error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
         else:
-            with open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "a") as usernames:
+            with open("./textfiles/accounts.txt", "a") as usernames:
                 usernames.write(', ' + str(username))
                 usernames.close()
-            with open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "a") as passwords:
+            with open("./textfiles/passwords.txt", "a") as passwords:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
@@ -125,7 +125,7 @@ class App:
         """Function to save the new results with a timestamp."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         print(dirname)
         if not os.path.exists(dirname):
@@ -138,7 +138,7 @@ class App:
         """Function to save measurements of the last measuring attempt."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         print(dirname)
         if not os.path.exists(dirname):
@@ -197,7 +197,7 @@ class App:
     def login(self, username, password):
         """Login function. Displays an error message if the user and/or password do not match or do not (yet) exist."""
         usernames = []
-        accounts = open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
+        accounts = open("./textfiles/accounts.txt", "r")
         # accounts = open("./textfiles/accounts.txt", "r")
         for user in list(accounts):
             user = user.split(', ')
@@ -205,7 +205,7 @@ class App:
         accounts.close()
 
         passwords = []
-        code = open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "r")
+        code = open("./textfiles/passwords.txt", "r")
         # code = open("./textfiles/passwords.txt", "r")
         for word in list(code):
             word = word.split(', ')
@@ -228,7 +228,7 @@ class App:
            before continuing to the next page."""
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
-        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.jpg"))
+        img = ImageTk.PhotoImage(Image.open("./textfiles/logo.jpg"))
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
@@ -311,7 +311,7 @@ class App:
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
+        img = Image.open("./textfiles/LogoSmall.png")
         # img = Image.open("./textfiles/LogoSmall.png")
 
         logo_label = t.Label(parent_label)
@@ -435,7 +435,7 @@ class App:
 
     def generate_page_measure(self):
         """Function to generate the measure page. Here, you can start a measurement."""
-        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         prettyname = "Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
 
@@ -539,7 +539,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
-        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
             file = open(filename, "r")
         except FileNotFoundError:
@@ -611,7 +611,7 @@ class App:
         """Main function for the actual measurement. This function controls the DAC's and the ADC.
            Input: none
            Output: none"""
-        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         output_text.config(text="Measuring...")
         output_text.config(fg="black")
         output_text.update()
