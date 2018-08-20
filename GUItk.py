@@ -130,7 +130,7 @@ class App:
             rez.write("TimeStamp: " + str(st) + "\n")
             rez.write("Concentration: " + str(res) + "\n\n")
 
-    def save_measurements(self, measures, avg1, avg2, dev1, dev2):
+    def save_measurements(self, measures, avgs, devs):
         """Function to save measurements of the last measuring attempt."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -143,15 +143,16 @@ class App:
             measurements.write("Measurements " + st + ": \n")
             for measure in measures:
                 measurements.write(str(measure) + ' ')
-            measurements.write("\n")
-            measurements.write("Average first 10 = " + str(avg1))
-            measurements.write("\n")
-            measurements.write("Standard Deviation first 10 = " + str(dev1))
-            measurements.write("\n")
-            measurements.write("Average second 10 = " + str(avg2))
-            measurements.write("\n")
-            measurements.write("Standard Deviation second 10 = " + str(dev2))
+            counter = 1
             measurements.write("\n\n")
+            for avg in avgs:
+                measurements.write("Average "+str(counter)+" = "+str(avg)+"\n")
+                counter+=1
+            counter = 1
+            measurements.write("\n\n")
+            for dev in devs:
+                measurements.write("Standard Deviation " + str(counter) + " = " + str(avg) + "\n")
+                counter += 1
             measurements.close()
 
     def send_to_mail(self, name, prettyname):
@@ -699,27 +700,24 @@ class App:
         ans = 1740.9 * avg * avg + 142.35 * avg + 1.8865
         return ans
 
-    def getResult(self, meas1, meas2, halflength):
+    def getResult(self, meassets):
         """Input: single amplitude
            Output: single result value"""
-        avg1 = sum(meas1) / halflength
-        avg2 = sum(meas2) / halflength
-        predev1 = 0
-        for number in meas1:
-            k = n.square(number - avg1)
-            predev1 = predev1 + k
-        middev1 = predev1 / (len(meas1) - 1)
-        print(middev1)
-        dev1 = n.sqrt(middev1)
-        predev2 = 0
-        for number in meas2:
-            k = n.square(number - avg2)
-            predev2 = predev2 + k
-        middev2 = predev2 / (len(meas2) - 1)
-        print(middev2)
-        dev2 = n.sqrt(middev2)
-        res = self.calibration_curve(avg2)
-        return res, dev1, dev2, avg1, avg2
+        avgs = []
+        devs = []
+        for set in meassets:
+            avg = sum(set)/len(set)
+            predev = 0
+            for number in set:
+                k = n.square(number - avg)
+                predev1 = predev + k
+            middev = predev / (len(set) - 1)
+            print(middev)
+            dev = n.sqrt(middev)
+            avgs.append(avg)
+            devs.append(dev)
+        res = self.calibration_curve(avgs[-1])
+        return res, devs, avgs
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
@@ -734,6 +732,7 @@ class App:
            Input: none
            Output: none"""
         filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        settingsname = "./textfiles/Settings.txt"
         output_text.config(text="Measuring...")
         output_text.config(fg="black")
         output_text.update()
@@ -742,61 +741,45 @@ class App:
         loading_bar.config(bg=self.color2)
         loading_bar.place(relwidth=0)
         loading_bar.update()
-        loading_text.config(text="Do actuation...")
-        loading_text.update()
 
         measurements = []
-        pre_fourier = []
-        times = []
         progress = 0
 
-        for z in range(20):
-            progress = progress + 0.04
+        settings = open(settingsname, 'r')
+        text = settings.read()
+        lines = text.splitlines()
+        pieceprogress = 0.9 / len(lines)
+        measureamounts = []
+        action = 0
+        actions = len(lines)
+        for line in lines:
+            action+=1
+            regex = re.compile(r'-?\w+')
+            sep = regex.findall(line)
+            if sep[0] == 'measure':
+                piece = pieceprogress/sep[1]
+                measureamounts.append(sep[1])
+                measurements.append(
+                    self.measure(sep[1], sep[2], piece, loading_bar, loading_text, progress, action, actions))
+            if sep[0] == 'actuate':
+                piece = pieceprogress/sep[1]
+                self.actuate(sep[1], sep[2], sep[3], piece, loading_bar, loading_text, progress, action, actions)
 
-            loading_bar.place(relwidth=progress)
-            loading_bar.update()
-            loading_text.config(text="Get Measurement " + str(z + 1))
-            loading_text.update()
-
-            y, voltage, tt = self.getAmp()
-            measurements.append(y)
-            pre_fourier.append(voltage)
-            times.append(tt)
-            time.sleep(10)
-            if z == 9:
-                loading_text.config(text="Actuating...")
-                loading_text.update()
-                progress += 0.08
-                loading_bar.place(relwidth=progress)
-                loading_bar.update()
-                Test.actuation()
-
-        loading_bar.place(relwidth=0.93)
+        loading_bar.place(relwidth=0.90)
         loading_bar.update()
         loading_text.config(text="Saving Results...")
         loading_text.update()
-        if len(measurements) != 20:
-            print("more than 20 measurements")
-        halflength = int(len(measurements) / 2)
-        meas1 = measurements[:halflength]
-        print(measurements)
-        print("\n")
-        print(meas1)
-        print("\n")
-        print(len(meas1))
-        meas2 = measurements[halflength:]
-        print("\n")
-        print(meas2)
-        print("\n")
-        print(len(meas2))
-        # print(str(halflength) + " should be 10")
-        res, dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
-        print("avg of first ten: " + str(avg1))
-        print("avg of second ten: " + str(avg2))
-        output_text.config(text="Measurement finished. \n"+
+        meassets = []
+        pointer = 0
+        for amount in measureamounts:
+            final = pointer + amount
+            meassets.append(measurements[pointer: final])
+            pointer = final
+        res, devs, avgs = self.getResult(meassets)
+        output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
                                 "Press the Measure Button to measure again.")
-        self.save_measurements(measurements, avg1, avg2, dev1, dev2)
+        self.save_measurements(meassets, avgs, devs)
         self.save_results(res)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
@@ -811,6 +794,37 @@ class App:
             mail_button.config(state="disabled")
         else:
             mail_button.config(state="normal")
+
+    def measure(self, amount, waittime, piece, loading_bar, loading_text, progress, action, actions):
+        returnvalues = []
+        for z in range(amount):
+            progress = progress + piece
+            loading_bar.place(relwidth=progress)
+            loading_bar.update()
+            loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
+                                     "Get Measurement " + str(z + 1) + "of" + str(amount))
+            loading_text.update()
+
+            y, voltage, tt = self.getAmp()
+            returnvalues.append(y)
+            time.sleep(waittime)
+        return returnvalues
+
+    def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
+        for z in range(amount)
+            loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
+                                     "Do Actuation " + str(z + 1) + "of" + str(amount))
+            loading_text.update()
+            progress += piece
+            loading_bar.place(relwidth=progress)
+            loading_bar.update()
+            Test.actuation()
+            if z < amount-1:
+                time.sleep(waittime)
+        time.sleep(endtime)
+        return
+
+
 
 
 app = App()
