@@ -494,13 +494,13 @@ class App:
                                                                                               self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2,
                                  fg=self.color3, disabledforeground="red", command=lambda: os.system("sudo poweroff"))
-        logout_button.place(relheight=0.1, relwidth=0.3, relx=0.7, rely=0.9)
+        logout_button.place(relheight=0.1, relwidth=0.3, relx=0.675, rely=0.85)
         mail_button = t.Button(self.root, text="Mail", bg=self.color4, font=(self.font,
                                                                              self.normalfontsize),
                                activeforeground=self.color3, activebackground=self.color2,
                                fg=self.color3, disabledforeground="red",
                                command=lambda: self.send_to_mail(filename, prettyname))
-        mail_button.place(relheight=0.1, relwidth=0.3, relx=0.35, rely=0.9)
+        mail_button.place(relheight=0.1, relwidth=0.3, relx=0.35, rely=0.85)
         try:
             open(filename, "r")
         except FileNotFoundError:
@@ -512,7 +512,7 @@ class App:
                                   activeforeground=self.color3, activebackground=self.color2, fg=self.color3,
                                   disabledforeground="red",
                                   command=lambda: self.change_page(3))
-        results_button.place(relheight=0.1, relwidth=0.3, relx=0.0, rely=0.9)
+        results_button.place(relheight=0.1, relwidth=0.3, relx=0.025, rely=0.85)
 
     def generate_page_results(self):
         """Function to generate a page that shows all measurement results for the current patient."""
@@ -671,7 +671,9 @@ class App:
         res, dev1, dev2, avg1, avg2 = self.getResult(meas1, meas2, halflength)
         print("avg of first ten: " + str(avg1))
         print("avg of second ten: " + str(avg2))
-        output_text.config(text="Measurement finished. Press the Measure Button to measure again.")
+        output_text.config(text="Measurement finished. \n"+
+                                "The result is " + str(res) + "\n" +
+                                "Press the Measure Button to measure again.")
         self.save_measurements(measurements, avg1, avg2, dev1, dev2)
         self.save_results(res)
         loading_bar.place(relwidth=0.98)
