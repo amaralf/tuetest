@@ -75,37 +75,37 @@ class App:
                   back_button, logout_button, measure_button, results_button, mail_button):
         """Check if sample and/or hood are inserted/closed and display an error message when appropriate."""
         # GPIO 20 for hood, GPIO 21 for sample
-        GPIO.setmode(GPIO.BCM)
+        #GPIO.setmode(GPIO.BCM)
         # GPIO.PUD_DOWN is an attribute that declares the pin == 0 even if nothing is connected, so it would normally be
         # 'floating' between 0 and 1. This is fixed by that attribute.
-        GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        if GPIO.input(20) == 0:
-            if GPIO.input(21) == 0:
-                output_text.config(text="Please close the lid.")
-                output_text.config(fg="red")
-                output_text.update()
-            else:
-                output_text.config(text="Please insert sample.")
-                output_text.config(fg="red")
-                output_text.update()
-            return
-        else:
-            output_text.config(text="Preconditions satisfied. Measuring...")
-            output_text.config(fg="black")
-            output_text.update()
-            back_button.config(state="disabled")
-            logout_button.config(state="disabled")
-            measure_button.config(state="disabled")
-            results_button.config(state="disabled")
-            mail_button.config(state="disabled")
-            back_button.update()
-            logout_button.update()
-            measure_button.update()
-            results_button.update()
-            mail_button.update()
-            self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
-                     results_button, mail_button)
+        #GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # if GPIO.input(20) == 0:
+        #     if GPIO.input(21) == 0:
+        #         output_text.config(text="Please close the lid.")
+        #         output_text.config(fg="red")
+        #         output_text.update()
+        #     else:
+        #         output_text.config(text="Please insert sample.")
+        #         output_text.config(fg="red")
+        #         output_text.update()
+        #     return
+        # else:
+        output_text.config(text="Preconditions satisfied. Measuring...")
+        output_text.config(fg="black")
+        output_text.update()
+        back_button.config(state="disabled")
+        logout_button.config(state="disabled")
+        measure_button.config(state="disabled")
+        results_button.config(state="disabled")
+        mail_button.config(state="disabled")
+        back_button.update()
+        logout_button.update()
+        measure_button.update()
+        results_button.update()
+        mail_button.update()
+        self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
+                 results_button, mail_button)
 
     def save_data(self, username, password):
         """Function to save newly added account data."""
@@ -571,10 +571,10 @@ class App:
     def getAmp(self):
         """Input: none
            Output: single amplitude of +- 10Hz freq as measured."""
-        tt, adc_values = Test.get_values()
-        voltage = self.convert(adc_values)
-        x, y = Test.fourierten(tt, voltage)
-        return y, voltage, tt
+        # tt, adc_values = Test.get_values()
+        # voltage = self.convert(adc_values)
+        # x, y = Test.fourierten(tt, voltage)
+        # return y, voltage, tt
 
     def calibration_curve(self, avg):
         """Input: avg
@@ -647,61 +647,48 @@ class App:
         for z in range(30):
             progress = progress + 0.04
 
-            # loading_bar.place(relwidth=progress)
-            # loading_bar.update()
+            loading_bar.place(relwidth=progress)
+            loading_bar.update()
             loading_text.config(text="Get Measurement " + str(z + 1))
             loading_text.update()
 
-            y, voltage, tt = self.getAmp()
-            measurements.append(y)
-            pre_fourier.append(voltage)
-            times.append(tt)
+            # y, voltage, tt = self.getAmp()
+            # measurements.append(y)
+            # pre_fourier.append(voltage)
+            # times.append(tt)
             time.sleep(10)
             if z == 9:
                 loading_text.config(text="Actuating 1st Round, 2x...")
                 loading_text.update()
                 progress += 0.08
+                loading_bar.place(relwidth=progress)
+                loading_bar.update()
                 # loading_bar.place(relwidth=progress)
                 # loading_bar.update()
-                Test.actuation()
-                time.sleep(5)
-                Test.actuation()
-                time.sleep(20)
-            if z == 19:
-                loading_text.config(text="Actuating 2nd Round, 3x...")
-                loading_text.update()
-                progress += 0.08
-                # loading_bar.place(relwidth=progress)
-                # loading_bar.update()
-                Test.actuation()
-                time.sleep(5)
-                Test.actuation()
-                time.sleep(5)
-                Test.actuation()
-                time.sleep(20)
-
-
-        # loading_bar.place(relwidth=0.93)
-        # loading_bar.update()
-        # loading_text.config(text="Saving Results...")
-        # loading_text.update()
-        meas1 = measurements[:10]
-        meas2 = measurements[10:20]
-        meas3 = measurements[20:]
-        print(len(meas1))
-        print(len(meas2))
-        print(len(meas3))
-        # print(str(halflength) + " should be 10")
-        res1, res2, res3, dev1, dev2, dev3, avg1, avg2, avg3 = self.getResult(meas1, meas2, meas3, 10)
-        print("avg of first ten: " + str(avg1))
-        print("avg of second ten: " + str(avg2))
-        print("avg of third ten: " + str(avg3))
+                # Test.actuation()
+                # time.sleep(5)
+                # Test.actuation()
+                # time.sleep(20)
+        loading_bar.place(relwidth=0.93)
+        loading_bar.update()
+        loading_text.config(text="Saving Results...")
+        loading_text.update()
+        # meas1 = measurements[:10]
+        # meas2 = measurements[10:20]
+        # meas3 = measurements[20:]
+        # print(len(meas1))
+        # print(len(meas2))
+        # print(len(meas3))
+        # # print(str(halflength) + " should be 10")
+        # res1, res2, res3, dev1, dev2, dev3, avg1, avg2, avg3 = self.getResult(meas1, meas2, meas3, 10)
+        # print("avg of first ten: " + str(avg1))
+        # print("avg of second ten: " + str(avg2))
+        # print("avg of third ten: " + str(avg3))
         output_text.config(text="Measurement finished.\n"+
-                                "Results are: \n"+
-                                str(res1) + "\n" + str(res2) + "\n" + str(res3) + "\n"
+                                "Result is X" + "\n"
                                 "Press the Measure Button to measure again.")
-        self.save_measurements(measurements, avg1, avg2, avg3, dev1, dev2, dev3)
-        self.save_results(res1, res2, res3)
+        # self.save_measurements(measurements, avg1, avg2, avg3, dev1, dev2, dev3)
+        # self.save_results(res1, res2, res3)
         # loading_bar.place(relwidth=0.98)
         # loading_bar.update()
         # loading_text.config(text="Finished")
