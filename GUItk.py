@@ -15,8 +15,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import RPi.GPIO as GPIO
-import TESTmath as Test
+# import RPi.GPIO as GPIO
+# import TESTmath as Test
 import numpy as n
 import keyboard as keyboard
 
@@ -113,10 +113,10 @@ class App:
             error_text = t.Label(self.root, fg="red", bg=self.color2, text="Please enter a username and password")
             error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
         else:
-            with open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "a") as usernames:
+            with open("./textfiles/accounts.txt", "a") as usernames:
                 usernames.write(', ' + str(username))
                 usernames.close()
-            with open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "a") as passwords:
+            with open("./textfiles/passwords.txt", "a") as passwords:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
@@ -125,7 +125,7 @@ class App:
         """Function to save the new results with a timestamp."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         print(dirname)
         if not os.path.exists(dirname):
@@ -140,7 +140,7 @@ class App:
         """Function to save measurements of the last measuring"""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         print(dirname)
         if not os.path.exists(dirname):
@@ -203,7 +203,7 @@ class App:
     def login(self, username, password):
         """Login function. Displays an error message if the user and/or password do not match or do not (yet) exist."""
         usernames = []
-        accounts = open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
+        accounts = open("./textfiles/accounts.txt", "r")
         # accounts = open("./textfiles/accounts.txt", "r")
         for user in list(accounts):
             user = user.split(', ')
@@ -211,7 +211,7 @@ class App:
         accounts.close()
 
         passwords = []
-        code = open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "r")
+        code = open("./textfiles/passwords.txt", "r")
         # code = open("./textfiles/passwords.txt", "r")
         for word in list(code):
             word = word.split(', ')
@@ -234,7 +234,7 @@ class App:
            before continuing to the next page."""
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
-        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.jpg"))
+        img = ImageTk.PhotoImage(Image.open("./textfiles/logo.jpg"))
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
@@ -310,14 +310,14 @@ class App:
     def logout(self, usr, pwd):
         """This function determines to shutdown the sensor or just close the program depending on the credentials."""
         if usr == "admin" and pwd == "admin":
-            os._exit(0)
+            sys.exit(0)
         else:
-            os.system("sudo poweroff")
+            sys.exit(0)
         return
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
+        img = Image.open("./textfiles/LogoSmall.png")
         # img = Image.open("./textfiles/LogoSmall.png")
 
         logo_label = t.Label(parent_label)
@@ -441,7 +441,7 @@ class App:
 
     def generate_page_measure(self):
         """Function to generate the measure page. Here, you can start a measurement."""
-        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         prettyname = "Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
 
@@ -499,7 +499,7 @@ class App:
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font,
                                                                                               self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2,
-                                 fg=self.color3, disabledforeground="red", command=lambda: os.system("sudo poweroff"))
+                                 fg=self.color3, disabledforeground="red", command=lambda: sys.exit(0))
         logout_button.place(relheight=0.1, relwidth=0.3, relx=0.675, rely=0.85)
         mail_button = t.Button(self.root, text="Mail", bg=self.color4, font=(self.font,
                                                                              self.normalfontsize),
@@ -545,7 +545,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
-        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
             file = open(filename, "r")
         except FileNotFoundError:
@@ -627,7 +627,7 @@ class App:
         """Main function for the actual measurement. This function controls the DAC's and the ADC.
            Input: none
            Output: none"""
-        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         output_text.config(text="Measuring...")
         output_text.config(fg="black")
         output_text.update()
