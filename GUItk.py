@@ -7,6 +7,7 @@
 import os
 import sys
 import tkinter as t
+import re
 from PIL import ImageTk, Image
 import datetime
 import time
@@ -61,6 +62,7 @@ class App:
             3: self.generate_page_results,
             4: self.generate_boot,
             5: self.generate_new_account,
+            6: self.generate_settings,
         }
         switcher[self.page]()
 
@@ -72,7 +74,7 @@ class App:
         self.generate_objects()
 
     def checklist(self, output_text, loading_frame, loading_bar, loading_text,
-                  back_button, logout_button, measure_button, results_button, mail_button):
+                  button_list, mail_button):
         """Check if sample and/or hood are inserted/closed and display an error message when appropriate."""
         # GPIO 20 for hood, GPIO 21 for sample
         # GPIO.setmode(GPIO.BCM)
@@ -94,18 +96,12 @@ class App:
         output_text.config(text="Preconditions satisfied. Measuring...")
         output_text.config(fg="black")
         output_text.update()
-        back_button.config(state="disabled")
-        logout_button.config(state="disabled")
-        measure_button.config(state="disabled")
-        results_button.config(state="disabled")
+        for button in button_list:
+            button.config(state="disabled")
+            button.update()
         mail_button.config(state="disabled")
-        back_button.update()
-        logout_button.update()
-        measure_button.update()
-        results_button.update()
         mail_button.update()
-        self.run(output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
-                 results_button, mail_button)
+        self.run(output_text, loading_frame, loading_bar, loading_text, button_list, mail_button)
 
     def save_data(self, username, password):
         """Function to save newly added account data."""
@@ -221,7 +217,7 @@ class App:
                 self.change_page(1)
             else:
                 error_text = t.Label(self.root, fg="red", bg=self.color2, text="Username or password incorrect")
-                error_text.pack(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
+                error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
 
     def generate_boot(self):
         """This is the splash screen you will see when you run our program. This will be visible for 5 seconds
@@ -438,7 +434,6 @@ class App:
         filename = "./textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         prettyname = "Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
-
         # begin top bar of screen
         top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
         top_bar.pack(side="top", fill="x", expand="false")
@@ -454,6 +449,7 @@ class App:
                                command=lambda: self.change_page(1), disabledforeground="red")
         back_button.pack()
         back_button.update()
+        button_list = [back_button]
         back_button.place(relheight=1, relwidth=0.15)
         self.includelogo(top_bar)
 
@@ -486,15 +482,24 @@ class App:
                                   fg=self.color3, text="Measure", font=(self.font, self.normalfontsize),
                                   disabledforeground="red",
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text,
-                                                                 back_button, logout_button, measure_button,
-                                                                 results_button, mail_button))
+                                                                 button_list, mail_button))
         measure_button.update()
-        measure_button.place(relheight=0.2, relwidth=0.2, relx=0.4, rely=0.3)
+        measure_button.place(relheight=0.2, relwidth=0.2, relx=0.2, rely=0.3)
+        button_list.append(measure_button)
+        actuation_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3,
+                                  bg=self.color4,
+                                  fg=self.color3, text="Settings", font=(self.font, self.normalfontsize),
+                                  disabledforeground="red",
+                                  command=lambda: self.change_page(6))
+        actuation_button.update()
+        actuation_button.place(relheight=0.2, relwidth=0.2, relx=0.6, rely=0.3)
+        button_list.append(actuation_button)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font,
                                                                                               self.normalfontsize),
                                  activeforeground=self.color3, activebackground=self.color2,
                                  fg=self.color3, disabledforeground="red", command=lambda: os.system("sudo poweroff"))
         logout_button.place(relheight=0.1, relwidth=0.3, relx=0.675, rely=0.85)
+        button_list.append(logout_button)
         mail_button = t.Button(self.root, text="Mail", bg=self.color4, font=(self.font,
                                                                              self.normalfontsize),
                                activeforeground=self.color3, activebackground=self.color2,
@@ -513,6 +518,7 @@ class App:
                                   disabledforeground="red",
                                   command=lambda: self.change_page(3))
         results_button.place(relheight=0.1, relwidth=0.3, relx=0.025, rely=0.85)
+        button_list.append(results_button)
 
     def generate_page_results(self):
         """Function to generate a page that shows all measurement results for the current patient."""
@@ -546,7 +552,49 @@ class App:
             filetext = "There are no results yet for patient " + str(self.patient_id) + "."
         else:
             filetext = file.read()
-        filelabel = t.Text(fileframe, bg=self.color2, font=(self.font, self.normalfontsize))
+        filelabel = t.Text(fileframe, bg=self.color2, font=(self.font, self.biggerfontsize))
+        filelabel.insert("end", filetext)
+        filelabel.place(relheight=1, relwidth=0.9, relx=0, rely=0)
+        filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
+        filelabel.config(yscrollcommand=filescroll.set)
+        filelabel.config(state="disabled")
+        filescroll.place(relheight=1, relwidth=0.1, relx=0.9, rely=0)
+        fileframe.update()
+        filelabel.update()
+        filescroll.update()
+
+    def generate_settings(self):
+        """Function to generate a page that shows all measurement results for the current patient."""
+        title = "Settings"
+        # begin top bar of screen
+        top_bar = t.Frame(self.root, bg=self.color3, height=int(self.root.winfo_height() / 10))
+        top_bar.pack(side="top", fill="x", expand="false")
+        top_bar.update()
+        top_bar.pack_propagate(0)
+
+        # begin text and button of top bar
+        top_text = t.Label(top_bar, bg=self.color3, fg=self.color4, text=title, font=(self.font, 36))
+        top_text.pack(side="top", fill="both", expand="true")
+        top_text.update()
+        back_button = t.Button(top_bar, activebackground=self.color2, activeforeground=self.color3, bg=self.color4,
+                               fg=self.color3, text="\u21A9" + " Back", font=(self.font, self.normalfontsize),
+                               command=lambda: self.saveandquit(filename, filelabel, error), disabledforeground="red")
+        back_button.pack()
+        back_button.update()
+        back_button.place(relheight=1, relwidth=0.15)
+        self.includelogo(top_bar)
+
+        # begin upper part of screen
+        fileframe = t.Frame(self.root, bg=self.color3)
+        fileframe.place(relheight=0.4, relwidth=0.5, relx=0.0, rely=0.1)
+        filename = "./textfiles/Settings.txt"
+        try:
+            file = open(filename, "r+")
+        except FileNotFoundError:
+            open(filename, "w+")
+            file = open(filename, "r+")
+        filetext = file.read()
+        filelabel = t.Text(fileframe, bg="white", font=(self.font, self.biggerfontsize))
         filelabel.insert("end", filetext)
         filelabel.place(relheight=1, relwidth=0.9, relx=0, rely=0)
         filescroll = t.Scrollbar(fileframe, command=filelabel.yview)
@@ -555,6 +603,81 @@ class App:
         fileframe.update()
         filelabel.update()
         filescroll.update()
+        explanation_frame = t.Frame(self.root, bg=self.color3)
+        explanation_frame.place(relheight=0.4, relwidth=0.5, relx=0.5, rely=0.1)
+        explanation_frame.update()
+        text = "This is the settings page. On this page, you can configure the measurement rounds and the" \
+               " actuations.\n\n"
+        text += "To add a measurement round, add 'measure(amount of pulses, amount of seconds between)'" \
+                " on a new line. One pulse measurement takes 0.2 seconds.\n\n"
+        text += "To add an actuation round, add 'actuate(amount of actuations, amount of seconds between," \
+                " amount of time after)' on a new line."
+        explanation = t.Label(explanation_frame, wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
+                              text=text, font=(self.font, self.normalfontsize), justify='left')
+        explanation.place(relx = 0.0, rely = 0.0, relheight=0.8, relwidth=1.0)
+        explanation.update()
+        error = t.Label(explanation_frame, fg='red', wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
+                              font=(self.font, self.normalfontsize), justify='left')
+        error.place(relx=0.0, rely=0.8, relheight=0.2, relwidth=1.0)
+
+
+
+        keyboard.main(self.root)
+
+    def saveandquit(self, filename, filelabel, error):
+        file = open(filename, "w")
+        text = filelabel.get("1.0", 'end')
+        lines = text.splitlines()
+        if len(lines[0]) == 0:
+            error.config(text="Either no input or a stray newline at the end of the input.")
+            return
+        for line in lines:
+            regex = re.compile(r'-?\w+')
+            single = regex.findall(line)
+            if len(single) == 0:
+                error.config(text="Remove the last newline.")
+                return
+            command = single[0]
+            if command == 'measure':
+                if len(single) < 3:
+                    error.config(text="You forgot one of the function arguments")
+                    return
+                if len(single) > 4:
+                    error.config(text="One command per line")
+                    return
+                amount = int(single[1])
+                seconds = int(single[2])
+                if amount < 0:
+                    error.config(text="Negative amount specified.")
+                    return
+                if seconds < 0:
+                    error.config(text="Negative time specified.")
+                    return
+            elif command == 'actuate':
+                if len(single) < 4:
+                    error.config(text="You forgot one of the function arguments")
+                    return
+                if len(single) > 5:
+                    error.config(text="One command per line")
+                    return
+                amount = int(single[1])
+                seconds = int(single[2])
+                endseconds = int(single[3])
+                if amount < 0:
+                    error.config(text="Negative amount specified.")
+                    return
+                if seconds < 0 or endseconds < 0:
+                    error.config(text="Negative time specified.")
+                    return
+                if not isinstance(single[1], int) or not isinstance(single[2], int) or not isinstance(single[3], int):
+                    error.config(text="Check your numbers for other types (decimal numbers or strings, for example).")
+            else:
+                error.config(text="Unknown command used. Please remove or change it.")
+                return
+        file.write(text)
+        self.change_page(2)
+
+
 
     def stop(self, *args):
         """"Function that shuts down the program when <Escape> is pressed."""
@@ -606,8 +729,7 @@ class App:
             voltage.append(value)
         return voltage
 
-    def run(self, output_text, loading_frame, loading_bar, loading_text, back_button, logout_button, measure_button,
-            results_button, mail_button):
+    def run(self, output_text, loading_frame, loading_bar, loading_text, button_list, mail_button):
         """Main function for the actual measurement. This function controls the DAC's and the ADC.
            Input: none
            Output: none"""
@@ -680,14 +802,9 @@ class App:
         loading_bar.update()
         loading_text.config(text="Finished")
         loading_text.update()
-        back_button.config(state="normal")
-        logout_button.config(state="normal")
-        measure_button.config(state="normal")
-        results_button.config(state="normal")
-        back_button.update()
-        logout_button.update()
-        measure_button.update()
-        results_button.update()
+        for button in button_list:
+            button.config(state="normal")
+            button.update()
         try:
             open(filename, "r")
         except FileNotFoundError:
