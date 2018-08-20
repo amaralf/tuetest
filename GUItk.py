@@ -46,7 +46,7 @@ class App:
         self.root.resizable(0, 0)
         self.root.geometry('%(a)d' % {'a': self.width} + 'x' + '%(b)d' % {'b': self.height})
         self.root.attributes('-fullscreen', True)
-        self.root.config(cursor="none")
+        # self.root.config(cursor="none")
         self.root.bind('<Escape>', self.stop)
         self.root.update()
         self.generate_objects()
@@ -644,7 +644,7 @@ class App:
         times = []
         progress = 0
 
-        for z in range(30):
+        for z in range(20):
             progress = progress + 0.04
 
             loading_bar.place(relwidth=progress)
