@@ -757,6 +757,7 @@ class App:
             action+=1
             regex = re.compile(r'-?\w+')
             sep = regex.findall(line)
+            print(sep)
             if sep[0] == 'measure':
                 amount = int(sep[1])
                 seconds = int(sep[2])
