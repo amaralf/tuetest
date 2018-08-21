@@ -781,6 +781,7 @@ class App:
             final = pointer + amount
             meassets.append(measurements[pointer: final])
             pointer = final
+        print(meassets)
         res, devs, avgs = self.getResult(meassets)
         output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
@@ -825,10 +826,11 @@ class App:
             Test.actuation()
             if z < amount-1:
                 time.sleep(waittime)
+            if z == amount-1:
+                time.sleep(endtime)
             progress += piece
             loading_bar.place(relwidth=progress)
             loading_bar.update()
-        time.sleep(endtime)
         return progress
 
 
