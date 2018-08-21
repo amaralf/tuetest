@@ -761,14 +761,14 @@ class App:
                 seconds = int(sep[2])
                 piece = pieceprogress/amount
                 measureamounts.append(amount)
-                measurements.append(
-                    self.measure(amount, seconds, piece, loading_bar, loading_text, progress, action, actions))
+                returnvalues, progress = self.measure(amount, seconds, piece, loading_bar, loading_text, progress, action, actions)
+                measurements.append(returnvalues)
             if sep[0] == 'actuate':
                 amount = int(sep[1])
                 seconds = int(sep[2])
                 endseconds = int(sep[3])
                 piece = pieceprogress/float(sep[1])
-                self.actuate(amount, seconds, endseconds, piece, loading_bar, loading_text, progress, action, actions)
+                progress = self.actuate(amount, seconds, endseconds, piece, loading_bar, loading_text, progress, action, actions)
 
         loading_bar.place(relwidth=0.90)
         loading_bar.update()
@@ -807,18 +807,18 @@ class App:
             loading_bar.place(relwidth=progress)
             loading_bar.update()
             loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
-                                     "Get Measurement " + str(z + 1) + "of" + str(amount))
+                                     "Get Measurement " + str(z + 1) + " of " + str(amount))
             loading_text.update()
 
             y, voltage, tt = self.getAmp()
             returnvalues.append(y)
             time.sleep(waittime)
-        return returnvalues
+        return returnvalues, progress
 
     def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
         for z in range(amount):
             loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
-                                     "Do Actuation " + str(z + 1) + "of" + str(amount))
+                                     "Do Actuation " + str(z + 1) + " of " + str(amount))
             loading_text.update()
             progress += piece
             loading_bar.place(relwidth=progress)
@@ -827,7 +827,7 @@ class App:
             if z < amount-1:
                 time.sleep(waittime)
         time.sleep(endtime)
-        return
+        return progress
 
 
 
