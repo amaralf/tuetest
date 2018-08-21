@@ -713,9 +713,13 @@ class App:
             for number in set:
                 k = n.square(number - avg)
                 predev1 = predev + k
-            middev = predev / (len(set) - 1)
-            print(middev)
-            dev = n.sqrt(middev)
+            divisible = (len(set) - 1)
+            if divisible == 0:
+                dev = -1
+            else:
+                middev = predev / (len(set) - 1)
+                print(middev)
+                dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
         print(avgs)
