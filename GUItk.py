@@ -706,6 +706,7 @@ class App:
         avgs = []
         devs = []
         for set in meassets:
+            print(set)
             avg = sum(set)/len(set)
             predev = 0
             for number in set:
@@ -803,9 +804,7 @@ class App:
     def measure(self, amount, waittime, piece, loading_bar, loading_text, progress, action, actions):
         returnvalues = []
         for z in range(amount):
-            progress = progress + piece
-            loading_bar.place(relwidth=progress)
-            loading_bar.update()
+
             loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
                                      "Get Measurement " + str(z + 1) + " of " + str(amount))
             loading_text.update()
@@ -813,6 +812,9 @@ class App:
             y, voltage, tt = self.getAmp()
             returnvalues.append(y)
             time.sleep(waittime)
+            progress = progress + piece
+            loading_bar.place(relwidth=progress)
+            loading_bar.update()
         return returnvalues, progress
 
     def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
@@ -820,12 +822,12 @@ class App:
             loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
                                      "Do Actuation " + str(z + 1) + " of " + str(amount))
             loading_text.update()
-            progress += piece
-            loading_bar.place(relwidth=progress)
-            loading_bar.update()
             Test.actuation()
             if z < amount-1:
                 time.sleep(waittime)
+            progress += piece
+            loading_bar.place(relwidth=progress)
+            loading_bar.update()
         time.sleep(endtime)
         return progress
 
