@@ -17,7 +17,7 @@ import time
 
 def load_test_data(name):
     namestring = "./textfiles/" + name + ".txt"
-    print(namestring)
+    # print(namestring)
     f = open(namestring)
     lines = f.readlines()
     time = []
@@ -35,7 +35,7 @@ def load_test_data(name):
         step += 1
         if abs(float(magnet[step]) - float(magnet[laststep])) > 0.15:
             found = True
-    print(step)
+    # print(step)
     pulsestime = []
     pulsesdata = []
     pulsesmagnet = []
@@ -47,7 +47,7 @@ def load_test_data(name):
             nextstep += 1
             if abs(float(magnet[nextstep]) - float(magnet[laststep])) > 0.15:
                 found = True
-        print("ends: ", nextstep)
+        # print("ends: ", nextstep)
         sub = ((nextstep - step)/20)
         nextsubstep = step
         pulsetime = []
@@ -104,7 +104,7 @@ def fourier(time, amplitude):
 def fourierten(time, amplitude):
     x, y = fourier(time, amplitude)
     i = find_ten(x)
-    print(y[i])
+    # print(y[i])
     return x[i], y[i]
 
 
