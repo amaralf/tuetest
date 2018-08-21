@@ -787,6 +787,7 @@ class App:
         pointer = 0
         print(measurements)
         res, devs, avgs = self.getResult(measurements)
+        print(devs)
         output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
                                 "Press the Measure Button to measure again.")
