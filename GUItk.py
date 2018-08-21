@@ -705,6 +705,7 @@ class App:
            Output: single result value"""
         avgs = []
         devs = []
+        print(meassets)
         for set in meassets:
             print(set)
             avg = sum(set)/len(set)
@@ -781,7 +782,7 @@ class App:
         meassets = []
         pointer = 0
         print(measurements)
-        res, devs, avgs = self.getResult(meassets)
+        res, devs, avgs = self.getResult(measurements)
         output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
                                 "Press the Measure Button to measure again.")
