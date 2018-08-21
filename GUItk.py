@@ -717,7 +717,7 @@ class App:
             dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
-        res = self.calibration_curve(avgs[-1])
+        res = self.calibration_curve(avgs[(len(avgs)-1)])
         return res, devs, avgs
 
     def convert(self, adc_values):
