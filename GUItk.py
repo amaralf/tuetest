@@ -777,6 +777,7 @@ class App:
         loading_text.update()
         meassets = []
         pointer = 0
+        print(measurements)
         for amount in measureamounts:
             final = pointer + amount
             meassets.append(measurements[pointer: final])
