@@ -778,16 +778,11 @@ class App:
         meassets = []
         pointer = 0
         print(measurements)
-        for amount in measureamounts:
-            final = pointer + amount
-            meassets.append(measurements[pointer: final])
-            pointer = final
-        print(meassets)
         res, devs, avgs = self.getResult(meassets)
         output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
                                 "Press the Measure Button to measure again.")
-        self.save_measurements(meassets, avgs, devs)
+        self.save_measurements(measurements, avgs, devs)
         self.save_results(res)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
