@@ -76,7 +76,7 @@ class App:
     def checklist(self, output_text, loading_frame, loading_bar, loading_text,
                   button_list, mail_button):
         """Check if sample and/or hood are inserted/closed and display an error message when appropriate."""
-        GPIO 20 for hood, GPIO 21 for sample
+        # GPIO 20 for hood, GPIO 21 for sample
         GPIO.setmode(GPIO.BCM)
         # GPIO.PUD_DOWN is an attribute that declares the pin == 0 even if nothing is connected, so it would normally be
         # 'floating' between 0 and 1. This is fixed by that attribute.
@@ -757,13 +757,18 @@ class App:
             regex = re.compile(r'-?\w+')
             sep = regex.findall(line)
             if sep[0] == 'measure':
-                piece = pieceprogress/sep[1]
-                measureamounts.append(sep[1])
+                amount = int(sep[1])
+                seconds = int(sep[2])
+                piece = pieceprogress/amount
+                measureamounts.append(amount)
                 measurements.append(
-                    self.measure(sep[1], sep[2], piece, loading_bar, loading_text, progress, action, actions))
+                    self.measure(amount, seconds, piece, loading_bar, loading_text, progress, action, actions))
             if sep[0] == 'actuate':
-                piece = pieceprogress/sep[1]
-                self.actuate(sep[1], sep[2], sep[3], piece, loading_bar, loading_text, progress, action, actions)
+                amount = int(sep[1])
+                seconds = int(sep[2])
+                endseconds = int(sep[3])
+                piece = pieceprogress/float(sep[1])
+                self.actuate(amount, seconds, endseconds, piece, loading_bar, loading_text, progress, action, actions)
 
         loading_bar.place(relwidth=0.90)
         loading_bar.update()
@@ -811,7 +816,7 @@ class App:
         return returnvalues
 
     def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
-        for z in range(amount)
+        for z in range(amount):
             loading_text.config(text="Action " + str(action) + " of " + str(actions) + ":\n" +
                                      "Do Actuation " + str(z + 1) + "of" + str(amount))
             loading_text.update()
