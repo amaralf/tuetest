@@ -713,13 +713,13 @@ class App:
             predev = 0
             for number in set:
                 k = n.square(number - avg)
-                predev1 = predev + k
+                predev = predev + k
             divisible = (len(set) - 1)
             if divisible == 0:
                 dev = -1
             else:
                 middev = predev / (len(set) - 1)
-                # print(middev)
+                print("middev = " + str(middev))
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
@@ -788,7 +788,7 @@ class App:
         pointer = 0
         # print(measurements)
         res, devs, avgs = self.getResult(measurements)
-        # print(devs)
+        print(devs)
         output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
                                 "Press the Measure Button to measure again.")
