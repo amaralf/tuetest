@@ -123,7 +123,7 @@ class App:
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
-        print(dirname)
+        # print(dirname)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         with open(filename, "a") as rez:
@@ -136,7 +136,7 @@ class App:
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
-        print(dirname)
+        # print(dirname)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         with open(filename, "a") as measurements:
@@ -153,6 +153,7 @@ class App:
             for dev in devs:
                 measurements.write("Standard Deviation " + str(counter) + " = " + str(dev) + "\n")
                 counter += 1
+            measurements.write("\n\n\n")
             measurements.close()
 
     def send_to_mail(self, name, prettyname):
@@ -705,9 +706,9 @@ class App:
            Output: single result value"""
         avgs = []
         devs = []
-        print(meassets)
+        # print(meassets)
         for set in meassets:
-            print(set)
+            # print(set)
             avg = sum(set)/len(set)
             predev = 0
             for number in set:
@@ -718,12 +719,12 @@ class App:
                 dev = -1
             else:
                 middev = predev / (len(set) - 1)
-                print(middev)
+                # print(middev)
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
-        print(avgs)
-        print(len(avgs) - 1)
+        # print(avgs)
+        # print(len(avgs) - 1)
         res = self.calibration_curve(avgs[(len(avgs)-1)])
         return res, devs, avgs
 
@@ -764,7 +765,7 @@ class App:
             action+=1
             regex = re.compile(r'-?\w+')
             sep = regex.findall(line)
-            print(sep)
+            # print(sep)
             if sep[0] == 'measure':
                 amount = int(sep[1])
                 seconds = int(sep[2])
@@ -785,9 +786,9 @@ class App:
         loading_text.update()
         meassets = []
         pointer = 0
-        print(measurements)
+        # print(measurements)
         res, devs, avgs = self.getResult(measurements)
-        print(devs)
+        # print(devs)
         output_text.config(text="Measurement finished. \n" +
                                 "The result is " + str(res) + "\n" +
                                 "Press the Measure Button to measure again.")
@@ -821,7 +822,7 @@ class App:
             progress = progress + piece
             loading_bar.place(relwidth=progress)
             loading_bar.update()
-            print(returnvalues)
+            # print(returnvalues)
         return returnvalues, progress
 
     def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
