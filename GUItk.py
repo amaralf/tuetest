@@ -816,6 +816,7 @@ class App:
             progress = progress + piece
             loading_bar.place(relwidth=progress)
             loading_bar.update()
+            print(returnvalues)
         return returnvalues, progress
 
     def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
