@@ -722,8 +722,8 @@ class App:
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
-            target = len(avgs)-1
-        res = self.calibration_curve(avgs[target])
+        target = avgs[(len(avgs)-1)]
+        res = self.calibration_curve(target)
         return res, devs, avgs, target
 
     def convert(self, adc_values):
