@@ -1,3 +1,7 @@
+# Software developed and tested exclusively and exquisitely for T.E.S.T. 2018
+# By T.T.P. Franken and R.P.W. Schmidt.
+
+# The Math file
 # The Math file
 
 # ===================IMPORTS=================
@@ -14,114 +18,35 @@ import time
 
 # ===================FOURIER=================
 
-
-def load_test_data(name):
-    namestring = "./textfiles/" + name + ".txt"
-    # print(namestring)
-    f = open(namestring)
-    lines = f.readlines()
-    time = []
-    data = []
-    magnet = []
-    for x in lines:
-        time.append(x.split('\t')[0])
-        data.append(x.split('\t')[3])
-        magnet.append(x.split('\t')[4])
-    f.close()
-    step = -1
-    found = False
-    while not found:
-        laststep = step
-        step += 1
-        if abs(float(magnet[step]) - float(magnet[laststep])) > 0.15:
-            found = True
-    # print(step)
-    pulsestime = []
-    pulsesdata = []
-    pulsesmagnet = []
-    while step < len(time):
-        nextstep = step
-        found = False
-        while not found:
-            laststep = nextstep
-            nextstep += 1
-            if abs(float(magnet[nextstep]) - float(magnet[laststep])) > 0.15:
-                found = True
-        # print("ends: ", nextstep)
-        sub = ((nextstep - step)/20)
-        nextsubstep = step
-        pulsetime = []
-        pulsedata = []
-        pulsemagnet = []
-        while step < nextstep:
-            # if step == nextsubstep:
-            # nextsubstep += sub
-            pulsetime.append(time[step])
-            pulsedata.append(data[step])
-            pulsemagnet.append(magnet[step])
-            step += 1
-        pulsetime = [float(i) for i in pulsetime]
-        pulsedata = [float(i) for i in pulsedata]
-        pulsestime.append(pulsetime)
-        pulsesdata.append(pulsedata)
-        pulsesmagnet.append(pulsemagnet)
-        found = False
-        while not found:
-            laststep = step
-            step += 1
-            if step < len(time):
-                if abs(float(magnet[step]) - float(magnet[laststep])) > 0.15:
-                    found = True
-            if step == len(time):
-                found = True
-        print(step)
-    return pulsestime, pulsesdata, pulsesmagnet
-
-
-def test_data_fourier(data):
-    fourierx = []
-    fouriery = []
-    tenhzx = []
-    tenhzy = []
-    for x in range(0, len(data)):
-        time = np.linspace(0, (len(data[x]) * 0.0002), len(data[x]))
-        print(len(data[x]))
-        x, y = fourierten(time, data[x])
-        fourierx.append(x)
-        fouriery.append(y)
-    return fourierx, fouriery
-
+def fourierten(time, amplitude):
+    """This function is called during the execution. It calls both functions below it."""
+    x, y = fourier(time, amplitude)
+    i = find_ten(x)
+    # x[i] is the value[index] in [hzvals] closest to 10Hz which has the highest accompanying peak, y[i]
+    return x[i], y[i]
 
 def fourier(time, amplitude):
+    """The actual Fourier transformation. To be honest, we had to Google this and we found something that worked. Should 
+       you really want some kind of explanation-ish, contact T.T.P. Franken."""
     N = len(time)  # size
-    T = time[len(time)-1]/N  # step probably
-    yf = fft(amplitude)  # fourier transform
+    T = time[len(time)-1]/N  # step
+    yf = fft(amplitude)  # fourier transformation
     hzvals = np.linspace(0.0, 1.0/(2.0*T), int(N/2))
     amplitudes = 2.0/N * np.abs(yf[:N//2])
     return hzvals, amplitudes
 
-
-def fourierten(time, amplitude):
-    x, y = fourier(time, amplitude)
-    i = find_ten(x)
-    # print(y[i])
-    return x[i], y[i]
-
-
 def find_ten(x):
+    """This function finds the location of the peak on the x-axis: thus the Hz value which has the highest peak closest
+       to 10Hz."""
     closestindex = 0
-    closest = np.inf
     index = 0
     closestdistance = np.inf
     for num in x:
         distance = abs(num-10)
         if distance < closestdistance:
-            closest = num
             closestdistance = distance
             closestindex = index
         index += 1
-    # print(closest)
-    # print(closestdistance)
     return closestindex
 
 

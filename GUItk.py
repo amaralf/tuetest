@@ -706,7 +706,6 @@ class App:
            Output: single result value"""
         avgs = []
         devs = []
-        # print(meassets)
         for set in meassets:
             # print(set)
             avg = sum(set)/len(set)
@@ -723,10 +722,9 @@ class App:
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
-        # print(avgs)
-        # print(len(avgs) - 1)
-        res = self.calibration_curve(avgs[(len(avgs)-1)])
-        return res, devs, avgs
+            target = len(avgs)-1
+        res = self.calibration_curve(avgs[target])
+        return res, devs, avgs, target
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
@@ -765,7 +763,6 @@ class App:
             action+=1
             regex = re.compile(r'-?\w+')
             sep = regex.findall(line)
-            # print(sep)
             if sep[0] == 'measure':
                 amount = int(sep[1])
                 seconds = int(sep[2])
@@ -786,12 +783,12 @@ class App:
         loading_text.update()
         meassets = []
         pointer = 0
-        # print(measurements)
-        res, devs, avgs = self.getResult(measurements)
+        res, devs, avgs, peaksignal = self.getResult(measurements)
         print(devs)
         output_text.config(text="Measurement finished. \n" +
-                                "The result is " + str(res) + "\n" +
-                                "Press the Measure Button to measure again.")
+                                "The orginal signal intensity is " + str(peaksignal) + "\n" +
+                                "The resulting concentration of Vancomycin is " + str(res) + " mg/mL" + "\n" +
+                                "Press the Measure Button to measure again")
         self.save_measurements(measurements, avgs, devs)
         self.save_results(res)
         loading_bar.place(relwidth=0.98)
@@ -822,7 +819,6 @@ class App:
             progress = progress + piece
             loading_bar.place(relwidth=progress)
             loading_bar.update()
-            # print(returnvalues)
         return returnvalues, progress
 
     def actuate(self, amount, waittime, endtime, piece, loading_bar, loading_text, progress, action, actions):
@@ -839,8 +835,6 @@ class App:
             loading_bar.place(relwidth=progress)
             loading_bar.update()
         return progress
-
-
 
 
 app = App()
