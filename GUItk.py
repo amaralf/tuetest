@@ -786,7 +786,7 @@ class App:
         res, devs, avgs, peaksignal = self.getResult(measurements)
         print(devs)
         output_text.config(text="Measurement finished. \n" +
-                                "The orginal signal intensity is " + str(peaksignal) + "\n" +
+                                "The original signal intensity is " + str(peaksignal) + "\n" +
                                 "The resulting concentration of Vancomycin is " + str(res) + " mg/mL" + "\n" +
                                 "Press the Measure Button to measure again")
         self.save_measurements(measurements, avgs, devs)
