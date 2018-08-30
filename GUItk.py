@@ -109,10 +109,10 @@ class App:
             error_text = t.Label(self.root, fg="red", bg=self.color2, text="Please enter a username and password")
             error_text.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.4)
         else:
-            with open("/home/pi/Desktop/tuetest2/tuetest/textfiles/accounts.txt", "a") as usernames:
+            with open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "a") as usernames:
                 usernames.write(', ' + str(username))
                 usernames.close()
-            with open("/home/pi/Desktop/tuetest2/tuetest/textfiles/passwords.txt", "a") as passwords:
+            with open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "a") as passwords:
                 passwords.write(', ' + str(password))
                 passwords.close()
             self.change_page(0)
@@ -121,7 +121,7 @@ class App:
         """Function to save the new results with a timestamp."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         # print(dirname)
         if not os.path.exists(dirname):
@@ -134,7 +134,7 @@ class App:
         """Function to save measurements of the last measuring attempt."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
-        filename = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         dirname = os.path.dirname(filename)
         # print(dirname)
         if not os.path.exists(dirname):
@@ -195,7 +195,7 @@ class App:
     def login(self, username, password):
         """Login function. Displays an error message if the user and/or password do not match or do not (yet) exist."""
         usernames = []
-        accounts = open("/home/pi/Desktop/tuetest2/tuetest/textfiles/accounts.txt", "r")
+        accounts = open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
         # accounts = open("/home/pi/Desktop/tuetest/textfiles/accounts.txt", "r")
         for user in list(accounts):
             user = user.split(', ')
@@ -203,7 +203,7 @@ class App:
         accounts.close()
 
         passwords = []
-        code = open("/home/pi/Desktop/tuetest2/tuetest/textfiles/passwords.txt", "r")
+        code = open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "r")
         # code = open("/home/pi/Desktop/tuetest/textfiles/passwords.txt", "r")
         for word in list(code):
             word = word.split(', ')
@@ -226,7 +226,7 @@ class App:
            before continuing to the next page."""
         back_label = t.Label(self.root, height=self.root.winfo_height(), width=self.root.winfo_width(), bg="grey")
         back_label.pack()
-        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest2/tuetest/textfiles/logo.jpg"))
+        img = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/tuetest/textfiles/logo.jpg"))
         main_label = t.Label(back_label, image=img)
         main_label.image = img
         main_label.pack()
@@ -309,7 +309,7 @@ class App:
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/tuetest2/tuetest/textfiles/LogoSmall.png")
+        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
         # img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
 
         logo_label = t.Label(parent_label)
@@ -433,7 +433,7 @@ class App:
 
     def generate_page_measure(self):
         """Function to generate the measure page. Here, you can start a measurement."""
-        filename = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         prettyname = "Measurements_Patient_" + str(self.patient_id) + ".txt"
         title = "Measurement"
         # begin top bar of screen
@@ -547,7 +547,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.9, relwidth=1.0, relx=0.0, rely=0.1)
-        filename = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Results_Patient_" + str(self.patient_id) + ".txt"
         try:
             file = open(filename, "r")
         except FileNotFoundError:
@@ -589,7 +589,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.4, relwidth=0.5, relx=0.0, rely=0.1)
-        filename = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Settings.txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Settings.txt"
         try:
             file = open(filename, "r+")
         except FileNotFoundError:
@@ -738,8 +738,8 @@ class App:
         """Main function for the actual measurement. This function controls the DAC's and the ADC.
            Input: none
            Output: none"""
-        filename = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
-        settingsname = "/home/pi/Desktop/tuetest2/tuetest/textfiles/Settings.txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
+        settingsname = "/home/pi/Desktop/tuetest/textfiles/Settings.txt"
         output_text.config(text="Measuring...")
         output_text.config(fg="black")
         output_text.update()
