@@ -698,7 +698,10 @@ class App:
     def calibration_curve(self, avg):
         """Input: avg
            Output: Concentration"""
-        ans = 1740.9 * avg * avg + 142.35 * avg + 1.8865
+        ans = 0.4654*n.power(avg, -0.148)
+
+        # bad logarithmic prediction:
+        # -0,013ln(avg) + 0,2363
         return ans
 
     def getResult(self, meassets):
