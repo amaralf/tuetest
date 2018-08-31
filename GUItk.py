@@ -16,6 +16,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+from decimal import Decimal
 import RPi.GPIO as GPIO
 import TESTmath as Test
 import numpy as n
@@ -25,7 +26,7 @@ import keyboard as keyboard
 class App:
     """Here we declare the entire app/GUI. Everything our program does is written inside the App class.
        We also declare the main properties of our program here, like the colors and font type/size."""
-    page = 6  # 4 is boot
+    page = 4  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
@@ -786,9 +787,13 @@ class App:
         pointer = 0
         res, devs, avgs, peaksignal = self.getResult(measurements)
         originsignal = 30* peaksignal
+        decisignal = Decimal(originsignal)
+        decires = Decimal(res)
+        roundsignal = round(decisignal, 3)
+        roundres = round(decires, 3)
         output_text.config(text="Measurement finished. \n" +
-                                "The original signal intensity is " + str(originsignal) + "\n" +
-                                "The resulting concentration of Vancomycin is " + str(res) + " mg/mL" + "\n" +
+                                "The original signal intensity is " + str(roundsignal) + "\n" +
+                                "The resulting concentration of Vancomycin is " + str(roundres) + " mg/mL" + "\n" +
                                 "Press the Measure Button to measure again")
         self.save_measurements(measurements, avgs, devs)
         self.save_results(res)
