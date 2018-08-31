@@ -146,12 +146,12 @@ class App:
             counter = 1
             measurements.write("\n\n")
             for avg in avgs:
-                measurements.write("Average "+str(counter)+" = "+str(avg)+"\n")
+                measurements.write("Average "+str(counter)+" = "+str(avg)+" \n")
                 counter+=1
             counter = 1
             measurements.write("\n\n")
             for dev in devs:
-                measurements.write("Standard Deviation " + str(counter) + " = " + str(dev) + "\n")
+                measurements.write("Standard Deviation " + str(counter) + " = " + str(dev) + " \n")
                 counter += 1
             measurements.write("\n\n\n")
             measurements.close()

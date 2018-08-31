@@ -66,6 +66,15 @@ def fourierten(time, amplitude):
     return x[i], y[i]
 
 
+def outliercombat(array):
+    outlierproof = np.sort(array)
+    middle = int((len(outlierproof)-1)/2)
+    median = outlierproof[middle]
+    length = len(outlierproof) - 1
+    del(outlierproof[length])
+    del(outlierproof[0])
+    return median, outlierproof
+
 # ===================FOURIER=================
 # other functions
 
