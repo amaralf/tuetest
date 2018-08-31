@@ -25,7 +25,7 @@ import keyboard as keyboard
 class App:
     """Here we declare the entire app/GUI. Everything our program does is written inside the App class.
        We also declare the main properties of our program here, like the colors and font type/size."""
-    page = 4  # 4 is boot
+    page = 6  # 4 is boot
     height = 600
     width = 1024
     patient_id = -1
@@ -309,7 +309,7 @@ class App:
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
+        img = Image.open("/home/pi/Desktop/textfiles/LogoSmall.png")
         # img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
 
         logo_label = t.Label(parent_label)
@@ -589,7 +589,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.4, relwidth=0.5, relx=0.0, rely=0.1)
-        filename = "/home/pi/Desktop/tuetest/textfiles/Settings.txt"
+        filename = "/home/pi/Desktop/textfiles/Settings.txt"
         try:
             file = open(filename, "r+")
         except FileNotFoundError:
@@ -621,14 +621,12 @@ class App:
         error = t.Label(explanation_frame, fg='red', wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
                               font=(self.font, self.normalfontsize), justify='left')
         error.place(relx=0.0, rely=0.8, relheight=0.2, relwidth=1.0)
-
-
-
         keyboard.main(self.root)
 
     def saveandquit(self, filename, filelabel, error):
         file = open(filename, "w")
         text = filelabel.get("1.0", 'end')
+        text = text.rstrip()
         lines = text.splitlines()
         if len(lines[0]) == 0:
             error.config(text="Either no input or a stray newline at the end of the input.")
@@ -644,7 +642,7 @@ class App:
                 if len(single) < 3:
                     error.config(text="You forgot one of the function arguments")
                     return
-                if len(single) > 4:
+                if len(single) >= 4:
                     error.config(text="One command per line")
                     return
                 amount = int(single[1])
@@ -659,7 +657,7 @@ class App:
                 if len(single) < 4:
                     error.config(text="You forgot one of the function arguments")
                     return
-                if len(single) > 5:
+                if len(single) >= 5:
                     error.config(text="One command per line")
                     return
                 amount = int(single[1])
