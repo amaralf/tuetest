@@ -310,7 +310,7 @@ class App:
 
     def includelogo(self, parent_label):
         """Like the name implies, this function shows the T.E.S.T. logo at the top right of the screen."""
-        img = Image.open("/home/pi/Desktop/textfiles/LogoSmall.png")
+        img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
         # img = Image.open("/home/pi/Desktop/tuetest/textfiles/LogoSmall.png")
 
         logo_label = t.Label(parent_label)
@@ -590,7 +590,7 @@ class App:
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
         fileframe.place(relheight=0.4, relwidth=0.5, relx=0.0, rely=0.1)
-        filename = "/home/pi/Desktop/textfiles/Settings.txt"
+        filename = "/home/pi/Desktop/tuetest/textfiles/Settings.txt"
         try:
             file = open(filename, "r+")
         except FileNotFoundError:
