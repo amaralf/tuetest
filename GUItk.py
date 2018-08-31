@@ -144,16 +144,16 @@ class App:
             for measure in measures:
                 measurements.write(str(measure) + ' ')
             counter = 1
-            measurements.write("\n\n")
+            measurements.write("\n\n Averages: ")
             for avg in avgs:
-                measurements.write("Average "+str(counter)+" = "+str(avg)+" \n")
+                measurements.write(+str(avg)+" ")
                 counter+=1
             counter = 1
-            measurements.write("\n\n")
+            measurements.write("\n\n Standard Deviations: ")
             for dev in devs:
-                measurements.write("Standard Deviation " + str(counter) + " = " + str(dev) + " \n")
+                measurements.write(str(dev) + " ")
                 counter += 1
-            measurements.write("\n\n\n")
+            measurements.write("\n\n\n\n")
             measurements.close()
 
     def send_to_mail(self, name, prettyname):
