@@ -791,7 +791,7 @@ class App:
         decires = Decimal(res)
         roundsignal = round(decisignal, 3)
         roundres = round(decires, 3)
-        output_text.config(text="Measurement of patient " + str(patient_id) + " finished. \n" +
+        output_text.config(text="Measurement of patient " + str(self.patient_id) + " finished. \n" +
                                 "The original signal intensity is " + str(roundsignal) + "\n" +
                                 "The resulting concentration of Vancomycin is " + str(roundres) + " mg/mL" + "\n" +
                                 "Press the Measure Button to measure again")
