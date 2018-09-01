@@ -624,7 +624,7 @@ class App:
         explanation.update()
         error = t.Label(explanation_frame, fg='red', wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
                               font=(self.font, self.normalfontsize), justify='left')
-        error.place(relx=0.0, rely=0.85, relheight=0.2, relwidth=1.0)
+        error.place(relx=0.0, rely=0.8, relheight=0.2, relwidth=1.0)
         keyboard.main(self.root)
 
     def saveandquit(self, filename, filelabel, error):
