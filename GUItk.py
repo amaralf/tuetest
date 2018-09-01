@@ -720,7 +720,7 @@ class App:
                 dev = -1
             else:
                 middev = predev / (len(set) - 1)
-                print("middev = " + str(middev))
+                # print("middev = " + str(middev))
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
