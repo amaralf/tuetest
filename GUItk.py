@@ -476,7 +476,7 @@ class App:
         loading_bar = t.Frame(loading_frame, bg=self.color2)
         loading_bar.place(relheight=0.8, relwidth=0, relx=0.01, rely=0.1)
         loading_text = t.Label(output_bar, bg=self.color2, text="")
-        loading_text.place(relheight=0.3, relwidth=1, rely=0.8)
+        loading_text.place(relheight=0.2, relwidth=1, rely=0.8)
 
         # begin lower part of screen
         bottom_frame = t.Frame(self.root, bg=self.color2)
@@ -620,11 +620,11 @@ class App:
                 " amount of time after)' on a new line."
         explanation = t.Label(explanation_frame, wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
                               text=text, font=(self.font, self.normalfontsize), justify='left')
-        explanation.place(relx = 0.0, rely = 0.0, relheight=0.8, relwidth=1.0)
+        explanation.place(relx = 0.0, rely = 0.5, relheight=0.8, relwidth=1.0)
         explanation.update()
         error = t.Label(explanation_frame, fg='red', wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
                               font=(self.font, self.normalfontsize), justify='left')
-        error.place(relx=0.0, rely=0.8, relheight=0.2, relwidth=1.0)
+        error.place(relx=0.0, rely=0.85, relheight=0.2, relwidth=1.0)
         keyboard.main(self.root)
 
     def saveandquit(self, filename, filelabel, error):
@@ -633,7 +633,7 @@ class App:
         text = text.rstrip()
         lines = text.splitlines()
         if len(lines[0]) == 0:
-            error.config(text="Either no input or a stray newline at the end of the input.")
+            error.config(text="You must have input.")
             return
         for line in lines:
             regex = re.compile(r'-?\w+')
