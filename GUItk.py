@@ -118,7 +118,7 @@ class App:
                 passwords.close()
             self.change_page(0)
 
-    def save_results(self, res):
+    def save_results(self, res, mgLres):
         """Function to save the new results with a timestamp."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -129,9 +129,10 @@ class App:
             os.makedirs(dirname)
         with open(filename, "a") as rez:
             rez.write("TimeStamp: " + str(st) + "\n")
-            rez.write("Concentration: " + str(res) + "\n\n")
+            rez.write("Concentration in pM: " + str(res) + "\n")
+            rez.write("Concentration in mg/L: " + str(mgLres)+"\n\n")
 
-    def save_measurements(self, measures, avgs, devs):
+    def save_measurements(self, measures, avgs, devs, res, mgLres):
         """Function to save measurements of the last measuring attempt."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -154,7 +155,9 @@ class App:
             for dev in devs:
                 measurements.write(str(dev) + " ")
                 counter += 1
-            measurements.write("\n\n\n\n")
+            measurements.write("\n\n")
+            measurements.write("Concentration in pM: " + str(res) + "\n")
+            measurements.write("Concentration in mg/L: " + str(mgLres) + "\n\n\n\n")
             measurements.close()
 
     def send_to_mail(self, name, prettyname):
@@ -589,7 +592,7 @@ class App:
 
         # begin upper part of screen
         fileframe = t.Frame(self.root, bg=self.color3)
-        fileframe.place(relheight=0.4, relwidth=0.5, relx=0.0, rely=0.1)
+        fileframe.place(relheight=0.4, relwidth=0.3, relx=0.0, rely=0.1)
         filename = "/home/pi/Desktop/tuetest/textfiles/Settings.txt"
         try:
             file = open(filename, "r+")
@@ -607,7 +610,7 @@ class App:
         filelabel.update()
         filescroll.update()
         explanation_frame = t.Frame(self.root, bg=self.color3)
-        explanation_frame.place(relheight=0.4, relwidth=0.5, relx=0.5, rely=0.1)
+        explanation_frame.place(relheight=0.4, relwidth=0.7, relx=0.3, rely=0.1)
         explanation_frame.update()
         text = "This is the settings page. On this page, you can configure the measurement rounds and the" \
                " actuations.\n\n"
@@ -698,10 +701,11 @@ class App:
         """Input: avg
            Output: Concentration"""
         ans = 1.7039*n.power(avg, -0.074)
+        mgLans = ans*0.000000001*1449.25*0.97546
 
         # bad logarithmic prediction:
         # -0,013ln(avg) + 0,2363
-        return ans
+        return ans, mgLans
 
     def getResult(self, meassets):
         """Input: single amplitude
@@ -725,8 +729,8 @@ class App:
             avgs.append(avg)
             devs.append(dev)
         target = avgs[(len(avgs)-1)]
-        res = self.calibration_curve(target)
-        return res, devs, avgs, target
+        res, mgLres = self.calibration_curve(target)
+        return res, mgLres, devs, avgs, target
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
@@ -742,7 +746,7 @@ class App:
            Output: none"""
         filename = "/home/pi/Desktop/tuetest/textfiles/Measurements_Patient_" + str(self.patient_id) + ".txt"
         settingsname = "/home/pi/Desktop/tuetest/textfiles/Settings.txt"
-        output_text.config(text="Measuring...")
+        output_text.config(text="Measuring patient "+str(self.patient_id)+"...")
         output_text.config(fg="black")
         output_text.update()
         loading_frame.config(bg=self.color4)
@@ -785,18 +789,21 @@ class App:
         loading_text.update()
         meassets = []
         pointer = 0
-        res, devs, avgs, peaksignal = self.getResult(measurements)
+        res, mgLres, devs, avgs, peaksignal = self.getResult(measurements)
         originsignal = 30* peaksignal
         decisignal = Decimal(originsignal)
         decires = Decimal(res)
+        decimgLres = Decimal(mgLres)
         roundsignal = round(decisignal, 3)
         roundres = round(decires, 3)
+        roundmgLres = round(mgLres, 3)
         output_text.config(text="Measurement of patient " + str(self.patient_id) + " finished. \n" +
                                 "The original signal intensity is " + str(roundsignal) + "\n" +
-                                "The resulting concentration of Vancomycin is " + str(roundres) + " mg/mL" + "\n" +
+                                "The resulting concentration of Vancomycin is " + str(roundres) + " pM or " +
+                                str(roundmgLres) + " mg/L.\n" +
                                 "Press the Measure Button to measure again")
-        self.save_measurements(measurements, avgs, devs)
-        self.save_results(res)
+        self.save_measurements(measurements, avgs, devs, res, mgLres)
+        self.save_results(res, mgLres)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Finished")
