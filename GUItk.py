@@ -620,7 +620,7 @@ class App:
                 " amount of time after)' on a new line."
         explanation = t.Label(explanation_frame, wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
                               text=text, font=(self.font, self.normalfontsize), justify='left')
-        explanation.place(relx = 0.0, rely = 0.5, relheight=0.8, relwidth=1.0)
+        explanation.place(relx = 0.0, rely = 0.05, relheight=0.8, relwidth=1.0)
         explanation.update()
         error = t.Label(explanation_frame, fg='red', wraplength=explanation_frame.winfo_width()-20, bg=self.color2,
                               font=(self.font, self.normalfontsize), justify='left')
