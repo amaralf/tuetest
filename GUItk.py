@@ -468,15 +468,15 @@ class App:
                                    "It will check whether the sensor is ready to measure.\n"
                                    "If so, it will initiate the measurement.",
                               font=(self.font, self.normalfontsize))
-        output_text.place(relheight=0.5, relwidth=1)
+        output_text.place(relheight=0.6, relwidth=1)
         output_text.update()
         loading_frame = t.Frame(output_bar, bg=self.color2)
-        loading_frame.place(relheight=0.2, relwidth=0.8, relx=0.1, rely=0.5)
+        loading_frame.place(relheight=0.2, relwidth=0.8, relx=0.1, rely=0.6)
         loading_frame.update()
         loading_bar = t.Frame(loading_frame, bg=self.color2)
         loading_bar.place(relheight=0.8, relwidth=0, relx=0.01, rely=0.1)
         loading_text = t.Label(output_bar, bg=self.color2, text="")
-        loading_text.place(relheight=0.3, relwidth=1, rely=0.7)
+        loading_text.place(relheight=0.3, relwidth=1, rely=0.8)
 
         # begin lower part of screen
         bottom_frame = t.Frame(self.root, bg=self.color2)
