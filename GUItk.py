@@ -703,7 +703,7 @@ class App:
     def calibration_curve(self, avg):
         """Input: avg
            Output: Concentration"""
-        ans = 1.7039*n.power(avg, -0.074)
+        ans = 2.2618*n.power(avg, -0.165)
         mgLans = ans*0.000000001*1449.25*0.97546
 
         # bad logarithmic prediction:
