@@ -55,6 +55,12 @@ class App:
         self.generate_objects()
         self.root.mainloop()
 
+    def get_ip_address(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = str(s.getsockname()[0])
+        return ip
+
     def generate_objects(self, *args):
         """Function to generate pages."""
         switcher = {
@@ -248,7 +254,8 @@ class App:
         title_bar.update()
         title_bar.propagate(0)
         self.includelogo(title_bar)
-        ipholder = t.Label(title_bar, bg=self.color3, fg=self.color4, text=str(os.system("hostname -I")))
+        ipaddr = self.get_ip_address()
+        ipholder = t.Label(title_bar, bg=self.color3, fg=self.color4, text=ipaddr)
         ipholder.place(relwidth=0.1, relheight=1.0, relx=0)
         description_label = t.Label(title_bar, bg=self.color3, text="A Biosensor for measuring Vancomycin",
                                     font=(self.font, self.normalfontsize), fg=self.color4)
@@ -830,7 +837,8 @@ class App:
 
             y, voltage, tt = self.getAmp()
             returnvalues.append(y)
-            time.sleep(waittime)
+            for zz in range(amount-1):
+                time.sleep(waittime)
             progress = progress + piece
             loading_bar.place(relwidth=progress)
             loading_bar.update()
