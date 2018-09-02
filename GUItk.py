@@ -19,6 +19,7 @@ from email import encoders
 # import TESTmath as Test
 import numpy as n
 import keyboard as keyboard
+import socket
 
 
 class App:
@@ -251,6 +252,8 @@ class App:
         title_bar.update()
         title_bar.propagate(0)
         self.includelogo(title_bar)
+        ipholder = t.Label(title_bar, bg=self.color3, fg=self.color4, text=str(socket.gethostbyname(socket.gethostname())))
+        ipholder.place(relwidth=0.1, relheight=1.0, relx=0)
         description_label = t.Label(title_bar, bg=self.color3, text="A Biosensor for measuring Vancomycin",
                                     font=(self.font, self.normalfontsize), fg=self.color4)
         description_label.place(relwidth=0.4, relheight=1.0, relx=0.3)
