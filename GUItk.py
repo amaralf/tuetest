@@ -703,7 +703,7 @@ class App:
     def calibration_curve(self, avg):
         """Input: avg
            Output: Concentration"""
-        ans = 2.2618*n.power(avg, -0.165)
+        ans = 5e-7*n.power(avg, -5.844)
         mgLans = ans*0.000000001*1449.25*0.97546
 
         # bad logarithmic prediction:
@@ -793,8 +793,7 @@ class App:
         meassets = []
         pointer = 0
         res, mgLres, devs, avgs, peaksignal = self.getResult(measurements)
-        originsignal = 30* peaksignal
-        decisignal = Decimal(originsignal)
+        decisignal = Decimal(peaksignal)
         decires = Decimal(res)
         decimgLres = Decimal(mgLres)
         roundsignal = round(decisignal, 3)
