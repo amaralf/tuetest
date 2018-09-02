@@ -256,7 +256,7 @@ class App:
         self.includelogo(title_bar)
         ipaddr = self.get_ip_address()
         ipholder = t.Label(title_bar, bg=self.color3, fg=self.color4, text=ipaddr)
-        ipholder.place(relwidth=0.1, relheight=1.0, relx=0)
+        ipholder.place(relwidth=0.15, relheight=1.0, relx=0)
         description_label = t.Label(title_bar, bg=self.color3, text="A Biosensor for measuring Vancomycin",
                                     font=(self.font, self.normalfontsize), fg=self.color4)
         description_label.place(relwidth=0.4, relheight=1.0, relx=0.3)
