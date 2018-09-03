@@ -810,11 +810,14 @@ class App:
         roundsignal = round(decisignal, 3)
         roundres = round(decires, 3)
         roundmgLres = round(mgLres, 3)
-        output_text.config(text="Measurement of patient " + str(self.patient_id) + " finished. \n" +
-                                "The original signal intensity is " + str(roundsignal) + "\n" +
-                                "The resulting concentration of Vancomycin is " + str(roundres) + " pM or " +
-                                str(roundmgLres) + " mg/L.\n" +
-                                "Press the Measure Button to measure again")
+        textstring = "Measurement of patient " + str(self.patient_id) + " finished."
+        if mgLres < 2.0:
+            textstring += "Probably no Vancomycin present."
+        textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
+        textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM or " + \
+                      str(roundmgLres) + " mg/L.\n"
+        textstring += "Press the Measure Button to measure again."
+        output_text.config(text=textstring)
         self.save_measurements(measurements, avgs, devs, res, mgLres, meds)
         self.save_results(res, mgLres)
         loading_bar.place(relwidth=0.98)
