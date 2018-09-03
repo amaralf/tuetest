@@ -780,7 +780,7 @@ class App:
         action = 0
         actions = len(lines)
         for line in lines:
-            action+=1
+            action += 1
             regex = re.compile(r'-?\w+')
             sep = regex.findall(line)
             if sep[0] == 'measure':
@@ -811,10 +811,10 @@ class App:
         roundres = round(decires, 3)
         roundmgLres = round(mgLres, 3)
         textstring = "Measurement of patient " + str(self.patient_id) + " finished."
-        if mgLres < 2.0:
+        if peaksignal < 2.0:
             textstring += "Vancomycin concentration is near zero."
         textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
-        textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM or " + \
+        textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM \n or " + \
                       str(roundmgLres) + " mg/L.\n"
         textstring += "Press the Measure Button to measure again."
         output_text.config(text=textstring)
