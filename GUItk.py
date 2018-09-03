@@ -473,7 +473,7 @@ class App:
         self.includelogo(top_bar)
 
         # begin upper part of screen
-        output_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() * 0.3))
+        output_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() * 0.4))
         output_bar.pack(fill="x")
         output_bar.update()
         output_text = t.Label(output_bar, bg=self.color2,
@@ -844,7 +844,7 @@ class App:
 
             y, voltage, tt = self.getAmp()
             returnvalues.append(y)
-            for zz in range(amount-1):
+            if z != amount-1:
                 time.sleep(waittime)
             progress = progress + piece
             loading_bar.place(relwidth=progress)
