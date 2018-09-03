@@ -712,12 +712,10 @@ class App:
     def calibration_curve(self, avg):
         """Input: avg
            Output: Concentration"""
-        ans = 4e-19*n.power(avg, -11.8)
-        mgLans = ans*0.000000001*1449.25*0.97546
-
-        # bad logarithmic prediction:
-        # -0,013ln(avg) + 0,2363
-        return ans, mgLans
+        ans = 4e-19*n.power(avg, -11.8)             #ans is in pM unit
+        uM_ans = round(ans/10e6, 3)                 #ans is in uM unit
+        mgLans = ans*0.000000001*1449.25*0.97546    #mgLans is in mg/L unit
+        return uM_ans, mgLans
 
     def getResult(self, meassets):
         """Input: single amplitude
@@ -738,7 +736,6 @@ class App:
                 dev = -1
             else:
                 middev = predev / (len(set) - 1)
-                # print("middev = " + str(middev))
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
@@ -803,23 +800,16 @@ class App:
         loading_bar.update()
         loading_text.config(text="Saving Results...")
         loading_text.update()
-        meassets = []
-        pointer = 0
         res, mgLres, devs, avgs, peaksignal, meds = self.getResult(measurements)
-        decisignal = Decimal(peaksignal)
-        decires = Decimal(res)
-        decimgLres = Decimal(mgLres)
-        roundsignal = round(decisignal, 3)
-        roundres = round(decires, 3)
         roundmgLres = round(mgLres, 3)
         textstring = "Measurement of patient " + str(self.patient_id) + " finished.\n\n"
         # textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
-        textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM \n or " + \
+        textstring += "The resulting concentration of Vancomycin is " + str(res) + " uM \n or " + \
                       str(roundmgLres) + " mg/L.\n\n"
-        if peaksignal < 2.0:
-            textstring += "Vancomycin concentration is near zero."
+        if mgLres < 2.0 or mgLres > 110:
+            textstring += "Vancomycin concentration might be near zero."
         # textstring += "\n\n Press the Measure Button to measure again."
-        output_text.config(text=textstring)
+        output_text.config(text=textstring, font='bold')
         self.save_measurements(measurements, avgs, devs, res, mgLres, meds)
         self.save_results(res, mgLres)
         loading_bar.place(relwidth=0.98)
