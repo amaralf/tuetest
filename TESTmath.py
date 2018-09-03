@@ -70,7 +70,7 @@ def outliercombat(array):
     outlierproof = np.sort(array)
     middle = int((len(outlierproof)-1)/2)
     print(len(array))
-    print(len(middle))
+    print(middle)
     median = outlierproof[middle]
     return median
 
