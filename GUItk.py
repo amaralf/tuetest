@@ -714,7 +714,7 @@ class App:
            Output: Concentration"""
         ans = 4e-19*n.power(avg, -11.8)             #ans is in pM unit
         uM_ans = round(ans/10e6, 3)                 #ans is in uM unit
-        mgLans = ans*0.000000001*1449.25*0.97546    #mgLans is in mg/L unit
+        mgLans = ans*0.0000000001*1449.25*0.97546   #mgLans is in mg/L unit
         return uM_ans, mgLans
 
     def getResult(self, meassets):
