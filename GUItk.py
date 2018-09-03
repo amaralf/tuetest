@@ -743,7 +743,8 @@ class App:
             avgs.append(avg)
             devs.append(dev)
             meds.append(med)
-        target = avgs[(len(avgs)-1)]
+        # target = avgs[(len(avgs)-1)]
+        target = avgs[0]
         res, mgLres = self.calibration_curve(target)
         return res, mgLres, devs, avgs, target, meds
 
