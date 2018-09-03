@@ -812,7 +812,7 @@ class App:
         roundmgLres = round(mgLres, 3)
         textstring = "Measurement of patient " + str(self.patient_id) + " finished."
         if mgLres < 2.0:
-            textstring += "Probably no Vancomycin present."
+            textstring += "Vancomycin concentration is near zero."
         textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
         textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM or " + \
                       str(roundmgLres) + " mg/L.\n"
