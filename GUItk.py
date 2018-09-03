@@ -473,7 +473,7 @@ class App:
         self.includelogo(top_bar)
 
         # begin upper part of screen
-        output_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() * 0.4))
+        output_bar = t.Frame(self.root, bg=self.color2, height=int(self.root.winfo_height() * 0.6))
         output_bar.pack(fill="x")
         output_bar.update()
         output_text = t.Label(output_bar, bg=self.color2,
@@ -503,7 +503,7 @@ class App:
                                   command=lambda: self.checklist(output_text, loading_frame, loading_bar, loading_text,
                                                                  button_list, mail_button))
         measure_button.update()
-        measure_button.place(relheight=0.2, relwidth=0.2, relx=0.2, rely=0.3)
+        measure_button.place(relheight=0.4, relwidth=0.2, relx=0.2, rely=0.0)
         button_list.append(measure_button)
         actuation_button = t.Button(bottom_frame, activebackground=self.color2, activeforeground=self.color3,
                                   bg=self.color4,
@@ -511,7 +511,7 @@ class App:
                                   disabledforeground="red",
                                   command=lambda: self.change_page(6))
         actuation_button.update()
-        actuation_button.place(relheight=0.2, relwidth=0.2, relx=0.6, rely=0.3)
+        actuation_button.place(relheight=0.4, relwidth=0.2, relx=0.6, rely=0.1)
         button_list.append(actuation_button)
         logout_button = t.Button(self.root, text="Logout and shutdown", bg=self.color4, font=(self.font,
                                                                                               self.normalfontsize),
@@ -811,11 +811,11 @@ class App:
         roundres = round(decires, 3)
         roundmgLres = round(mgLres, 3)
         textstring = "Measurement of patient " + str(self.patient_id) + " finished."
-        if peaksignal < 2.0:
-            textstring += "Vancomycin concentration is near zero."
         textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
         textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM \n or " + \
                       str(roundmgLres) + " mg/L.\n"
+        if peaksignal < 2.0:
+            textstring += "Vancomycin concentration is near zero."
         textstring += "Press the Measure Button to measure again."
         output_text.config(text=textstring)
         self.save_measurements(measurements, avgs, devs, res, mgLres, meds)
