@@ -109,7 +109,7 @@ class App:
             output_text.config(fg="black")
             output_text.update()
             for button in button_list:
-                print(button)
+                # print(button)
                 button.config(state="disabled")
                 button.update()
             mail_button.config(state="disabled")
@@ -811,13 +811,13 @@ class App:
         roundsignal = round(decisignal, 3)
         roundres = round(decires, 3)
         roundmgLres = round(mgLres, 3)
-        textstring = "Measurement of patient " + str(self.patient_id) + " finished."
-        textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
+        textstring = "Measurement of patient " + str(self.patient_id) + " finished.\n\n"
+        # textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
         textstring += "The resulting concentration of Vancomycin is " + str(roundres) + " pM \n or " + \
-                      str(roundmgLres) + " mg/L.\n"
+                      str(roundmgLres) + " mg/L.\n\n"
         if peaksignal < 2.0:
             textstring += "Vancomycin concentration is near zero."
-        textstring += "\n Press the Measure Button to measure again."
+        # textstring += "\n\n Press the Measure Button to measure again."
         output_text.config(text=textstring)
         self.save_measurements(measurements, avgs, devs, res, mgLres, meds)
         self.save_results(res, mgLres)
@@ -846,7 +846,6 @@ class App:
             y, voltage, tt = self.getAmp()
             returnvalues.append(y)
             if z != amount-1:
-                print(z)
                 time.sleep(waittime)
             progress = progress + piece
             loading_bar.place(relwidth=progress)
