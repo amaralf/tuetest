@@ -109,6 +109,7 @@ class App:
             output_text.config(fg="black")
             output_text.update()
             for button in button_list:
+                print(button)
                 button.config(state="disabled")
                 button.update()
             mail_button.config(state="disabled")
@@ -845,6 +846,7 @@ class App:
             y, voltage, tt = self.getAmp()
             returnvalues.append(y)
             if z != amount-1:
+                print(z)
                 time.sleep(waittime)
             progress = progress + piece
             loading_bar.place(relwidth=progress)
