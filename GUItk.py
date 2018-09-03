@@ -56,10 +56,14 @@ class App:
         self.root.mainloop()
 
     def get_ip_address(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = str(s.getsockname()[0])
-        return ip
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = str(s.getsockname()[0])
+            return ip
+        except socket.error:
+            return "IP cannot be found"
+
 
     def generate_objects(self, *args):
         """Function to generate pages."""
@@ -139,7 +143,7 @@ class App:
             rez.write("Concentration in pM: " + str(res) + "\n")
             rez.write("Concentration in mg/L: " + str(mgLres)+"\n\n")
 
-    def save_measurements(self, measures, avgs, devs, res, mgLres):
+    def save_measurements(self, measures, avgs, devs, res, mgLres, meds):
         """Function to save measurements of the last measuring attempt."""
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y/%m/%d %H:%M:%S')
@@ -152,16 +156,15 @@ class App:
             measurements.write("Measurements " + st + ": \n")
             for measure in measures:
                 measurements.write(str(measure) + ' ')
-            counter = 1
             measurements.write("\n\n Averages: ")
             for avg in avgs:
                 measurements.write(str(avg)+" ")
-                counter += 1
-            counter = 1
             measurements.write("\n\n Standard Deviations: ")
             for dev in devs:
                 measurements.write(str(dev) + " ")
-                counter += 1
+            measurements.write("\n\n Medians: ")
+            for med in meds:
+                measurements.write(str(med) + " ")
             measurements.write("\n\n")
             measurements.write("Concentration in pM: " + str(res) + "\n")
             measurements.write("Concentration in mg/L: " + str(mgLres) + "\n\n\n\n")
@@ -642,7 +645,7 @@ class App:
         text = filelabel.get("1.0", 'end')
         text = text.rstrip()
         lines = text.splitlines()
-        if len(lines[0]) == 0:
+        if len(lines) == 0:
             error.config(text="You must have input.")
             return
         for line in lines:
@@ -691,8 +694,6 @@ class App:
         file.write(text)
         self.change_page(2)
 
-
-
     def stop(self, *args):
         """"Function that shuts down the program when <Escape> is pressed."""
         sys.exit(0)
@@ -722,8 +723,10 @@ class App:
            Output: single result value"""
         avgs = []
         devs = []
+        meds = []
         for set in meassets:
             # print(set)
+            med = Test.outliercombat(set)
             avg = sum(set)/len(set)
             predev = 0
             for number in set:
@@ -738,9 +741,10 @@ class App:
                 dev = n.sqrt(middev)
             avgs.append(avg)
             devs.append(dev)
+            meds.append(med)
         target = avgs[(len(avgs)-1)]
         res, mgLres = self.calibration_curve(target)
-        return res, mgLres, devs, avgs, target
+        return res, mgLres, devs, avgs, target, meds
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
@@ -799,7 +803,7 @@ class App:
         loading_text.update()
         meassets = []
         pointer = 0
-        res, mgLres, devs, avgs, peaksignal = self.getResult(measurements)
+        res, mgLres, devs, avgs, peaksignal, meds = self.getResult(measurements)
         decisignal = Decimal(peaksignal)
         decires = Decimal(res)
         decimgLres = Decimal(mgLres)
@@ -811,7 +815,7 @@ class App:
                                 "The resulting concentration of Vancomycin is " + str(roundres) + " pM or " +
                                 str(roundmgLres) + " mg/L.\n" +
                                 "Press the Measure Button to measure again")
-        self.save_measurements(measurements, avgs, devs, res, mgLres)
+        self.save_measurements(measurements, avgs, devs, res, mgLres, meds)
         self.save_results(res, mgLres)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
