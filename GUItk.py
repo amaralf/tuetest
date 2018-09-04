@@ -141,7 +141,7 @@ class App:
             os.makedirs(dirname)
         with open(filename, "a") as rez:
             rez.write("TimeStamp: " + str(st) + "\n")
-            rez.write("Concentration in pM: " + str(res) + "\n")
+            rez.write("Concentration in uM: " + str(res) + "\n")
             rez.write("Concentration in mg/L: " + str(mgLres)+"\n\n")
 
     def save_measurements(self, measures, avgs, devs, res, mgLres, meds):
@@ -712,7 +712,7 @@ class App:
     def calibration_curve(self, avg):
         """Input: avg
            Output: Concentration"""
-        ans = 4e-19*n.power(avg, -11.8)             #ans is in pM unit
+        ans = 3e-68*n.power(avg, -36.99)             #ans is in pM unit
         uM_ans = round(ans/1e6, 3)                  #ans is in uM unit
         mgLans = ans*1e-9*1449.25*0.97546           #mgLans is in mg/L unit
         return uM_ans, mgLans
