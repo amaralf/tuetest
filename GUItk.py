@@ -712,7 +712,7 @@ class App:
     def calibration_curve(self, median):
         """Input: avg
            Output: Concentration"""
-        ans = 3e-68*n.power(median, -36.99)         # ans is in pM unit
+        ans = 6e8*n.power(n.e, -380.7*median)       # ans is in pM unit
         uM_ans = round(ans/1e6, 3)                  # ans is in uM unit
         mgLans = ans*1e-9*1449.25*0.97546           # mgLans is in mg/L unit
         return uM_ans, mgLans
