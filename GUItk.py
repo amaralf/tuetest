@@ -709,12 +709,12 @@ class App:
         x, y = Test.fourierten(tt, voltage)
         return y, voltage, tt
 
-    def calibration_curve(self, avg):
+    def calibration_curve(self, median):
         """Input: avg
            Output: Concentration"""
-        ans = 3e-68*n.power(avg, -36.99)             #ans is in pM unit
-        uM_ans = round(ans/1e6, 3)                  #ans is in uM unit
-        mgLans = ans*1e-9*1449.25*0.97546           #mgLans is in mg/L unit
+        ans = 3e-68*n.power(median, -36.99)         # ans is in pM unit
+        uM_ans = round(ans/1e6, 3)                  # ans is in uM unit
+        mgLans = ans*1e-9*1449.25*0.97546           # mgLans is in mg/L unit
         return uM_ans, mgLans
 
     def getResult(self, meassets):
@@ -741,7 +741,7 @@ class App:
             devs.append(dev)
             meds.append(med)
         # target = avgs[(len(avgs)-1)]
-        target = avgs[0]
+        target = meds[0]
         res, mgLres = self.calibration_curve(target)
         return res, mgLres, devs, avgs, target, meds
 
@@ -800,18 +800,18 @@ class App:
         loading_bar.update()
         loading_text.config(text="Saving Results...")
         loading_text.update()
-        res, mgLres, devs, avgs, peaksignal, meds = self.getResult(measurements)
+        uMres, mgLres, devs, avgs, peaksignal, meds = self.getResult(measurements)
         roundmgLres = round(mgLres, 3)
         textstring = "Measurement of patient " + str(self.patient_id) + " finished.\n\n"
         # textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
-        textstring += "The resulting concentration of Vancomycin is " + str(res) + " uM \n or " + \
+        textstring += "The resulting concentration of Vancomycin is " + str(uMres) + " uM \n or " + \
                       str(roundmgLres) + " mg/L.\n\n"
         if mgLres < 2.0 or mgLres > 110:
             textstring += "Vancomycin concentration might be near zero."
         # textstring += "\n\n Press the Measure Button to measure again."
         output_text.config(text=textstring, font='bold')
-        self.save_measurements(measurements, avgs, devs, res, mgLres, meds)
-        self.save_results(res, mgLres)
+        self.save_measurements(measurements, avgs, devs, uMres, mgLres, meds)
+        self.save_results(uMres, roundmgLres)
         loading_bar.place(relwidth=0.98)
         loading_bar.update()
         loading_text.config(text="Finished")
