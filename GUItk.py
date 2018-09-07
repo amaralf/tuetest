@@ -715,7 +715,7 @@ class App:
         ans = -2e9*n.log(median/0.0096)       # ans is in pM unit
         uM_ans = round(ans/1e6, 3)                  # ans is in uM unit
         mgLans = ans*1e-9*1449.25*0.97546           # mgLans is in mg/L unit
-        return uM_ans, mgLans
+        return ans, uM_ans, mgLans
 
     def getResult(self, meassets):
         """Input: single amplitude
@@ -800,12 +800,12 @@ class App:
         loading_bar.update()
         loading_text.config(text="Saving Results...")
         loading_text.update()
-        uMres, mgLres, devs, avgs, peaksignal, meds = self.getResult(measurements)
+        ans, uMres, mgLres, devs, avgs, peaksignal, meds = self.getResult(measurements)
         roundmgLres = round(mgLres, 3)
         textstring = "Measurement of patient " + str(self.patient_id) + " finished.\n\n"
         # textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
         textstring += "The resulting concentration of Vancomycin is " + str(uMres) + " uM \n or " + \
-                      str(roundmgLres) + " mg/L.\n\n"
+                      str(roundmgLres) + " mg/L.\n" + "A2f peak is "+ str(ans) + "."
         if mgLres < 2.0 or mgLres > 110:
             textstring += "Vancomycin concentration might be near zero."
         # textstring += "\n\n Press the Measure Button to measure again."
