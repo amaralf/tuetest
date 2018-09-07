@@ -742,8 +742,8 @@ class App:
             meds.append(med)
         # target = avgs[(len(avgs)-1)]
         target = meds[0]
-        res, mgLres = self.calibration_curve(target)
-        return res, mgLres, devs, avgs, target, meds
+        ans, res, mgLres = self.calibration_curve(target)
+        return ans, res, mgLres, devs, avgs, target, meds
 
     def convert(self, adc_values):
         """Function to convert the bitstring readout to Volts."""
