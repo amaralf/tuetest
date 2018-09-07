@@ -805,7 +805,7 @@ class App:
         textstring = "Measurement of patient " + str(self.patient_id) + " finished.\n\n"
         # textstring += "\n The original signal intensity is " + str(roundsignal) + "\n"
         textstring += "The resulting concentration of Vancomycin is " + str(uMres) + " uM \n or " + \
-                      str(roundmgLres) + " mg/L.\n" + "A2f peak is "+ str(ans) + ".\n"
+                      str(roundmgLres) + " mg/L.\n" + "A2f peak is "+ str(peaksignal) + ".\n"
         if mgLres < 2.0 or mgLres > 110:
             textstring += "Vancomycin concentration might be near zero."
         # textstring += "\n\n Press the Measure Button to measure again."
